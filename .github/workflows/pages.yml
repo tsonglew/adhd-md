@@ -31,6 +31,9 @@ jobs:
         run: python3 skill/scripts/adhd_md.py selftest
 
       - uses: actions/configure-pages@v5
+        with:
+          # 仓库还没开 Pages 时自动开，省掉 fork 后第一次必然失败的那一跑
+          enablement: true
 
       - uses: actions/upload-pages-artifact@v3
         with:
