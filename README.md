@@ -4,6 +4,8 @@
 
 一份 skill，六个 agent 通用 —— Claude Code、Codex、Grok Build、Gemini CLI、Cursor、opencode。
 
+[看官网的 before/after 对照](https://tsonglew.github.io/adhd-md/)
+
 - [能干什么](#能干什么)
 - [装 + 跑（约 2 分钟）](#装--跑约-2-分钟)
 - [两个参数](#两个参数)
@@ -100,6 +102,7 @@ skill/                    唯一真源
   references/             规则库、评分、中文专项、反模式、文档骨架、示例语料
   scripts/adhd_md.py      确定性工具层，纯标准库，零依赖
 dist/                     自包含单文件版（由脚本生成，勿手改）
+site/                     官网，GitHub Actions 部署到 Pages
 docs/host-matrix.md       六个宿主的实证结论
 scripts/install.sh        探测 + 安装
 ```
