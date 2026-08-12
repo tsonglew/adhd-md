@@ -135,6 +135,12 @@ h1 {
   margin: 0 0 1.6rem;
   max-width: 22em;
 }
+
+/* 中文按词组断行，不从词中间断开（「可被脚 / 本证明无损」那种）。
+   不支持的浏览器直接忽略，退回默认换行。 */
+h1, h2, h3, .lede, .creed, .sub, .card-lede, blockquote {
+  word-break: auto-phrase;
+}
 h1 em {
   font-style: normal;
   text-decoration: underline;
