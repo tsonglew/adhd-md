@@ -38,3 +38,7 @@ python3 scripts/build_standalone.py
 - `git clone` + `bash scripts/install.sh` —— 软链到仓库，方便开发
 
 给 `skill/` 加新文件时，检查 `package.json` 的 `files` 字段是否覆盖 —— 漏了的话 npx 装出来会缺文件，本地却看不出问题。
+
+## 官网（site/）
+
+Astro 项目。改了页面或组件之后跑 `cd site && npm run build` 确认能过，产物在 `site/dist/`（已 gitignore，不提交）。设计源模板（`site/og.html`、`site/icon-square.svg`）改动后重跑 `scripts/build-og.sh`，位图产物写进 `site/public/`。`site/public/install.sh` 由 Pages workflow 从 `scripts/install.sh` 复制，不手改。

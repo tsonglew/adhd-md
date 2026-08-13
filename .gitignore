@@ -4,3 +4,4 @@ __pycache__/
 .gstack/
 node_modules/
 site/install.sh
+site/dist/

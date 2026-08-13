@@ -111,8 +111,11 @@ skill/                    唯一真源
   references/             规则库、评分、中文专项、反模式、文档骨架、示例语料
   scripts/adhd_md.py      确定性工具层，纯标准库，零依赖
 dist/                     自包含单文件版（由脚本生成，勿手改）
-site/                     官网，GitHub Actions 部署到 Pages
-  og.html favicon.svg     预览图与图标的源模板（位图产物由 scripts/build-og.sh 渲染）
+site/                     官网，Astro 构建，GitHub Actions 部署到 Pages
+  src/components/          七个区块组件
+  src/layouts/             页头 / 页脚 / 元信息
+  public/                  图标与预览图位图产物
+  og.html icon-square.svg  预览图与图标的源模板（位图产物由 scripts/build-og.sh 渲染）
 docs/host-matrix.md       六个宿主的实证结论
 scripts/install.sh        探测 + 安装
 ```
@@ -151,6 +154,16 @@ python3 skill/scripts/adhd_md.py audit --min-score 70 docs/*.md
 | `verify --scope=format` 失败 | 改动越界了。`prose_tokens_added` 是新写了措辞，`prose_tokens_missing` 是删了词。回退，或改用 `scope=content` |
 | agent 没自动触发 | Codex 用 `/adhd-md`，其他宿主明确说「用 adhd-md skill」 |
 | 想卸载 | `npx github:tsonglew/adhd-md install --uninstall`，或 `bash scripts/install.sh --uninstall` |
+
+## 开发官网
+
+```bash
+cd site && npm install
+npm run dev      # 本地预览
+npm run build    # 构建到 site/dist/，Pages workflow 部署的就是它
+```
+
+改 `og.html` 或 `icon-square.svg` 之后重跑 `bash scripts/build-og.sh`，位图产物写进 `site/public/`。
 
 ## 深入
 

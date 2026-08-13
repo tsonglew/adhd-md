@@ -1,0 +1,33 @@
+<section class="band" id="hosts">
+  <div class="wrap sec">
+    <span class="num">06</span>
+    <div class="sec-body">
+      <h2>一份 skill，六个 agent</h2>
+      <p class="sub">
+        六个宿主都原生支持同一套 <code>SKILL.md</code> 目录格式，所以不需要六套适配器。
+        canonical skill 放 <code>~/.agents/skills/</code>，各宿主放软链，改一处同时生效。
+      </p>
+
+      <ul class="hosts">
+        <li><b>Claude Code</b><code>~/.claude/skills/</code><span class="badge live">运行时实测</span></li>
+        <li><b>Codex</b><code>~/.codex/skills/</code><span class="badge live">运行时实测</span></li>
+        <li><b>Grok Build</b><code>~/.grok/skills/</code><span class="badge">加载实测</span></li>
+        <li><b>Gemini CLI</b><code>~/.gemini/skills/</code><span class="badge">加载实测</span></li>
+        <li><b>Cursor</b><code>~/.cursor/skills/</code><span class="badge">加载实测</span></li>
+        <li><b>opencode</b><code>~/.config/opencode/skills/</code><span class="badge">加载实测</span></li>
+      </ul>
+
+      <div class="note">
+        <p>
+          Codex headless 跑了完整流程，自己发现目标文件有未提交改动，于是改写到旁路文件而没覆盖原文件。这正是 skill 第 0 步的逻辑。产出与手写版本不同，但同样合格。
+          它把两条警告合成引用块，我把配置转成列表，都是 100 分，都零词改动。
+        </p>
+        <p class="small">
+          另外四个宿主只验证了能加载，没验证执行效果。
+          <a href="https://github.com/tsonglew/adhd-md/blob/main/docs/eval.md">验证结论</a>
+          里写清了哪些验过、哪些没验、有哪些已知局限。
+        </p>
+      </div>
+    </div>
+  </div>
+</section>

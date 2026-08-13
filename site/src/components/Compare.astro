@@ -1,0 +1,69 @@
+<section class="band alt" id="compare">
+  <div class="wrap sec">
+    <span class="num">02</span>
+    <div class="sec-body">
+      <h2>同一篇文档，一个词都没改</h2>
+      <p class="sub">
+        下面是真实语料。<code>scope=format</code> 档只动标记、空白和块顺序，正文词序列逐字保留。左右对照看看差别。
+      </p>
+
+      <div class="compare">
+        <div class="compare-cols">
+          <div class="col">
+            <div class="col-head">
+              <span class="col-tag">改前</span>
+              <span class="col-score">87.8</span>
+            </div>
+            <div class="doc">
+              <h3 class="doc-h1">md-cache</h3>
+              <p>md-cache 是一个 Markdown 渲染缓存中间件，把渲染结果按内容哈希缓存到本地磁盘，命中时直接返回，避免重复渲染。它需要 Node 18 以上版本，依赖只有一个 lru-cache。装好之后在渲染管线里包一层 withCache 就行。缓存目录默认是 .cache/md，可以用 MD_CACHE_DIR 环境变量改。默认最大条目数是 500，用 maxEntries 选项改。默认 TTL 是 7 天，用 ttl 选项改，单位是毫秒。设成 0 表示永不过期，但磁盘会一直涨，生产环境不建议。</p>
+              <p>如果渲染函数有副作用，不要用这个中间件，因为命中缓存时渲染函数根本不会被调用。如果你的 Markdown 里嵌了时间戳或随机数，输出会被缓存住，看起来像是不刷新，这不是 bug。</p>
+              <p>实测在 1200 篇文档的站点上，冷启动构建 42 秒，二次构建 3.1 秒，快十三倍。</p>
+            </div>
+          </div>
+
+          <div class="col">
+            <div class="col-head">
+              <span class="col-tag">改后</span>
+              <span class="col-score">100</span>
+            </div>
+            <div class="doc">
+              <h3 class="doc-h1">md-cache</h3>
+              <p class="moved">实测在 1200 篇文档的站点上，冷启动构建 42 秒，二次构建 3.1 秒，快十三倍。</p>
+              <p>md-cache 是一个 Markdown 渲染缓存中间件，把渲染结果按内容哈希缓存到本地磁盘，命中时直接返回，避免重复渲染。</p>
+              <p>它需要 Node 18 以上版本，依赖只有一个 <code>lru-cache</code>。装好之后在渲染管线里包一层 <code>withCache</code> 就行。</p>
+              <ul>
+                <li>缓存目录默认是 <code>.cache/md</code>，可以用 <code>MD_CACHE_DIR</code> 环境变量改。</li>
+                <li>默认最大条目数是 500，用 <code>maxEntries</code> 选项改。</li>
+                <li>默认 TTL 是 7 天，用 <code>ttl</code> 选项改，单位是毫秒。</li>
+                <li>设成 0 表示永不过期，但磁盘会一直涨，生产环境不建议。</li>
+              </ul>
+              <p>如果渲染函数有副作用，不要用这个中间件，因为命中缓存时渲染函数根本不会被调用。</p>
+              <p>如果你的 Markdown 里嵌了时间戳或随机数，输出会被缓存住，看起来像是不刷新，这不是 bug。</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="dims" id="dims">
+          <div class="dim" data-before="40"  data-after="100"><span>首屏结论力</span><i class="b-before"><b></b></i><i class="b-after"><b></b></i><em></em></div>
+          <div class="dim" data-before="92"  data-after="100"><span>分块粒度</span><i class="b-before"><b></b></i><i class="b-after"><b></b></i><em></em></div>
+          <div class="dim" data-before="100" data-after="100"><span>扫读性</span><i class="b-before"><b></b></i><i class="b-after"><b></b></i><em></em></div>
+          <div class="dim" data-before="100" data-after="100"><span>句子负荷</span><i class="b-before"><b></b></i><i class="b-after"><b></b></i><em></em></div>
+          <div class="dim" data-before="100" data-after="100"><span>行动性</span><i class="b-before"><b></b></i><i class="b-after"><b></b></i><em></em></div>
+          <div class="dim" data-before="100" data-after="100"><span>排版一致性</span><i class="b-before"><b></b></i><i class="b-after"><b></b></i><em></em></div>
+          <div class="dim" data-before="100" data-after="100"><span>活人感</span><i class="b-before"><b></b></i><i class="b-after"><b></b></i><em></em></div>
+        </div>
+
+        <p class="compare-foot">
+          改动：结论块前置、一坨拆四段、四句配置转列表、裸标识符包成行内代码。
+          新增词 0，删除词 0。
+        </p>
+      </div>
+
+      <p class="aside">
+        注意改后没有给配置列表加小标题。「配置」这两个字原文里没有，加了就是新写措辞，越界成
+        <code>content</code>。结构可以大改，一个词都动不了，格式档的天花板就在这里。
+      </p>
+    </div>
+  </div>
+</section>
