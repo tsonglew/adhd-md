@@ -1,8 +1,8 @@
 # adhd-md
 
-把 Markdown 改造成 ADHD 友好的样子：结论前置、段落切碎、句子变短、动作明确、噪音归零。**只重排信息，绝不删信息。**
+把 Markdown 改造成 ADHD 友好的样子：结论前置、段落切碎、动作明确。**只重排信息，绝不删信息。**
 
-一份 skill，六个 agent 通用 —— Claude Code、Codex、Grok Build、Gemini CLI、Cursor、opencode。
+同一份 skill 在 Claude Code、Codex、Grok Build、Gemini CLI、Cursor、opencode 里都能用。
 
 [看官网的 before/after 对照](https://tsonglew.github.io/adhd-md/)
 
@@ -20,7 +20,7 @@
 ## 能干什么
 
 - **审计**：给文档打分（0–100，七个维度），逐条指出问题与行号
-- **只改格式**：正文一个词都不动，只重排结构 —— 改动可被脚本证明无损
+- **只改格式**：正文一个词都不动，只重排结构。改动可被脚本证明无损
 - **只改内容**：只改措辞，不动排版风格
 - **两者兼改**：默认档
 - **去 AI 味**：翻案腔、抬价式冒号、洞察路标、黑话、破折号密度，逐条报位置
@@ -71,9 +71,7 @@ npx github:tsonglew/adhd-md audit 你的文档.md
 
 ## 无损保证
 
-这是这个工具唯一不可协商的地方。
-
-`scope=format` 下，改动是**可证明无损**的：剥掉标记后的正文 token 多重集必须完全一致，删一个词或新写一个词都会被 `verify` 拒绝。
+`scope=format` 下的改动可以证明无损。剥掉标记后的正文 token 多重集必须完全一致，删一个词或新写一个词都会被 `verify` 拒绝。
 
 ```bash
 python3 skill/scripts/adhd_md.py verify 原文.md 新文.md --scope=format
@@ -82,7 +80,7 @@ python3 skill/scripts/adhd_md.py verify 原文.md 新文.md --scope=format
 
 `scope=content` 下检查不变量：代码块逐字、行内代码、URL、标识符、数字带单位，缺一即硬失败。
 
-篇幅太长的正确做法是**折叠或移到附录**，不是删。
+篇幅太长就折叠或移到附录，不删。
 
 ## 支持哪些 agent
 
@@ -156,9 +154,8 @@ python3 skill/scripts/adhd_md.py audit --min-score 70 docs/*.md
 
 ## 深入
 
-- [规则库](skill/references/rules.md)：71 条规则，带轴/档/阈值
+- [规则库](skill/references/rules.md)：71 条规则，带轴/档/阈值。去 AI 味的 M 组十条也在里面，每条写明它是哪一种阅读成本
 - [反模式](skill/references/antipatterns.md)：八种优化过头，附自检清单
-- [去 AI 味](skill/references/rules.md)：M 组十条，每条写明它是哪一种阅读成本
 - [示例语料](skill/references/examples/README.md)：4 组 before/after，含「故意没改什么」
 - [评分细则](skill/references/rubric.md)
 - [中文专项](skill/references/cjk.md)

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>adhd-md — 把 Markdown 改造成读得下去的样子</title>
-<meta name="description" content="一份跨 agent 通用的 skill：把 Markdown 改造成 ADHD 友好、可扫读的版本。可只改格式、只改内容或两者兼改。只重排信息，绝不删信息 —— 格式档的改动可被脚本证明无损。">
+<meta name="description" content="一份跨 agent 通用的 skill：把 Markdown 改造成 ADHD 友好、可扫读的版本。可只改格式、只改内容或两者兼改。只重排信息，绝不删信息。格式档的改动可被脚本证明无损。">
 <link rel="canonical" href="https://tsonglew.github.io/adhd-md/">
 
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
@@ -27,7 +27,7 @@
 
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="adhd-md — 把 Markdown 改造成读得下去的样子">
-<meta name="twitter:description" content="一份 skill 通用于六个 agent。只重排信息，绝不删信息 —— 格式档的改动可被脚本证明无损。">
+<meta name="twitter:description" content="一份 skill 通用于六个 agent。只重排信息，绝不删信息。格式档的改动可被脚本证明无损。">
 <meta name="twitter:image" content="https://tsonglew.github.io/adhd-md/og.png">
 <meta name="twitter:image:alt" content="adhd-md 预览图：脚本分 87.8 到 100，正文一个词都没改。">
 
@@ -66,13 +66,13 @@
     </h1>
 
     <p class="lede reveal" style="--d:140ms">
-      结论前置、段落切碎、句子变短、动作明确、噪音归零。
+      结论前置、段落切碎、动作明确。
       在 Claude Code、Codex、Grok Build、Gemini CLI、Cursor、opencode 里都能用同一份 skill。
     </p>
 
     <p class="creed reveal" style="--d:220ms">
       <span class="mark-rule">只重排信息，绝不删信息。</span>
-      篇幅太长就折叠或移到附录 —— 格式档的改动<strong>可被脚本证明无损</strong>。
+      篇幅太长就折叠或移到附录。格式档的改动可被脚本证明无损。
     </p>
 
     <div class="cmd reveal" style="--d:300ms">
@@ -91,10 +91,10 @@
     <div class="wrap sec">
       <span class="num">01</span>
       <div class="sec-body">
-        <h2>难读的文档不是写得差，是排得差</h2>
+        <h2>读不下去的文档，问题多半在排版</h2>
 
         <p class="sub">
-          同一段信息，一坨读不下去，切开就能读。差别不在内容，在结构。
+          同一段信息，一坨读不下去，切开就能读。
         </p>
 
         <div class="wall-demo">
@@ -124,8 +124,7 @@
       <div class="sec-body">
         <h2>同一篇文档，一个词都没改</h2>
         <p class="sub">
-          下面是真实语料。<code>scope=format</code> 档只动标记、空白和块顺序，正文词序列逐字保留 ——
-          切换看看差别。
+          下面是真实语料。<code>scope=format</code> 档只动标记、空白和块顺序，正文词序列逐字保留。切换看看差别。
         </p>
 
         <div class="compare">
@@ -175,14 +174,14 @@
           </div>
 
           <p class="compare-foot">
-            改动：<strong>结论块前置</strong>、一坨拆四段、四句配置转列表、裸标识符包成行内代码。
-            新增词 <strong>0</strong>，删除词 <strong>0</strong>。
+            改动：结论块前置、一坨拆四段、四句配置转列表、裸标识符包成行内代码。
+            新增词 0，删除词 0。
           </p>
         </div>
 
         <p class="aside">
-          注意改后<strong>没有</strong>给配置列表加小标题 —— 「配置」这两个字原文里没有，加了就是新写措辞，越界成
-          <code>content</code>。这是格式档的天花板：结构可以大改，一个词都动不了。
+          注意改后没有给配置列表加小标题。「配置」这两个字原文里没有，加了就是新写措辞，越界成
+          <code>content</code>。结构可以大改，一个词都动不了，格式档的天花板就在这里。
         </p>
       </div>
     </div>
@@ -195,7 +194,7 @@
       <div class="sec-body">
         <h2>只改格式，只改内容，或者两者都改</h2>
         <p class="sub">
-          划线判据只有一句：<strong>搬移已有块算格式，写出新句子算内容。</strong>
+          划线判据只有一句话。搬移已有块算格式，写出新句子算内容。
         </p>
 
         <div class="cards">
@@ -240,8 +239,7 @@
       <div class="sec-body">
         <h2>顺手把模型腔洗掉</h2>
         <p class="sub">
-          模型写出来的中文有一套固定手势。它们不只是文风问题 ——
-          <strong>每一种都在多收一次注意力税</strong>，所以归这个 skill 管。
+          模型写出来的中文有一套固定手势。每一种都在多收一次注意力税，所以归这个 skill 管。
         </p>
 
         <table class="tax">
@@ -285,8 +283,7 @@
       <div class="sec-body">
         <h2>删一个词就会被拦下来</h2>
         <p class="sub">
-          这是唯一不可协商的地方。格式档下，剥掉标记后的正文 token 多重集必须完全一致 ——
-          删词是 <code>missing</code>，新写措辞是 <code>added</code>，两者都拒绝写回。
+          格式档下，剥掉标记后的正文 token 多重集必须完全一致。删词是 <code>missing</code>，新写措辞是 <code>added</code>，两者都拒绝写回。
         </p>
 
         <div class="term" role="img" aria-label="verify 命令输出示例：格式档通过，删词被判硬失败">
@@ -307,15 +304,14 @@ scope=format → <span class="bad">失败</span>
             <h3>能算准的不交给模型</h3>
             <p>
               审计、格式修复、无损校验都在一个纯标准库的 Python 单文件里。
-              跑的是同一个进程，不是同一个模型 —— 所以六个宿主的分数与校验结果<strong>必然一致</strong>。
+              跑的是同一个进程，不是同一个模型，所以六个宿主的分数与校验结果必然一致。
             </p>
           </div>
           <div>
             <h3>分数不虚报</h3>
             <p>
               71 条规则里 30 条脚本可判定，31 条标记为需模型判断。
-              <code>audit</code> 输出的叫<strong>脚本分</strong>，不给「优」档 ——
-              脚本分低说明一定有问题，脚本分高不说明没问题。
+              <code>audit</code> 输出的叫「脚本分」，不给「优」档。脚本分低说明一定有问题，脚本分高不说明没问题。
             </p>
           </div>
         </div>
@@ -331,7 +327,7 @@ scope=format → <span class="bad">失败</span>
         <h2>一份 skill，六个 agent</h2>
         <p class="sub">
           六个宿主都原生支持同一套 <code>SKILL.md</code> 目录格式，所以不需要六套适配器。
-          canonical skill 放 <code>~/.agents/skills/</code>，各宿主放软链 —— 改一处同时生效。
+          canonical skill 放 <code>~/.agents/skills/</code>，各宿主放软链，改一处同时生效。
         </p>
 
         <ul class="hosts">
@@ -345,9 +341,7 @@ scope=format → <span class="bad">失败</span>
 
         <div class="note">
           <p>
-            <b>Codex 那次实测值得单说。</b>
-            它 headless 跑完整流程，自己发现目标文件有未提交改动，于是改写到旁路文件而没覆盖原文件 ——
-            这正是 skill 第 0 步的逻辑。产出与手写版本<strong>不同但同样合格</strong>：
+            Codex headless 跑了完整流程，自己发现目标文件有未提交改动，于是改写到旁路文件而没覆盖原文件。这正是 skill 第 0 步的逻辑。产出与手写版本不同，但同样合格。
             它把两条警告合成引用块，我把配置转成列表，都是 100 分，都零词改动。
           </p>
           <p class="small">

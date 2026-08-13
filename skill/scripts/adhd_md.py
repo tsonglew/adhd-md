@@ -1214,8 +1214,12 @@ def verify(old, new, scope="both"):
     else:
         oi, ni = extract_invariants(old), extract_invariants(new)
         new_text = new
+        # 数字提取时把「2 分钟」归一成「2分钟」，所以搜索时也要在去空白的文本里找，
+        # 否则每篇中文文档都会误报一堆 nums_missing，把警告训练成噪音
+        new_squeezed = re.sub(r"\s+", "", new)
         for key in ("urls", "idents", "nums", "inline"):
-            missing = [x for x in oi[key] if x not in new_text]
+            hay = new_squeezed if key == "nums" else new_text
+            missing = [x for x in oi[key] if x not in hay]
             if missing:
                 bucket = "hard_failures" if key in ("urls", "idents", "inline") else "warnings"
                 rep[bucket].append({"kind": f"{key}_missing", "count": len(missing), "items": missing[:12]})
@@ -1634,6 +1638,17 @@ class SelfTest(unittest.TestCase):
         out = fmt(src)
         ok, rep = verify(src, out, "format")
         self.assertTrue(ok, rep)
+
+    def test_verify_no_false_num_warning_on_spaced_cjk(self):
+        # 「2 分钟」归一成「2分钟」后要能在带空格的原文里找到，否则每篇中文文档都误报
+        old = "# T\n\n装好约 2 分钟，共 71 条规则。\n"
+        new = "# T\n\n装好约 2 分钟。\n\n## 规则\n\n共 71 条规则。\n"
+        ok, rep = verify(old, new, "content")
+        self.assertTrue(ok, rep["hard_failures"])
+        self.assertEqual(rep["warnings"], [], f"数字误报：{rep['warnings']}")
+        # 真丢了要报
+        ok2, rep2 = verify(old, "# T\n\n装好很快。\n", "content")
+        self.assertTrue(any(w["kind"] == "nums_missing" for w in rep2["warnings"]))
 
     def test_verify_content_invariants(self):
         old = "# T\n\n用 `--timeout` 改，默认 30 秒。见 https://x.dev/docs\n"
