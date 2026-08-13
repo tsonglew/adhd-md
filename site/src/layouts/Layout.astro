@@ -79,11 +79,9 @@ const otherAbs = origin + t.otherUrl;
         <p class="small">{t.footer.tagline}</p>
       </div>
       <nav aria-label={t.lang === "en" ? "Related links" : "相关链接"}>
-        <a href="https://github.com/tsonglew/adhd-md">{t.footer.links[0]}</a>
-        <a href="https://github.com/tsonglew/adhd-md/blob/main/skill/references/rules.md">{t.footer.links[1]}</a>
-        <a href="https://github.com/tsonglew/adhd-md/blob/main/skill/references/antipatterns.md">{t.footer.links[2]}</a>
-        <a href="https://github.com/tsonglew/adhd-md/blob/main/docs/host-matrix.md">{t.footer.links[3]}</a>
-        <a href="https://github.com/tsonglew/adhd-md/blob/main/docs/eval.md">{t.footer.links[4]}</a>
+        {t.footer.links.map((link) => (
+          <a href={link.href}>{link.label}</a>
+        ))}
       </nav>
     </div>
   </footer>

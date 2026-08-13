@@ -1,0 +1,37 @@
+name: 宿主适配问题
+description: 某个 agent 加载不了 skill、不会触发、或执行结果不对
+title: "[host] "
+labels: ["hosts"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        先对照一下 [宿主兼容矩阵](https://github.com/tsonglew/adhd-md/blob/main/docs/host-matrix.md)，
+        里面有六个宿主的实测结论和探测方法。
+  - type: input
+    id: host
+    attributes:
+      label: 哪个宿主，什么版本
+      placeholder: Codex 0.4x / Grok Build 0.2x
+    validations:
+      required: true
+  - type: dropdown
+    id: stage
+    attributes:
+      label: 哪一步出问题
+      options:
+        - 加载不到 skill（宿主列表里没有）
+        - 不会自动触发
+        - 触发但执行结果不对
+        - 安装脚本本身报错
+        - 其他
+    validations:
+      required: true
+  - type: textarea
+    id: detail
+    attributes:
+      label: 现象与复现
+      description: 装到哪里、说了什么话、宿主怎么反应的。日志和截图都能帮上忙
+      render: markdown
+    validations:
+      required: true

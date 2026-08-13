@@ -1,0 +1,42 @@
+name: 规则建议
+description: 某条规则的阈值、判据、扣分不合理，或想加一条新规则
+title: "[rule] "
+labels: ["rules"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        规则库和阈值是开放讨论的（README 也这么写了）。
+        最有说服力的提议方式是：给一段真实的 Markdown，说明它被误报了、漏报了，或扣分不公平。
+  - type: input
+    id: rule
+    attributes:
+      label: 涉及哪条规则
+      description: 规则 ID 或名字；新规则就写「新规则」
+      placeholder: M5 破折号密度 / P1 段落长度 / 新规则
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: 现状哪里不对
+      description: 误报、漏报，还是扣分/阈值不合理
+      placeholder: 这篇文档的破折号都在表格里，但还是被扣了分……
+    validations:
+      required: true
+  - type: textarea
+    id: example
+    attributes:
+      label: 例子
+      description: 触发问题的那段 Markdown，最小化最好
+      render: markdown
+      placeholder: |
+        ```markdown
+        # 标题
+        ……
+        ```
+  - type: textarea
+    id: suggest
+    attributes:
+      label: 你建议怎么改
+      description: 阈值、判据、豁免条件，越具体越好

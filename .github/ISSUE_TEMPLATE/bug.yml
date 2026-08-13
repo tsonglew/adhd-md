@@ -1,0 +1,49 @@
+name: 脚本 Bug 报告
+description: audit / fmt / verify 跑出问题，或结果不符合预期
+title: "[bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        谢谢报告。能复现的问题修得最快，信息填全一点。
+  - type: textarea
+    id: what
+    attributes:
+      label: 出了什么问题
+      description: 期望什么，实际发生什么。最好把命令行输出贴上来
+      placeholder: |
+        跑 `adhd_md.py audit doc.md` 时……
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: 复现步骤
+      description: 用一个最小化的例子最好
+      render: markdown
+      placeholder: |
+        1. 新建 `test.md`，内容是……
+        2. 跑 `python3 skill/scripts/adhd_md.py audit test.md`
+    validations:
+      required: true
+  - type: input
+    id: env
+    attributes:
+      label: 环境
+      description: OS、Python 版本、触发它的 agent 宿主（如果是 skill 触发的）
+      placeholder: macOS 15 · Python 3.14 · Claude Code
+    validations:
+      required: true
+  - type: dropdown
+    id: cmd
+    attributes:
+      label: 哪个子命令
+      options:
+        - audit
+        - fmt
+        - verify
+        - report
+        - init
+        - selftest
+        - 多个 / 不确定

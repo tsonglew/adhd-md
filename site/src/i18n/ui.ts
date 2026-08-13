@@ -24,7 +24,14 @@ const zh = {
   langSwitch: { label: "EN", href: "/adhd-md/en/" },
   footer: {
     tagline: "MIT · 纯标准库 Python，零依赖",
-    links: ["源码", "规则库", "反模式", "宿主矩阵", "验证结论"],
+    links: [
+      { label: "源码", href: "https://github.com/tsonglew/adhd-md" },
+      { label: "规则库", href: "https://github.com/tsonglew/adhd-md/blob/main/skill/references/rules.md" },
+      { label: "反模式", href: "https://github.com/tsonglew/adhd-md/blob/main/skill/references/antipatterns.md" },
+      { label: "宿主矩阵", href: "https://github.com/tsonglew/adhd-md/blob/main/docs/host-matrix.md" },
+      { label: "验证结论", href: "https://github.com/tsonglew/adhd-md/blob/main/docs/eval.md" },
+      { label: "反馈问题", href: "https://github.com/tsonglew/adhd-md/issues/new/choose" },
+    ],
   },
   hero: {
     eyebrow: "Agent Skill · 六个宿主通用",
@@ -224,7 +231,14 @@ const en: typeof zh = {
   langSwitch: { label: "中文", href: "/adhd-md/" },
   footer: {
     tagline: "MIT · pure-stdlib Python, zero dependencies",
-    links: ["Source", "Rules", "Anti-patterns", "Host matrix", "What we verified"],
+    links: [
+      { label: "Source", href: "https://github.com/tsonglew/adhd-md" },
+      { label: "Rules", href: "https://github.com/tsonglew/adhd-md/blob/main/skill/references/rules.md" },
+      { label: "Anti-patterns", href: "https://github.com/tsonglew/adhd-md/blob/main/skill/references/antipatterns.md" },
+      { label: "Host matrix", href: "https://github.com/tsonglew/adhd-md/blob/main/docs/host-matrix.md" },
+      { label: "What we verified", href: "https://github.com/tsonglew/adhd-md/blob/main/docs/eval.md" },
+      { label: "Report an issue", href: "https://github.com/tsonglew/adhd-md/issues/new/choose" },
+    ],
   },
   hero: {
     eyebrow: "Agent skill · works in six agents",
