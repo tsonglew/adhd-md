@@ -83,6 +83,7 @@ DEDUCT = {
     "S2": ("typo", 10, 10),
     "C1": ("typo", 1, 15),
     "C2": ("typo", 2, 16),
+    "C8": ("typo", 3, 15),
     "T4": ("typo", 5, 5),
     "T7": ("typo", 5, 5),
     "T8": ("typo", 5, 15),
@@ -367,7 +368,7 @@ class Finding:
 AXIS = {
     "S1": "F", "S2": "F", "S3": "F", "P1": "F", "P4": "F", "L1": "F", "L3": "F",
     "L5": "F", "N1": "F", "N5": "F", "T1": "F", "T2d": "F", "T2p": "F", "T4": "F",
-    "T7": "F", "T8": "F", "C1": "F", "C2": "F", "A4": "F", "X1p": "F", "X1c": "F",
+    "T7": "F", "T8": "F", "C1": "F", "C2": "F", "C8": "F", "A4": "F", "X1p": "F", "X1c": "F",
     "X2": "F", "X5": "F",
     "H1": "C", "H2": "C", "W1m": "C", "W1x": "C", "W4": "C", "W6": "C",
     "C3": "C", "C5": "C", "N2": "C", "N6": "C", "C7": "C", "W2": "C",
@@ -509,7 +510,10 @@ def audit(doc, level=2, emoji="none"):
     for b in blocks:
         if b.kind not in ("para", "quote"):
             continue
-        for s in split_sentences(prose_of(b), lang):
+        # 段落内的换行是软换行，不是句子边界。按 75 字硬折行的中文段落
+        # 若把换行当边界，一句话会被算成三句，P1 全是误报。
+        flat = re.sub(r"\n+", "" if lang == "zh" else " ", prose_of(b))
+        for s in split_sentences(flat, lang):
             u = units(s, lang)
             if u <= 0:
                 continue
@@ -552,6 +556,18 @@ def audit(doc, level=2, emoji="none"):
                     f.append(Finding("C1", b.start + off, "中英文之间缺空格", "F"))
                 if re.search(f"[{CJK}][,;:!?]|[{CJK}]\\.(?![A-Za-z0-9])", body):
                     f.append(Finding("C2", b.start + off, "中文段落里出现半角标点", "F"))
+
+        # C8 句中软换行。中文没有空格分词，多数渲染器会把软换行渲染成一个空格，
+        # 于是句子中间凭空多出一个空格。一个段落报一次就够，不逐行刷。
+        for b in blocks:
+            if b.kind != "para" or len(b.lines) < 2:
+                continue
+            for off, ln in enumerate(b.lines[:-1]):
+                s = ln.rstrip()
+                # 行尾是字或字母数字 → 断在词句中间。断在标点后（逗号顿号等）从宽处理
+                if s and (CJK_RE.match(s[-1]) or s[-1].isalnum()):
+                    f.append(Finding("C8", b.start + off, "句中软换行，中文渲染会多出一个空格", "F"))
+                    break
 
     # --- A 行动性
     for b in blocks:
@@ -1576,6 +1592,21 @@ class SelfTest(unittest.TestCase):
         hits = [fd for fd in audit(Doc(f"# T\n\n结论。\n\n## 细节\n\n{s}\n")) if fd.rule == "C3"]
         self.assertTrue(hits, "C3 未触发，检查测试串长度")
         self.assertIn("4 个逗号", hits[0].msg)
+
+    def test_soft_wrap_is_not_a_sentence_boundary(self):
+        # 按 75 字硬折行的中文段落：一句话不能被算成三句
+        wrapped = ("# T\n\n结论。\n\n## 细节\n\n"
+                   "这是一句被硬折行的中文长句，\n它在文件里占了三行，\n但语义上只是一句话。\n")
+        rules = {fd.rule for fd in audit(Doc(wrapped))}
+        self.assertNotIn("P1", rules, "软换行被当成句子边界了")
+
+    def test_c8_flags_mid_sentence_soft_wrap(self):
+        # 断在字中间要报
+        bad = "# T\n\n结论。\n\n## 细节\n\n这是一句被硬折行的中文长句它在文件里\n占了两行但语义上只是一句话。\n"
+        self.assertIn("C8", {fd.rule for fd in audit(Doc(bad))})
+        # 一行一句不报
+        ok = "# T\n\n结论。\n\n## 细节\n\n这是第一句话。\n这是第二句话。\n"
+        self.assertNotIn("C8", {fd.rule for fd in audit(Doc(ok))})
 
     def test_typographic_marks_are_not_emoji(self):
         # 表格里的 ✓ / ✗ 是排版符号，不是 emoji 汤
