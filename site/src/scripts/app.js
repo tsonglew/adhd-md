@@ -27,6 +27,34 @@
   // 以及 IntersectionObserver 不可用的环境里条永远是空的。
   paintDims();
 
+  /* ── 明暗切换 ─────────────────────────────
+     三态：没点过 → 跟随系统；点过 → 锁定选择并记住。 */
+  var themeBtn = document.getElementById("theme-toggle");
+
+  function themeColor(dark) {
+    var meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute("content", dark ? "#15140f" : "#f2efe7");
+  }
+
+  function updateThemeButton() {
+    var dark = document.documentElement.dataset.theme === "dark";
+    var en = document.documentElement.lang === "en";
+    themeBtn.setAttribute("aria-label", en
+      ? (dark ? "Switch to light mode" : "Switch to dark mode")
+      : (dark ? "切换到亮色" : "切换到暗色"));
+    themeColor(dark);
+  }
+
+  if (themeBtn) {
+    updateThemeButton();
+    themeBtn.addEventListener("click", function () {
+      var dark = document.documentElement.dataset.theme === "dark";
+      document.documentElement.dataset.theme = dark ? "light" : "dark";
+      try { localStorage.setItem("adhd-md-theme", dark ? "light" : "dark"); } catch (e) {}
+      updateThemeButton();
+    });
+  }
+
   /* ── 复制按钮 ───────────────────────────── */
   document.querySelectorAll(".copy").forEach(function (btn) {
     btn.addEventListener("click", function () {

@@ -22,6 +22,7 @@ const zh = {
   skip: "跳到正文",
   nav: ["对照", "三种改法", "去 AI 味", "无损", "宿主"],
   langSwitch: { label: "EN", href: "/adhd-md/en/" },
+  themeToggle: { ariaToDark: "切换到暗色", ariaToLight: "切换到亮色" },
   footer: {
     tagline: "MIT · 纯标准库 Python，零依赖",
     links: [
@@ -231,6 +232,7 @@ const en: typeof zh = {
   skip: "Skip to content",
   nav: ["Compare", "Three modes", "AI slop", "Lossless", "Hosts"],
   langSwitch: { label: "中文", href: "/adhd-md/" },
+  themeToggle: { ariaToDark: "Switch to dark mode", ariaToLight: "Switch to light mode" },
   footer: {
     tagline: "MIT · pure-stdlib Python, zero dependencies",
     links: [
