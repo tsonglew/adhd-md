@@ -19,10 +19,11 @@
 
 ## 能干什么
 
-- **审计**：给文档打分（0–100，六个维度），逐条指出问题与行号
+- **审计**：给文档打分（0–100，七个维度），逐条指出问题与行号
 - **只改格式**：正文一个词都不动，只重排结构 —— 改动可被脚本证明无损
 - **只改内容**：只改措辞，不动排版风格
 - **两者兼改**：默认档
+- **去 AI 味**：翻案腔、抬价式冒号、洞察路标、黑话、破折号密度，逐条报位置
 - **确定性修复**：中英文间距、中文标点、序号、空行、代码块语言标签，脚本直接修，不用模型
 
 ## 装 + 跑（约 2 分钟）
@@ -148,15 +149,16 @@ python3 skill/scripts/adhd_md.py audit --min-score 70 docs/*.md
 
 | 症状 | 原因与解法 |
 |---|---|
-| 分数很高但文档明显很烂 | `audit` 输出的是脚本分，把 31 条需模型判断的规则按满分计入。脚本分低说明一定有问题，脚本分高不说明没问题 |
+| 分数很高但文档明显很烂 | `audit` 输出的是脚本分，把 33 条需模型判断的规则按满分计入。脚本分低说明一定有问题，脚本分高不说明没问题 |
 | `verify --scope=format` 失败 | 改动越界了。`prose_tokens_added` 是新写了措辞，`prose_tokens_missing` 是删了词。回退，或改用 `scope=content` |
 | agent 没自动触发 | Codex 用 `/adhd-md`，其他宿主明确说「用 adhd-md skill」 |
 | 想卸载 | `npx github:tsonglew/adhd-md install --uninstall`，或 `bash scripts/install.sh --uninstall` |
 
 ## 深入
 
-- [规则库](skill/references/rules.md)：61 条规则，带轴/档/阈值
+- [规则库](skill/references/rules.md)：71 条规则，带轴/档/阈值
 - [反模式](skill/references/antipatterns.md)：八种优化过头，附自检清单
+- [去 AI 味](skill/references/rules.md)：M 组十条，每条写明它是哪一种阅读成本
 - [示例语料](skill/references/examples/README.md)：4 组 before/after，含「故意没改什么」
 - [评分细则](skill/references/rubric.md)
 - [中文专项](skill/references/cjk.md)

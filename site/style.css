@@ -384,7 +384,28 @@ h3 { font-size: 1.02rem; font-weight: 700; margin: 0 0 .5rem; }
   font: 500 .74rem/1.5 var(--mono); color: var(--ink-3);
 }
 
-/* ─────────── 04 终端 ─────────── */
+/* ─────────── 04 注意力税表 ─────────── */
+.tax {
+  width: 100%; border-collapse: collapse;
+  border: 1px solid var(--rule); background: var(--paper);
+  margin-bottom: 2.2rem; font-size: .88rem;
+}
+.tax th, .tax td { text-align: left; padding: .7rem .9rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+.tax thead th {
+  font: 500 .7rem/1 var(--mono); letter-spacing: .1em; text-transform: uppercase;
+  color: var(--ink-3); background: var(--paper-2);
+}
+.tax tbody tr:last-child td { border-bottom: 0; }
+.tax td:first-child {
+  font-family: var(--mono); font-size: .82rem; color: var(--mark);
+  white-space: nowrap; width: 1%;
+}
+.tax td:last-child { color: var(--ink-2); }
+@media (max-width: 640px) {
+  .tax td:first-child { white-space: normal; }
+}
+
+/* ─────────── 05 终端 ─────────── */
 .term {
   border: 1px solid var(--rule);
   background: var(--paper-3);

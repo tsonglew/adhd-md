@@ -47,12 +47,13 @@ TH = {
 }
 
 DIMS = {
-    "hook": ("首屏结论力", 20),
-    "chunk": ("分块粒度", 20),
-    "scan": ("扫读性", 15),
-    "sentence": ("句子负荷", 15),
-    "action": ("行动性", 15),
-    "typo": ("排版一致性", 15),
+    "hook": ("首屏结论力", 18),
+    "chunk": ("分块粒度", 18),
+    "scan": ("扫读性", 13),
+    "sentence": ("句子负荷", 13),
+    "action": ("行动性", 12),
+    "typo": ("排版一致性", 13),
+    "human": ("活人感", 13),
 }
 
 # rule -> (dim, 每次扣分, 上限)
@@ -87,6 +88,14 @@ DEDUCT = {
     "T4": ("typo", 5, 5),
     "T7": ("typo", 5, 5),
     "T8": ("typo", 5, 15),
+    "M1": ("human", 10, 40),
+    "M3": ("human", 5, 20),
+    "M4": ("human", 4, 24),
+    "M5": ("human", 3, 18),
+    "M6": ("human", 3, 18),
+    "M7": ("human", 8, 24),
+    "M8": ("human", 5, 25),
+    "M9": ("human", 8, 32),
 }
 
 # 全局扣分（X 组），最多 20
@@ -108,10 +117,97 @@ BACKREF = [
     "as mentioned above", "as described above", "see above", "see below",
 ]
 FILLER = [
-    "基本上", "事实上", "需要注意的是", "值得一提的是", "众所周知", "不难看出",
+    "基本上", "事实上", "众所周知", "不难看出",
     "其实", "总的来说", "在某种程度上",
-    "basically", "actually", "it should be noted that", "needless to say",
+    "basically", "actually", "needless to say",
 ]
+
+# ── M 组：模型腔（去 AI 味）
+#
+# 规则集受 human-writing skill（MIT）的中文写作约定启发，但**只保留在技术文档里
+# 确实增加阅读成本的部分**，并且做了两处放宽：
+#   1. 破折号不硬禁 —— 它是标准中文标点，AI 味在于密度，所以改成密度规则
+#   2. 冒号只禁「抬价式」引导语，不禁 `参数：` 这类标签冒号（技术文档需要）
+#
+# 每条都写明它为什么是阅读成本，不是单纯的文风洁癖。
+
+# M1 翻案腔：先立一个读者本来没有的误解，再推翻它给下文抬价。
+# 读者要先装载错误前提、再卸掉，白付一次工作记忆
+M_PIVOT = [
+    re.compile(r"(?:并)?不是[^。！？\n]{1,40}[，、]?而是"),
+    re.compile(r"并非[^。！？\n]{1,40}而是"),
+    re.compile(r"不在于[^。！？\n]{1,40}而在于"),
+    re.compile(r"与其说[^。！？\n]{1,40}(?:不如|倒不如)"),
+    re.compile(r"(?:看似|表面上?)[^。！？\n]{1,40}(?:其实|实际上?|实则)"),
+    re.compile(r"(?:总|一直|都)?以为[^。！？\n]{2,40}(?:其实|才发现|才明白|才知道)"),
+    re.compile(r"[^，。！？\n]{1,12}不重要[，,](?:重要|要紧)的是"),
+    re.compile(r"(?:答案)?恰恰相反"),
+    re.compile(r"回头(?:看|一看)?才(?:发现|明白|知道)"),
+    re.compile(r"\bit(?:'s| is) not (?:just )?[^.!?\n]{1,40}[,;] it(?:'s| is)\b", re.I),
+    re.compile(r"\bthe real (?:question|problem|issue) is\b", re.I),
+]
+
+# M2 同构排比三连。只提示不扣分：正则分不清「修辞排比」和「技术枚举」，
+# `--toc`、`--join-cjk`、`--strip-emoji` 三个 flag 并列是好写法（见 L2），
+# 「为什么出发，为什么放弃，为什么害怕」才是要改的。这个区分只有模型能做。
+M_ANAPHORA = re.compile(
+    r"([^，。！？、\n]{2,6})[^，。！？、\n]{0,10}[，、]\1[^，。！？、\n]{0,10}[，、]\1"
+)
+
+# M3 抽象名词配具体动词抒情：句子没有主语能负责，读者无法核对
+M_LYRIC = re.compile(
+    r"(时间|岁月|时光|记忆|焦虑|孤独|命运|时代|情绪|喧嚣)[^。，！？\n]{0,4}"
+    r"(保管|磨平|抹平|显出|沉淀|吞没|抚平|雕刻|标注|收纳|发酵|落下)"
+)
+
+# M4 动词名词化：把动作藏进名词，读者要多解一层才知道谁做了什么
+M_NOMINAL = [
+    re.compile(r"进行(?:了|一次|一场|着)?[^。，！？\n]{0,10}"
+               r"(?:调整|优化|升级|分析|讨论|梳理|复盘|迭代|尝试|思考|规划|排查)"),
+    re.compile(r"实现了?[^。，！？\n]{0,14}的?[^。，！？\n]{0,6}(?:提升|增长|突破|转变|落地)"),
+    re.compile(r"完成了?对[^。，！？\n]{0,16}的"),
+    re.compile(r"起到了?[^。，！？\n]{0,12}的?作用"),
+    re.compile(r"具有[^。，！？\n]{0,10}(?:意义|价值)"),
+]
+
+# M6 抬价式冒号：`核心是：` 这类引导语先宣布重要性再给货，等于把一句话说两遍。
+# 字段标签冒号（`参数：` `结论：` `例外：`）不算 —— 技术文档需要它定位
+M_HINT_COLON = re.compile(
+    r"(一句话(?:总结|说)?|核心(?:是|在于)|关键(?:是|在于)|"
+    r"简单说|划重点|敲重点|真相(?:是|只有一个)?)\s*[：:]"
+)
+
+# M7 硬停词：宣布「我要说重点了」，本身不携带信息
+M_STOP = ["说白了", "说穿了", "先说结论", "不吹不黑", "客观来说"]
+
+# M8 洞察路标：用词announce深度，实际内容没变深
+M_ROADSIGN = [
+    "更微妙的是", "还有一层", "只说对了一半", "值得注意的是", "需要指出的是",
+    "从某种意义上说", "归根结底", "不可否认", "更深层次",
+    "it is worth noting", "it should be noted", "in essence", "at its core",
+]
+
+# M9 商业与模型黑话：抬价词，替换成普通说法后信息量不变
+M_JARGON = [
+    "赋能", "抓手", "闭环", "底层逻辑", "顶层设计", "降本增效", "全链路",
+    "组合拳", "技术底座", "认知跃迁", "能力沉淀", "拉通", "价值释放",
+    "内容矩阵", "结构性机会", "深层逻辑", "打开想象空间", "生态位",
+    "leverage", "synergy", "holistic", "seamless", "game-chang", "cutting-edge",
+    "delve into", "unlock the",
+]
+
+# M5 破折号密度。破折号是标准中文标点，问题在密度：
+# 手写技术文档中位数约 5/千字，模型生成常在 15 以上
+M_DASH_RE = re.compile(r"——|—(?!—)|–")
+M_DASH_PER_KILO = 8
+
+# M10 借喻包装抽象概念。误报率高（`git 仓库` 是本义），只提示不扣分
+M_METAPHOR = re.compile(r"(仓库|抽屉|温度|坍塌|浪潮|钥匙|底座|土壤|齿轮|坐标系|容器)")
+
+# 引用一个句式不等于使用它。规则文档里写「不是 A 而是 B」当反面例子，
+# 不该被判成犯了这条规则。M 组扫描前把「」『』里的内容挖掉
+M_QUOTED_RE = re.compile(r"[「『][^」』\n]{0,40}[」』]")
+
 SHELL_PROMPT_RE = re.compile(r"^\s*[$>]\s+\S")
 BAD_LINK_TEXT = {
     "here", "click here", "this", "this link", "link", "read more", "more",
@@ -372,6 +468,9 @@ AXIS = {
     "X2": "F", "X5": "F",
     "H1": "C", "H2": "C", "W1m": "C", "W1x": "C", "W4": "C", "W6": "C",
     "C3": "C", "C5": "C", "N2": "C", "N6": "C", "C7": "C", "W2": "C",
+    "M1": "C", "M2": "C", "M3": "C", "M4": "C", "M6": "C", "M7": "C",
+    "M8": "C", "M9": "C", "M10": "C",
+    "M5": "F",
 }
 
 
@@ -568,6 +667,55 @@ def audit(doc, level=2, emoji="none"):
                 if s and (CJK_RE.match(s[-1]) or s[-1].isalnum()):
                     f.append(Finding("C8", b.start + off, "句中软换行，中文渲染会多出一个空格", "F"))
                     break
+
+    # --- M 组 模型腔（去 AI 味）
+    dash_hits = []
+    metaphor_seen = False
+    for b in blocks:
+        if b.kind in ("code", "frontmatter"):
+            continue
+        for off, ln in enumerate(b.lines):
+            # 行内代码与「」引用都算「在谈论这个句式」，不算在用它
+            vis = M_QUOTED_RE.sub("  ", _protect(ln)[0])
+            low = vis.lower()
+            line = b.start + off
+            for pat in M_PIVOT:
+                for _ in pat.finditer(vis):
+                    f.append(Finding("M1", line, "翻案腔：先立误解再推翻。直接从正面下判断", "C"))
+            if M_ANAPHORA.search(vis) and not re.search(r"[`（(/]", vis):
+                f.append(Finding("M2", line, "疑似同构排比三连，修辞性的留两项；技术枚举忽略",
+                                 "C", advisory=True))
+            for m in M_LYRIC.finditer(vis):
+                f.append(Finding("M3", line, f"抽象名词配具体动词抒情：{m.group(0)}", "C"))
+            for pat in M_NOMINAL:
+                for m in pat.finditer(vis):
+                    f.append(Finding("M4", line, f"动词名词化：{m.group(0)}", "C"))
+            for m in M_HINT_COLON.finditer(vis):
+                f.append(Finding("M6", line, f"抬价式冒号：{m.group(0).strip()}", "C"))
+            for w in M_STOP:
+                if w in vis:
+                    f.append(Finding("M7", line, f"硬停词「{w}」，本身不携带信息", "C"))
+            for w in M_ROADSIGN:
+                if w.lower() in low:
+                    f.append(Finding("M8", line, f"洞察路标「{w}」，内容没变深", "C"))
+            for w in M_JARGON:
+                if w.lower() in low:
+                    f.append(Finding("M9", line, f"黑话「{w}」，换普通说法信息量不变", "C"))
+            # M5 只数行文里的破折号。列表项里的 `事项 —— 负责人 —— 期限` 是字段分隔，
+            # 表格里的 — 常表示「无 / 不适用」，都不是行文节奏问题
+            if b.kind in ("para", "quote"):
+                dash_hits += [line] * len(M_DASH_RE.findall(vis))
+            if not metaphor_seen and M_METAPHOR.search(vis):
+                metaphor_seen = True
+                f.append(Finding("M10", line, "借喻可能在包装抽象概念，写本义则忽略", "C", advisory=True))
+
+    # M5 破折号密度。按汉字数给预算，超出的逐处报。只统计正文段落，理由见上
+    han_all = len(CJK_RE.findall(prose_all))
+    dash_budget = max(3, han_all * M_DASH_PER_KILO // 1000)
+    for line in dash_hits[dash_budget:]:
+        f.append(Finding("M5", line,
+                         f"破折号超出预算：全文 {len(dash_hits)} 个，预算 {dash_budget}"
+                         f"（{M_DASH_PER_KILO}/千字）", "F"))
 
     # --- A 行动性
     for b in blocks:
@@ -1592,6 +1740,57 @@ class SelfTest(unittest.TestCase):
         hits = [fd for fd in audit(Doc(f"# T\n\n结论。\n\n## 细节\n\n{s}\n")) if fd.rule == "C3"]
         self.assertTrue(hits, "C3 未触发，检查测试串长度")
         self.assertIn("4 个逗号", hits[0].msg)
+
+    def test_m_group_catches_ai_tells(self):
+        cases = {
+            "M1": "这个功能不是为了省事，而是为了少出错。",
+            "M3": "时间会保管那些被忽略的细节。",
+            "M4": "我们对配置进行了优化，实现了性能的提升。",
+            "M6": "核心是：先改配置再重启。",
+            "M7": "说白了就是缓存没生效。",
+            "M8": "值得注意的是，这个配置只在启动时读一次。",
+            "M9": "这套方案能赋能业务团队，打通全链路闭环。",
+        }
+        for rule, sentence in cases.items():
+            d = Doc(f"# T\n\n结论。\n\n## 细节\n\n{sentence}\n")
+            self.assertIn(rule, {fd.rule for fd in audit(d)}, f"{rule} 没抓到：{sentence}")
+
+    def test_m_group_leaves_plain_writing_alone(self):
+        plain = ("# T\n\n缓存默认开启。\n\n## 细节\n\n"
+                 "关掉缓存要改配置并重启。重启会中断正在处理的请求，建议低峰期操作。\n"
+                 "参数有三个，分别是 ttl、maxEntries 和 strategy。\n")
+        hits = [fd.rule for fd in audit(Doc(plain)) if fd.rule.startswith("M") and not fd.advisory]
+        self.assertEqual(hits, [], f"误报：{hits}")
+
+    def test_m5_dash_is_density_not_ban(self):
+        # 少量破折号是标准中文标点，不该报
+        few = "# T\n\n结论。\n\n## 细节\n\n" + "这是一句普通的话，里面有个破折号 —— 就一个。\n" * 2
+        self.assertNotIn("M5", {fd.rule for fd in audit(Doc(few))})
+        # 密度过高才报
+        many = "# T\n\n结论。\n\n## 细节\n\n" + "短句 —— 又一个破折号。\n" * 12
+        self.assertIn("M5", {fd.rule for fd in audit(Doc(many))})
+
+    def test_m_group_ignores_quoted_patterns(self):
+        # 规则文档引用禁用句式当反面例子，不该被判成犯规
+        doc = ("# T\n\n结论。\n\n## 规则\n\n"
+               "不要写「不是 A 而是 B」这种翻案腔，也不要用「值得注意的是」当路标。\n"
+               "`核心是：` 这类抬价冒号同理。\n")
+        hits = [fd.rule for fd in audit(Doc(doc)) if fd.rule.startswith("M") and not fd.advisory]
+        self.assertEqual(hits, [], f"引用被当成使用：{hits}")
+        # 真的在用就要报
+        used = "# T\n\n结论。\n\n## 细节\n\n这个功能不是为了省事，而是为了少出错。\n"
+        self.assertIn("M1", {fd.rule for fd in audit(Doc(used))})
+
+    def test_m5_counts_prose_dashes_only(self):
+        # 列表项里做字段分隔的破折号不算行文节奏问题（doc-types 的会议记录模板就这么写）
+        checklist = "# T\n\n结论。\n\n## 待办\n\n" + "".join(
+            f"- [ ] 事项 {i} —— 负责人 —— 期限\n" for i in range(8))
+        self.assertNotIn("M5", {fd.rule for fd in audit(Doc(checklist))})
+
+    def test_m6_allows_field_label_colon(self):
+        # 「结论：」「参数：」是字段标签，不是抬价冒号
+        d = Doc("# T\n\n结论。\n\n## 细节\n\n结论：通过。参数：三个。\n")
+        self.assertNotIn("M6", {fd.rule for fd in audit(d)})
 
     def test_soft_wrap_is_not_a_sentence_boundary(self):
         # 按 75 字硬折行的中文段落：一句话不能被算成三句
