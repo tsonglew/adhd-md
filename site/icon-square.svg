@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="adhd-md">
+  <title>adhd-md</title>
+  <!--
+    满幅方版，专给 apple-touch-icon 用。
+    iOS 会自己加圆角遮罩，所以这里不能自带圆角，否则双重圆角。
+    圆角版在 favicon.svg。
+  -->
+  <style>
+    .bg   { fill: #f2efe7 }
+    .ink  { fill: #1b1a17 }
+    .mark { fill: #bf3b26 }
+  </style>
+
+  <rect class="bg" width="32" height="32"/>
+
+  <rect class="mark" x="5" y="6.5"  width="14" height="3.8" rx="1.3"/>
+  <rect class="ink"  x="5" y="14"   width="22" height="2.4" rx="1" opacity=".85"/>
+  <rect class="ink"  x="5" y="18.8" width="22" height="2.4" rx="1" opacity=".85"/>
+  <rect class="ink"  x="5" y="23.6" width="12" height="2.4" rx="1" opacity=".85"/>
+</svg>

@@ -28,7 +28,7 @@
 ## 装 + 跑（约 2 分钟）
 
 ```bash
-git clone <this-repo> && cd adhd-md
+git clone https://github.com/tsonglew/adhd-md && cd adhd-md
 bash scripts/install.sh
 ```
 
@@ -103,6 +103,7 @@ skill/                    唯一真源
   scripts/adhd_md.py      确定性工具层，纯标准库，零依赖
 dist/                     自包含单文件版（由脚本生成，勿手改）
 site/                     官网，GitHub Actions 部署到 Pages
+  og.html favicon.svg     预览图与图标的源模板（位图产物由 scripts/build-og.sh 渲染）
 docs/host-matrix.md       六个宿主的实证结论
 scripts/install.sh        探测 + 安装
 ```
