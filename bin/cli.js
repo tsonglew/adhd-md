@@ -18,21 +18,36 @@ const PKG = require(path.join(ROOT, "package.json"));
 
 const TOOL_CMDS = ["audit", "fmt", "verify", "report", "init", "selftest"];
 
+/**
+ * 帮助里该印哪种调用方式。
+ *
+ * 这个包不发布到 npm registry，所以不能印 `npx adhd-md` —— 照着敲会 404。
+ * 现实里只有两种跑法：npx 从 GitHub 拉，或者克隆下来直接 node 跑。
+ */
+function invocation() {
+  const p = process.argv[1] || "";
+  if (p.includes("_npx")) return "npx github:tsonglew/adhd-md";
+  if (p.includes("node_modules")) return "npx adhd-md";
+  return "node bin/cli.js";
+}
+
+const X = invocation();
+
 const USAGE = `adhd-md ${PKG.version} — 把 Markdown 改造成 ADHD 友好、可扫读的版本
 
 安装到 agent 宿主
-  npx adhd-md                        装到本机所有支持 SKILL.md 的宿主
-  npx adhd-md install --project      只装到当前仓库
-  npx adhd-md install --uninstall    卸载
-  npx adhd-md install --dry-run      只打印会做什么
+  ${X}                        装到本机所有支持 SKILL.md 的宿主
+  ${X} install --project      只装到当前仓库
+  ${X} install --uninstall    卸载
+  ${X} install --dry-run      只打印会做什么
 
 直接用工具层
-  npx adhd-md audit  文档.md                    审计并打分
-  npx adhd-md fmt    文档.md --write            确定性格式修复
-  npx adhd-md verify 原文.md 新文.md --scope=format   无损校验
-  npx adhd-md report 原文.md 新文.md            改前改后对比
-  npx adhd-md init --type=readme                生成文档骨架
-  npx adhd-md selftest                          自检
+  ${X} audit  文档.md                          审计并打分
+  ${X} fmt    文档.md --write                  确定性格式修复
+  ${X} verify 原文.md 新文.md --scope=format   无损校验
+  ${X} report 原文.md 新文.md                  改前改后对比
+  ${X} init --type=readme                      生成文档骨架
+  ${X} selftest                                自检
 
 装好之后，在任意 agent 里直接说人话即可：
   「把 README.md 改成 ADHD 友好的，只改格式」
