@@ -122,7 +122,7 @@ FILLER = [
     "basically", "actually", "needless to say",
 ]
 
-# ── M 组：模型腔（去 AI 味）
+# ── M 组：去 AI 味
 #
 # 规则集受 human-writing skill（MIT）的中文写作约定启发，但**只保留在技术文档里
 # 确实增加阅读成本的部分**，并且做了两处放宽：
@@ -170,17 +170,17 @@ M_NOMINAL = [
     re.compile(r"具有[^。，！？\n]{0,10}(?:意义|价值)"),
 ]
 
-# M6 抬价式冒号：`核心是：` 这类引导语先宣布重要性再给货，等于把一句话说两遍。
+# M6 预告式冒号：`核心是：` 这类引导语先宣布重要性再给货，等于把一句话说两遍。
 # 字段标签冒号（`参数：` `结论：` `例外：`）不算 —— 技术文档需要它定位
 M_HINT_COLON = re.compile(
     r"(一句话(?:总结|说)?|核心(?:是|在于)|关键(?:是|在于)|"
     r"简单说|划重点|敲重点|真相(?:是|只有一个)?)\s*[：:]"
 )
 
-# M7 硬停词：宣布「我要说重点了」，本身不携带信息
+# M7 开场空话：宣布「我要说重点了」，本身不携带信息
 M_STOP = ["说白了", "说穿了", "先说结论", "不吹不黑", "客观来说"]
 
-# M8 洞察路标：用词announce深度，实际内容没变深
+# M8 装深刻：用词承诺深度，实际内容没变深
 M_ROADSIGN = [
     "更微妙的是", "还有一层", "只说对了一半", "值得注意的是", "需要指出的是",
     "从某种意义上说", "归根结底", "不可否认", "更深层次",
@@ -668,7 +668,7 @@ def audit(doc, level=2, emoji="none"):
                     f.append(Finding("C8", b.start + off, "句中软换行，中文渲染会多出一个空格", "F"))
                     break
 
-    # --- M 组 模型腔（去 AI 味）
+    # --- M 组 去 AI 味
     dash_hits = []
     metaphor_seen = False
     for b in blocks:
@@ -691,13 +691,13 @@ def audit(doc, level=2, emoji="none"):
                 for m in pat.finditer(vis):
                     f.append(Finding("M4", line, f"动词名词化：{m.group(0)}", "C"))
             for m in M_HINT_COLON.finditer(vis):
-                f.append(Finding("M6", line, f"抬价式冒号：{m.group(0).strip()}", "C"))
+                f.append(Finding("M6", line, f"预告式冒号：{m.group(0).strip()}", "C"))
             for w in M_STOP:
                 if w in vis:
-                    f.append(Finding("M7", line, f"硬停词「{w}」，本身不携带信息", "C"))
+                    f.append(Finding("M7", line, f"开场空话「{w}」，本身不携带信息", "C"))
             for w in M_ROADSIGN:
                 if w.lower() in low:
-                    f.append(Finding("M8", line, f"洞察路标「{w}」，内容没变深", "C"))
+                    f.append(Finding("M8", line, f"「{w}」这类装深刻的话，内容没变深", "C"))
             for w in M_JARGON:
                 if w.lower() in low:
                     f.append(Finding("M9", line, f"黑话「{w}」，换普通说法信息量不变", "C"))
@@ -1789,7 +1789,7 @@ class SelfTest(unittest.TestCase):
         # 规则文档引用禁用句式当反面例子，不该被判成犯规
         doc = ("# T\n\n结论。\n\n## 规则\n\n"
                "不要写「不是 A 而是 B」这种翻案腔，也不要用「值得注意的是」当路标。\n"
-               "`核心是：` 这类抬价冒号同理。\n")
+               "`核心是：` 这类预告式冒号同理。\n")
         hits = [fd.rule for fd in audit(Doc(doc)) if fd.rule.startswith("M") and not fd.advisory]
         self.assertEqual(hits, [], f"引用被当成使用：{hits}")
         # 真的在用就要报
@@ -1803,7 +1803,7 @@ class SelfTest(unittest.TestCase):
         self.assertNotIn("M5", {fd.rule for fd in audit(Doc(checklist))})
 
     def test_m6_allows_field_label_colon(self):
-        # 「结论：」「参数：」是字段标签，不是抬价冒号
+        # 「结论：」「参数：」是字段标签，不是预告式冒号
         d = Doc("# T\n\n结论。\n\n## 细节\n\n结论：通过。参数：三个。\n")
         self.assertNotIn("M6", {fd.rule for fd in audit(d)})
 
