@@ -129,7 +129,7 @@ const zh = {
           "<code>light</code> 只做零风险项，适合规范与 API 文档。<code>standard</code> 拆段、列表化、改标题、写 TL;DR。<code>deep</code> 全量重构骨架，适合会议记录和乱笔记。",
         cant: "怎么用",
         cantText: "直接说人话：「把 README 改成 ADHD 友好的，只改格式」",
-        seal: "71 条规则按轴与档过滤",
+        seal: "75 条规则按轴与档过滤",
       },
     ],
   },
@@ -144,6 +144,8 @@ const zh = {
       { a: "完成了对流程的优化", b: "动作藏进名词，要多解一层才知道谁做了什么" },
       { a: "赋能、闭环、全链路", b: "换成普通说法信息量不变，但读者要先翻译" },
       { a: "时间会保管细节", b: "没有主语能负责，读者无法核对真假" },
+      { a: "大量测试、各种场景", b: "没有数字的量词，等于没给信息" },
+      { a: "显著提升、彻底解决", b: "不写快了多少，读者无法核对" },
     ],
     grid1: {
       h: "破折号不硬禁，看密度",
@@ -167,7 +169,7 @@ const zh = {
     },
     grid2: {
       h: "分数不虚报",
-      t: "71 条规则里 30 条脚本可判定，31 条标记为需模型判断。<code>audit</code> 输出的叫「脚本分」，不给「优」档。脚本分低说明一定有问题，脚本分高不说明没问题。",
+      t: "75 条规则里 44 条脚本可判定（42 条计分、2 条提示），31 条标记为需模型判断。<code>audit</code> 输出的叫「脚本分」，不给「优」档。脚本分低说明一定有问题，脚本分高不说明没问题。",
     },
   },
   hosts: {
@@ -336,7 +338,7 @@ const en: typeof zh = {
           "<code>light</code> does zero-risk fixes only, for specs and API docs. <code>standard</code> splits, lists, retitles, and writes a TL;DR. <code>deep</code> rebuilds the whole skeleton, for meeting notes and messy drafts.",
         cant: "How to use it",
         cantText: "Just say it in plain words: “Make README.md ADHD-friendly, format only”",
-        seal: "71 rules filtered by axis and level",
+        seal: "75 rules filtered by axis and level",
       },
     ],
   },
@@ -351,6 +353,8 @@ const en: typeof zh = {
       { a: "Completed an optimization of…", b: "The verb hides inside a noun. One extra parse to find out who did what" },
       { a: "leverage, synergy, end-to-end", b: "Plain words carry the same information, minus the translation step" },
       { a: "Time will keep the details", b: "No subject to hold accountable. Nothing to verify" },
+      { a: "extensive tests, various scenarios", b: "Quantities without numbers carry no information" },
+      { a: "significantly better, fully solves", b: "No number, nothing to verify" },
     ],
     grid1: {
       h: "Em dashes aren't banned. Their density is.",
@@ -374,7 +378,7 @@ const en: typeof zh = {
     },
     grid2: {
       h: "Scores don't inflate themselves",
-      t: "Of the 71 rules, 30 are script-checkable and 31 need model judgment. <code>audit</code> prints a “script score” and never a grade. A low script score always means problems; a high one doesn't always mean none.",
+      t: "Of the 75 rules, 44 are script-checkable (42 score, 2 advisory) and 31 need model judgment. <code>audit</code> prints a “script score” and never a grade. A low script score always means problems; a high one doesn't always mean none.",
     },
   },
   hosts: {

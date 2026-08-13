@@ -172,7 +172,7 @@ npm run build    # 构建到 site/dist/，Pages workflow 部署的就是它
 
 ## 深入
 
-- [规则库](skill/references/rules.md)：71 条规则，带轴/档/阈值。去 AI 味的 M 组十条也在里面，每条写明它是哪一种阅读成本
+- [规则库](skill/references/rules.md)：75 条规则，带轴/档/阈值。去 AI 味的 M 组十条也在里面，每条写明它是哪一种阅读成本
 - [反模式](skill/references/antipatterns.md)：八种优化过头，附自检清单
 - [示例语料](skill/references/examples/README.md)：4 组 before/after，含「故意没改什么」
 - [评分细则](skill/references/rubric.md)

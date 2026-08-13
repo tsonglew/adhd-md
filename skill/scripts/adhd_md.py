@@ -96,6 +96,10 @@ DEDUCT = {
     "M7": ("human", 8, 24),
     "M8": ("human", 5, 25),
     "M9": ("human", 8, 32),
+    "M11": ("human", 3, 18),
+    "M12": ("human", 6, 24),
+    "M13": ("human", 8, 32),
+    "M14": ("human", 5, 20),
 }
 
 # 全局扣分（X 组），最多 20
@@ -203,6 +207,36 @@ M_DASH_PER_KILO = 8
 
 # M10 借喻包装抽象概念。误报率高（`git 仓库` 是本义），只提示不扣分
 M_METAPHOR = re.compile(r"(仓库|抽屉|温度|坍塌|浪潮|钥匙|底座|土壤|齿轮|坐标系|容器)")
+
+# ── M11-M14 中文广告腔。借鉴 academic-humanizer 的 Layer 2（MIT），
+# 按技术文档改造：它管学术论文的 prove/novelty，我们管中文文档的
+# 「显著提升 / 大量 / 此外连续 / 随着…从而…」
+
+# M11 空泛量词与模糊量词：没有数字的量词和程度副词，量化或删。
+# 「大量测试」「各种场景」「性能比较稳定」→ 换成数字和边界
+M11_VAGUE = [
+    re.compile(r"(?:大量|各种|众多|各类|一系列|多样的)[^。！？\n]{0,14}"),
+    re.compile(r"(?:比较|相对|较为|有点|稍微|相当|颇为)(?:好|快|稳|稳定|简单|复杂|高|低|大|小|明显|容易|难)"),
+]
+
+# M12 连续连接词开头：一个段落里连续两句以「此外 / 而且 / 同时 / 另外」开头，
+# 逻辑不靠连接词硬缝，靠句子本身
+M12_OPENER = re.compile(
+    r"[。！？](此外|而且|同时|另外|除此之外|另一方面)[^。！？]{1,40}[。！？](?:此外|而且|同时|另外|除此之外|另一方面)"
+)
+
+# M13 广告宣称：没有数字支撑的「显著提升 / 大幅降低 / 彻底解决 / 业界首创」。
+# 句子里 10 字内带数字（显著提升 40%）时不报
+M13_CLAIM = re.compile(
+    r"(?:显著|大幅|明显|极大)(?:提升|提高|优化|改善|增强|降低|减少|节省|加快)|"
+    r"彻底(?:解决|修复|根治)|完美(?:解决|支持|适配)|"
+    r"(?:业界|国内|全球)(?:领先|首创|一流)|(?:首个|首创|最强|最优|革命性|颠覆)"
+)
+
+# M14 从句堆叠：单句 ≥2 个逻辑连接词（随着…，从而…，进而…），
+# 和 C3 一逗到底是亲戚，但抓的是「连接词链」而不是逗号数量
+M14_CHAIN = re.compile(r"(?:随着|从而|进而|与此同时|在此基础上|由此|使得|以便)")
+
 
 # 引用一个句式不等于使用它。规则文档里写「不是 A 而是 B」当反面例子，
 # 不该被判成犯了这条规则。M 组扫描前把「」『』里的内容挖掉
@@ -469,7 +503,8 @@ AXIS = {
     "H1": "C", "H2": "C", "W1m": "C", "W1x": "C", "W4": "C", "W6": "C",
     "C3": "C", "C5": "C", "N2": "C", "N6": "C", "C7": "C", "W2": "C",
     "M1": "C", "M2": "C", "M3": "C", "M4": "C", "M6": "C", "M7": "C",
-    "M8": "C", "M9": "C", "M10": "C",
+    "M8": "C", "M9": "C", "M10": "C", "M11": "C", "M12": "C",
+    "M13": "C", "M14": "C",
     "M5": "F",
 }
 
@@ -716,6 +751,34 @@ def audit(doc, level=2, emoji="none"):
         f.append(Finding("M5", line,
                          f"破折号超出预算：全文 {len(dash_hits)} 个，预算 {dash_budget}"
                          f"（{M_DASH_PER_KILO}/千字）", "F"))
+
+    # M11-M14 中文广告腔。逐句扫正文段落；行号落在句子的真实位置
+    for b in blocks:
+        if b.kind not in ("para", "quote"):
+            continue
+        flat = re.sub(r"\n+", "", prose_of(b))
+        for sent in split_sentences(flat, lang):
+            if lang != "zh":
+                continue
+            for pat in M11_VAGUE:
+                for m in pat.finditer(sent):
+                    f.append(Finding("M11", b.start, f"空泛量词/模糊量词「{m.group(0)[:18]}」，换成数字或删", "C"))
+            for m in M13_CLAIM.finditer(sent):
+                # 句内 10 字内带数字 → 有依据，放行
+                span = sent[max(0, m.start() - 10): m.end() + 10]
+                if not re.search(r"\d", span):
+                    f.append(Finding("M13", b.start, f"广告宣称「{m.group(0)}」没有数字支撑，换成具体数字", "C"))
+            chains = M14_CHAIN.findall(sent)
+            if len(chains) >= 2:
+                f.append(Finding("M14", b.start, f"从句堆叠：{len(chains)} 个逻辑连接词（{'/'.join(set(chains))}），拆成短句", "C"))
+
+    # M12 连续连接词开头（跨行扫）
+    for b in blocks:
+        if b.kind != "para":
+            continue
+        flat = re.sub(r"\n+", "", prose_of(b))
+        if M12_OPENER.search(flat):
+            f.append(Finding("M12", b.start, "连续句子以「此外/而且/同时/另外」开头，让逻辑自己说", "C"))
 
     # --- A 行动性
     for b in blocks:
@@ -1769,6 +1832,30 @@ class SelfTest(unittest.TestCase):
         for rule, sentence in cases.items():
             d = Doc(f"# T\n\n结论。\n\n## 细节\n\n{sentence}\n")
             self.assertIn(rule, {fd.rule for fd in audit(d)}, f"{rule} 没抓到：{sentence}")
+
+    def test_m11_14_catch_chinese_advertising(self):
+        # 中文广告腔：空泛量词、连续连接词、无数字宣称、从句堆叠
+        cases = {
+            "M11": "我们进行了大量的实验测试，验证了方案的有效性。",
+            "M12": "方案A更快。此外它更简单。此外它还能扩展。",
+            "M13": "该方案显著提升了整体性能。",
+            "M14": "随着数据量增长，从而需要更多算力，进而推高成本。",
+        }
+        for rule, sentence in cases.items():
+            d = Doc(f"# T\n\n结论。\n\n## 细节\n\n{sentence}\n")
+            self.assertIn(rule, {fd.rule for fd in audit(d)}, f"{rule} 没抓到：{sentence}")
+
+    def test_m13_allows_number_backed_claims(self):
+        d = Doc("# T\n\n结论。\n\n## 细节\n\n处理时间显著提升 40%。\n")
+        self.assertNotIn("M13", {fd.rule for fd in audit(d)})
+
+    def test_m11_12_14_no_false_positive_on_plain_chinese(self):
+        plain = ("# T\n\n结论。\n\n## 细节\n\n"
+                 "缓存默认开启，关掉要改配置并重启。重启会中断正在处理的请求，建议低峰期操作。\n"
+                 "参数有三个：ttl、maxEntries 和 strategy。相对上一版，默认值没变。\n"
+                 "处理结果通过 API 返回，同时写入日志。\n")
+        hits = [fd.rule for fd in audit(Doc(plain)) if fd.rule in ("M11", "M12", "M13", "M14")]
+        self.assertEqual(hits, [], f"误报：{hits}")
 
     def test_m_group_leaves_plain_writing_alone(self):
         plain = ("# T\n\n缓存默认开启。\n\n## 细节\n\n"
