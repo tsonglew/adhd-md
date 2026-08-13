@@ -4,6 +4,9 @@
 
 同一份 skill 在 Claude Code、Codex、Grok Build、Gemini CLI、Cursor、opencode 里都能用。
 
+<img width="962" height="741" alt="image" src="https://github.com/user-attachments/assets/da16f89a-f732-471c-9bfc-509714e05a66" />
+
+
 [看官网的 before/after 对照](https://tsonglew.github.io/adhd-md/)
 
 - [能干什么](#能干什么)
