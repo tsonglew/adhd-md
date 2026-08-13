@@ -41,4 +41,4 @@ python3 scripts/build_standalone.py
 
 ## 官网（site/）
 
-Astro 项目。改了页面或组件之后跑 `cd site && npm run build` 确认能过，产物在 `site/dist/`（已 gitignore，不提交）。设计源模板（`site/og.html`、`site/icon-square.svg`）改动后重跑 `scripts/build-og.sh`，位图产物写进 `site/public/`。`site/public/install.sh` 由 Pages workflow 从 `scripts/install.sh` 复制，不手改。
+Astro 项目。文案统一在 `site/src/i18n/ui.ts`（中英两套，改文案改这里，不要直接改组件里的字）。改了页面或组件之后跑 `cd site && npm run build` 确认能过，产物在 `site/dist/`（已 gitignore，不提交）。设计源模板（`site/og.html`、`site/icon-square.svg`）改动后重跑 `scripts/build-og.sh`，位图产物写进 `site/public/`。`site/public/install.sh` 由 Pages workflow 从 `scripts/install.sh` 复制，不手改。

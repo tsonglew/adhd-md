@@ -1,28 +1,33 @@
+---
+import type { UI } from "../i18n/ui";
+interface Props { t: UI }
+const { t } = Astro.props;
+---
+
 <section class="band" id="problem">
   <div class="wrap sec">
     <span class="num">01</span>
     <div class="sec-body">
-      <h2>读不下去的文档，问题多半在排版</h2>
+      <h2>{t.problem.h2}</h2>
 
       <p class="sub">
-        同一段信息，一坨读不下去，切开就能读。
+        {t.problem.sub}
       </p>
 
       <div class="wall-demo">
         <div class="wall">
-          <p>md-cache 是一个 Markdown 渲染缓存中间件，把渲染结果按内容哈希缓存到本地磁盘，命中时直接返回，避免重复渲染。它需要 Node 18 以上版本，依赖只有一个 lru-cache。装好之后在渲染管线里包一层 withCache 就行。缓存目录默认是 .cache/md，可以用 MD_CACHE_DIR 环境变量改。默认最大条目数是 500，用 maxEntries 选项改。默认 TTL 是 7 天，用 ttl 选项改，单位是毫秒。设成 0 表示永不过期，但磁盘会一直涨，生产环境不建议。</p>
+          <p>{t.problem.wall}</p>
           <span class="proof-mark" aria-hidden="true">
             <span class="proof-line"></span>
-            <span class="proof-note">七件事挤在一段里<br>结论还埋在最后</span>
+            <span class="proof-note">{t.problem.proof[0]}<br>{t.problem.proof[1]}</span>
           </span>
         </div>
       </div>
 
       <ul class="cost">
-        <li><span class="k">回跳</span>「如上所述」要求把眼睛移回去、重新定位、再回来。工作记忆一次强制清空重载</li>
-        <li><span class="k">埋结论</span>读者在前 15 行决定去留。结论在第 40 行等于没写</li>
-        <li><span class="k">找不到下一步</span>知道原理但不知道该敲什么，启动摩擦直接变成放弃</li>
-        <li><span class="k">AI 味</span>「不是 A 而是 B」要读者先装载一个自己本来没有的误解，再卸掉</li>
+        {t.problem.cost.map((item) => (
+          <li><span class="k">{item.k}</span>{item.t}</li>
+        ))}
       </ul>
     </div>
   </div>

@@ -8,15 +8,18 @@ import Human from "../components/Human.astro";
 import Lossless from "../components/Lossless.astro";
 import Hosts from "../components/Hosts.astro";
 import Start from "../components/Start.astro";
+import { ui } from "../i18n/ui";
+
+const t = ui.zh;
 ---
 
-<Layout>
-  <Hero />
-  <Problem />
-  <Compare />
-  <Scope />
-  <Human />
-  <Lossless />
-  <Hosts />
-  <Start />
+<Layout t={t}>
+  <Hero t={t} />
+  <Problem t={t} />
+  <Compare t={t} />
+  <Scope t={t} />
+  <Human t={t} />
+  <Lossless t={t} />
+  <Hosts t={t} />
+  <Start t={t} />
 </Layout>

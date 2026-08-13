@@ -1,59 +1,60 @@
+---
+import type { UI } from "../i18n/ui";
+interface Props { t: UI }
+const { t } = Astro.props;
+---
+
 <section class="band alt" id="start">
   <div class="wrap sec">
     <span class="num">07</span>
     <div class="sec-body">
-      <h2>两分钟装好</h2>
+      <h2>{t.start.h2}</h2>
 
       <ol class="steps">
         <li>
-          <p>装。三种方式任选一种，脚本会探测本机装了哪些 agent，只往存在的宿主里放。</p>
-          <p class="way">有 Node</p>
+          <p>{t.start.s1}</p>
+          <p class="way">{t.start.wayNode}</p>
           <div class="cmd sm">
             <code id="c1">npx github:tsonglew/adhd-md</code>
-            <button type="button" class="copy" data-copy="#c1" aria-label="复制">复制</button>
+            <button type="button" class="copy" data-copy="#c1" aria-label={t.lang === "en" ? "Copy" : "复制"}>{t.lang === "en" ? "Copy" : "复制"}</button>
           </div>
-          <p class="way">没 Node</p>
+          <p class="way">{t.start.wayNoNode}</p>
           <div class="cmd sm">
             <code id="c1b">curl -fsSL https://tsonglew.github.io/adhd-md/install.sh | bash</code>
-            <button type="button" class="copy" data-copy="#c1b" aria-label="复制">复制</button>
+            <button type="button" class="copy" data-copy="#c1b" aria-label={t.lang === "en" ? "Copy" : "复制"}>{t.lang === "en" ? "Copy" : "复制"}</button>
           </div>
-          <p class="way">想改源码</p>
+          <p class="way">{t.start.waySource}</p>
           <div class="cmd sm">
             <code id="c1c">git clone https://github.com/tsonglew/adhd-md &amp;&amp; cd adhd-md
 bash scripts/install.sh</code>
-            <button type="button" class="copy" data-copy="#c1c" aria-label="复制">复制</button>
+            <button type="button" class="copy" data-copy="#c1c" aria-label={t.lang === "en" ? "Copy" : "复制"}>{t.lang === "en" ? "Copy" : "复制"}</button>
           </div>
-          <p class="note-sm">克隆装的是软链，<code>git pull</code> 即更新。npx 与 curl 装的是复制，重跑一次即更新。</p>
+          <p class="note-sm" set:html={t.start.noteSmHtml} />
         </li>
         <li>
-          <p>先审一篇看看分数和问题清单。</p>
+          <p>{t.start.s2}</p>
           <div class="cmd sm">
-            <code id="c2">npx github:tsonglew/adhd-md audit 你的文档.md</code>
-            <button type="button" class="copy" data-copy="#c2" aria-label="复制">复制</button>
+            <code id="c2">npx github:tsonglew/adhd-md audit your-doc.md</code>
+            <button type="button" class="copy" data-copy="#c2" aria-label={t.lang === "en" ? "Copy" : "复制"}>{t.lang === "en" ? "Copy" : "复制"}</button>
           </div>
         </li>
         <li>
-          <p>然后在任意 agent 里直接说人话。</p>
-          <blockquote>把 README.md 改成 ADHD 友好的，只改格式</blockquote>
+          <p>{t.start.s3}</p>
+          <blockquote>{t.start.quote}</blockquote>
         </li>
       </ol>
 
       <div class="grid-2 tail">
         <div>
-          <h3>接 CI</h3>
+          <h3>{t.start.ciH}</h3>
           <div class="cmd sm">
-            <code id="c3">adhd_md.py fmt --check docs/*.md
-adhd_md.py audit --min-score 70 docs/*.md</code>
-            <button type="button" class="copy" data-copy="#c3" aria-label="复制">复制</button>
+            <code id="c3">{t.start.ciCmd}</code>
+            <button type="button" class="copy" data-copy="#c3" aria-label={t.lang === "en" ? "Copy" : "复制"}>{t.lang === "en" ? "Copy" : "复制"}</button>
           </div>
         </div>
         <div>
-          <h3>没有命令执行能力的环境</h3>
-          <p>
-            网页版 LLM 直接粘贴自包含单文件
-            <a href="https://github.com/tsonglew/adhd-md/blob/main/dist/adhd-md.standalone.md">adhd-md.standalone.md</a>
-            ，30 KB，规则全带。降级后没有机器校验，报告里必须写明。
-          </p>
+          <h3>{t.start.noShellH}</h3>
+          <p set:html={t.start.noShellHtml} />
         </div>
       </div>
     </div>

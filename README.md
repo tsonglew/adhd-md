@@ -162,9 +162,11 @@ python3 skill/scripts/adhd_md.py audit --min-score 70 docs/*.md
 
 ```bash
 cd site && npm install
-npm run dev      # 本地预览
+npm run dev      # 本地预览（中文在 /，英文在 /en/）
 npm run build    # 构建到 site/dist/，Pages workflow 部署的就是它
 ```
+
+站点文案在 `site/src/i18n/ui.ts`，中英两套。加第三种语言就是加一个字典对象 + 一个 `src/pages/<lang>/index.astro`。
 
 改 `og.html` 或 `icon-square.svg` 之后重跑 `bash scripts/build-og.sh`，位图产物写进 `site/public/`。
 

@@ -32,6 +32,7 @@ shot() { # 视口 输出 [url]
 
 echo "渲染："
 shot 1200x630 "$SITE/public/og.png"                og.html
+shot 1200x630 "$SITE/public/og-en.png"             og-en.html
 shot 180x180  "$SITE/public/apple-touch-icon.png"  icon-square.svg
 shot 32x32    "$SITE/public/favicon-32.png"        public/favicon.svg
 

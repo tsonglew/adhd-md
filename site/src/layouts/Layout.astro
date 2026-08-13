@@ -1,15 +1,26 @@
 ---
 import "../styles/global.css";
+import type { UI } from "../i18n/ui";
+
+interface Props {
+  t: UI;
+}
+const { t } = Astro.props;
+
+const origin = "https://tsonglew.github.io";
+const otherAbs = origin + t.otherUrl;
 ---
 
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang={t.lang}>
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>adhd-md — 把 Markdown 改造成读得下去的样子</title>
-  <meta name="description" content="一份跨 agent 通用的 skill：把 Markdown 改造成 ADHD 友好、可扫读的版本。可只改格式、只改内容或两者兼改。只重排信息，绝不删信息。格式档的改动可被脚本证明无损。">
-  <link rel="canonical" href="https://tsonglew.github.io/adhd-md/">
+  <title>{t.meta.title}</title>
+  <meta name="description" content={t.meta.description}>
+  <link rel="canonical" href={t.meta.canonical}>
+  <link rel="alternate" hreflang={t.lang === "en" ? "en" : "zh-CN"} href={t.meta.canonical}>
+  <link rel="alternate" hreflang={t.lang === "en" ? "zh-CN" : "en"} href={otherAbs}>
 
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
@@ -18,40 +29,41 @@ import "../styles/global.css";
   <meta name="theme-color" content="#15140f" media="(prefers-color-scheme: dark)">
 
   <meta property="og:site_name" content="adhd-md">
-  <meta property="og:locale" content="zh_CN">
-  <meta property="og:title" content="adhd-md — 把 Markdown 改造成读得下去的样子">
-  <meta property="og:description" content="一份 skill 通用于 Claude Code、Codex、Grok Build、Gemini CLI、Cursor、opencode。可只改格式、只改内容或两者兼改。只重排信息，绝不删信息。">
+  <meta property="og:locale" content={t.lang === "en" ? "en_US" : "zh_CN"}>
+  <meta property="og:title" content={t.meta.ogTitle}>
+  <meta property="og:description" content={t.meta.ogDescription}>
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://tsonglew.github.io/adhd-md/">
-  <meta property="og:image" content="https://tsonglew.github.io/adhd-md/og.png">
+  <meta property="og:url" content={t.meta.canonical}>
+  <meta property="og:image" content={t.meta.ogImage}>
   <meta property="og:image:type" content="image/png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="adhd-md：把 Markdown 改造成读得下去的样子。只重排信息，绝不删信息。脚本分 87.8 到 100，正文一个词都没改。">
+  <meta property="og:image:alt" content={t.meta.ogImageAlt}>
 
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="adhd-md — 把 Markdown 改造成读得下去的样子">
-  <meta name="twitter:description" content="一份 skill 通用于六个 agent。只重排信息，绝不删信息。格式档的改动可被脚本证明无损。">
-  <meta name="twitter:image" content="https://tsonglew.github.io/adhd-md/og.png">
-  <meta name="twitter:image:alt" content="adhd-md 预览图：脚本分 87.8 到 100，正文一个词都没改。">
+  <meta name="twitter:title" content={t.meta.twitterTitle}>
+  <meta name="twitter:description" content={t.meta.twitterDescription}>
+  <meta name="twitter:image" content={t.meta.ogImage}>
+  <meta name="twitter:image:alt" content={t.meta.twitterImageAlt}>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Noto+Sans+SC:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 </head>
 <body>
-  <a class="skip" href="#main">跳到正文</a>
+  <a class="skip" href="#main">{t.skip}</a>
 
   <header class="masthead">
     <div class="wrap masthead-in">
       <span class="wordmark">adhd-md</span>
-      <nav aria-label="站内导航">
-        <a href="#compare">对照</a>
-        <a href="#scope">三种改法</a>
-        <a href="#human">去 AI 味</a>
-        <a href="#lossless">无损</a>
-        <a href="#hosts">宿主</a>
+      <nav aria-label={t.lang === "en" ? "Site navigation" : "站内导航"}>
+        <a href="#compare">{t.nav[0]}</a>
+        <a href="#scope">{t.nav[1]}</a>
+        <a href="#human">{t.nav[2]}</a>
+        <a href="#lossless">{t.nav[3]}</a>
+        <a href="#hosts">{t.nav[4]}</a>
         <a class="ext" href="https://github.com/tsonglew/adhd-md">GitHub</a>
+        <a class="lang-switch" href={t.langSwitch.href} hreflang={t.lang === "en" ? "zh-CN" : "en"}>{t.langSwitch.label}</a>
       </nav>
     </div>
   </header>
@@ -64,14 +76,14 @@ import "../styles/global.css";
     <div class="wrap foot-in">
       <div>
         <span class="wordmark sm">adhd-md</span>
-        <p class="small">MIT · 纯标准库 Python，零依赖</p>
+        <p class="small">{t.footer.tagline}</p>
       </div>
-      <nav aria-label="相关链接">
-        <a href="https://github.com/tsonglew/adhd-md">源码</a>
-        <a href="https://github.com/tsonglew/adhd-md/blob/main/skill/references/rules.md">规则库</a>
-        <a href="https://github.com/tsonglew/adhd-md/blob/main/skill/references/antipatterns.md">反模式</a>
-        <a href="https://github.com/tsonglew/adhd-md/blob/main/docs/host-matrix.md">宿主矩阵</a>
-        <a href="https://github.com/tsonglew/adhd-md/blob/main/docs/eval.md">验证结论</a>
+      <nav aria-label={t.lang === "en" ? "Related links" : "相关链接"}>
+        <a href="https://github.com/tsonglew/adhd-md">{t.footer.links[0]}</a>
+        <a href="https://github.com/tsonglew/adhd-md/blob/main/skill/references/rules.md">{t.footer.links[1]}</a>
+        <a href="https://github.com/tsonglew/adhd-md/blob/main/skill/references/antipatterns.md">{t.footer.links[2]}</a>
+        <a href="https://github.com/tsonglew/adhd-md/blob/main/docs/host-matrix.md">{t.footer.links[3]}</a>
+        <a href="https://github.com/tsonglew/adhd-md/blob/main/docs/eval.md">{t.footer.links[4]}</a>
       </nav>
     </div>
   </footer>

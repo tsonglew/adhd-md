@@ -1,28 +1,33 @@
+---
+import type { UI } from "../i18n/ui";
+interface Props { t: UI }
+const { t } = Astro.props;
+---
+
 <section class="hero wrap">
-  <p class="eyebrow reveal" style="--d:0ms">Agent Skill · 六个宿主通用</p>
+  <p class="eyebrow reveal" style="--d:0ms">{t.hero.eyebrow}</p>
 
   <h1 class="reveal" style="--d:60ms">
-    把 Markdown 改造成<br>
-    <em>读得下去</em>的样子
+    {t.hero.h1a}<br>
+    <em>{t.hero.h1b}</em>{t.hero.h1c}
   </h1>
 
   <p class="lede reveal" style="--d:140ms">
-    结论前置、段落切碎、动作明确。
-    在 Claude Code、Codex、Grok Build、Gemini CLI、Cursor、opencode 里都能用同一份 skill。
+    {t.hero.lede}
   </p>
 
   <p class="creed reveal" style="--d:220ms">
-    <span class="mark-rule">只重排信息，绝不删信息。</span>
-    篇幅太长就折叠或移到附录。格式档的改动可被脚本证明无损。
+    <span class="mark-rule">{t.hero.creed1}</span>
+    {t.hero.creed2}
   </p>
 
   <div class="cmd reveal" style="--d:300ms">
     <code id="install-cmd">npx github:tsonglew/adhd-md</code>
-    <button type="button" class="copy" data-copy="#install-cmd" aria-label="复制安装命令">复制</button>
+    <button type="button" class="copy" data-copy="#install-cmd" aria-label={t.lang === "en" ? "Copy install command" : "复制安装命令"}>{t.lang === "en" ? "Copy" : "复制"}</button>
   </div>
 
   <p class="hero-links reveal" style="--d:360ms">
-    <a class="btn" href="https://github.com/tsonglew/adhd-md">看源码</a>
-    <a class="btn ghost" href="#compare">看对照</a>
+    <a class="btn" href="https://github.com/tsonglew/adhd-md">{t.hero.buttons[0]}</a>
+    <a class="btn ghost" href="#compare">{t.hero.buttons[1]}</a>
   </p>
 </section>

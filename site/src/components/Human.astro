@@ -1,40 +1,35 @@
+---
+import type { UI } from "../i18n/ui";
+interface Props { t: UI }
+const { t } = Astro.props;
+---
+
 <section class="band" id="human">
   <div class="wrap sec">
     <span class="num">04</span>
     <div class="sec-body">
-      <h2>顺手把 AI 味洗掉</h2>
+      <h2>{t.human.h2}</h2>
       <p class="sub">
-        模型写出来的中文有一些固定套路。每一种都要读者多花一次注意力，所以归这个 skill 管。
+        {t.human.sub}
       </p>
 
       <table class="tax">
-        <thead><tr><th>套路</th><th>读者多花的注意力</th></tr></thead>
+        <thead><tr><th>{t.human.taxHead[0]}</th><th>{t.human.taxHead[1]}</th></tr></thead>
         <tbody>
-          <tr><td>不是 A 而是 B</td><td>先装载一个自己本来没有的误解，再卸掉。白付一次工作记忆</td></tr>
-          <tr><td>核心是：</td><td>先宣布重要性再给货，等于把一句话说两遍</td></tr>
-          <tr><td>值得注意的是</td><td>承诺了深度，后面内容没变深，骗走一次注意力</td></tr>
-          <tr><td>完成了对流程的优化</td><td>动作藏进名词，要多解一层才知道谁做了什么</td></tr>
-          <tr><td>赋能、闭环、全链路</td><td>换成普通说法信息量不变，但读者要先翻译</td></tr>
-          <tr><td>时间会保管细节</td><td>没有主语能负责，读者无法核对真假</td></tr>
+          {t.human.tax.map((row) => (
+            <tr><td>{row.a}</td><td>{row.b}</td></tr>
+          ))}
         </tbody>
       </table>
 
       <div class="grid-2">
         <div>
-          <h3>破折号不硬禁，看密度</h3>
-          <p>
-            <code>——</code> 是标准中文标点，用来插一句补充说明很正常。AI 味在于把它当节奏拐杖。
-            实测手写技术文档中位数约 5 个/千字，模型生成常在 15 以上，所以阈值定在 8。
-            列表里 <code>事项 —— 负责人 —— 期限</code> 是字段分隔，不计入。
-          </p>
+          <h3>{t.human.grid1.h}</h3>
+          <p set:html={t.human.grid1.html} />
         </div>
         <div>
-          <h3>正则分不清的交给模型</h3>
-          <p>
-            三个 flag 并列是好写法，「为什么出发，为什么放弃，为什么害怕」才要改，
-            两者在正则眼里长得一样。所以同构排比与借喻只提示、不扣分。
-            <code>git 仓库</code> 是本义，「记忆的仓库」才是包装。
-          </p>
+          <h3>{t.human.grid2.h}</h3>
+          <p set:html={t.human.grid2.html} />
         </div>
       </div>
     </div>

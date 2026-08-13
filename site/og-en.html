@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<!--
+  OG 预览图的源模板，1200x630。
+  产物 og.png 由 scripts/build-og.sh 渲染，不要手改 PNG。
+-->
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Noto+Sans+SC:wght@400;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; }
+  html, body { width: 1200px; height: 630px; }
+  body {
+    background: #f2efe7;
+    color: #1b1a17;
+    font-family: "Noto Sans SC", sans-serif;
+    position: relative;
+    overflow: hidden;
+  }
+  /* 纸纹 */
+  body::after {
+    content: ""; position: absolute; inset: 0; opacity: .3; mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.16'/%3E%3C/svg%3E");
+  }
+  .frame {
+    position: absolute; inset: 26px;
+    border: 1px solid #d6d0c2;
+  }
+  .pad { position: relative; z-index: 2; padding: 74px 78px; height: 100%; display: flex; flex-direction: column; }
+
+  .top { display: flex; align-items: baseline; gap: 14px; }
+  .wordmark { font-family: "Instrument Serif", serif; font-size: 34px; letter-spacing: -.01em; }
+  .kicker {
+    font-family: "IBM Plex Mono", monospace; font-size: 13px; letter-spacing: .2em;
+    text-transform: uppercase; color: #bf3b26;
+  }
+
+  h1 {
+    margin-top: 46px;
+    font-weight: 700; font-size: 78px; line-height: 1.14; letter-spacing: -.03em;
+    word-break: auto-phrase;
+  }
+  h1 u {
+    text-decoration: underline; text-decoration-color: #bf3b26;
+    text-decoration-thickness: 7px; text-underline-offset: 6px;
+  }
+
+  .creed {
+    margin-top: 34px; padding-left: 18px; border-left: 3px solid #bf3b26;
+    font-size: 25px; line-height: 1.6; color: #57534b; max-width: 900px;
+  }
+  .creed b { color: #1b1a17; background: rgba(191,59,38,.1); padding: 0 4px; }
+
+  .foot { margin-top: auto; display: flex; align-items: flex-end; justify-content: space-between; gap: 30px; }
+  .hosts {
+    font-family: "IBM Plex Mono", monospace; font-size: 15px; line-height: 1.9;
+    color: #8b8579; letter-spacing: .02em;
+  }
+  .hosts span { color: #57534b; }
+
+  .score {
+    border: 1px solid #d6d0c2; background: #eae5d9;
+    padding: 16px 22px; text-align: right; flex: 0 0 auto;
+  }
+  .score-k {
+    font-family: "IBM Plex Mono", monospace; font-size: 12px; letter-spacing: .14em;
+    color: #8b8579; text-transform: uppercase;
+  }
+  .score-v {
+    font-family: "Instrument Serif", serif; font-size: 46px; line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+  }
+  .score-v i { font-style: normal; color: #8b8579; }
+  .score-v b { font-weight: 400; color: #bf3b26; }
+  .score-n { font-family: "IBM Plex Mono", monospace; font-size: 12px; color: #57534b; }
+</style>
+</head>
+<body>
+  <div class="frame"></div>
+  <div class="pad">
+    <div class="top">
+      <span class="wordmark">adhd-md</span>
+      <span class="kicker">Agent Skill</span>
+    </div>
+
+    <h1>Make your Markdown<br><u>readable</u></h1>
+
+    <p class="creed"><b>Rearrange information. Never delete it.</b> Format-mode changes are provably lossless.</p>
+
+    <div class="foot">
+      <p class="hosts">
+        <span>Claude Code</span> · <span>Codex</span> · <span>Grok Build</span><br>
+        <span>Gemini CLI</span> · <span>Cursor</span> · <span>opencode</span>
+      </p>
+      <div class="score">
+        <div class="score-k">script score</div>
+        <div class="score-v"><i>87.8</i> → <b>100</b></div>
+        <div class="score-n">not a single word changed</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

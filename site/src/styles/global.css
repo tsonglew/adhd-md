@@ -505,3 +505,13 @@ h3 { font-size: 1.02rem; font-weight: 700; margin: 0 0 .5rem; }
   *, *::before, *::after { animation-duration: .001ms !important; transition-duration: .001ms !important; }
   .btn:hover { transform: none; }
 }
+
+/* ─────────── 语言切换 ─────────── */
+.lang-switch {
+  font: 500 .72rem/1 var(--mono);
+  letter-spacing: .08em; text-transform: uppercase;
+  color: var(--ink-3); text-decoration: none;
+  border: 1px solid var(--rule);
+  padding: .35em .6em;
+}
+.lang-switch:hover { color: var(--mark); border-color: var(--mark); }

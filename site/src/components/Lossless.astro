@@ -1,39 +1,29 @@
+---
+import type { UI } from "../i18n/ui";
+interface Props { t: UI }
+const { t } = Astro.props;
+---
+
 <section class="band alt" id="lossless">
   <div class="wrap sec">
     <span class="num">05</span>
     <div class="sec-body">
-      <h2>删一个词就会被拦下来</h2>
-      <p class="sub">
-        格式档下，剥掉标记后的正文 token 多重集必须完全一致。删词是 <code>missing</code>，新写措辞是 <code>added</code>，两者都拒绝写回。
-      </p>
+      <h2>{t.lossless.h2}</h2>
+      <p class="sub" set:html={t.lossless.subHtml} />
 
-      <div class="term" role="img" aria-label="verify 命令输出示例：格式档通过，删词被判硬失败">
+      <div class="term" role="img" aria-label={t.lossless.termAria}>
         <div class="term-bar"><span></span><span></span><span></span></div>
-        <pre><code><span class="p">$</span> adhd_md.py verify 原文.md 新文.md --scope=format
-scope=format → <span class="ok">通过</span>
-  [警告] blocks_reordered: 检测到块重排，检查悬空指代
-
-<span class="p">$</span> adhd_md.py verify 原文.md 删了一句的.md --scope=format
-scope=format → <span class="bad">失败</span>
-  [硬失败] prose_tokens_missing  count=9
-    items: [生产, 环境, 别, 设成, 0, …]
-    hint: 这些词从正文里消失了。format 档不许删词。</code></pre>
+        <pre><code set:html={t.lossless.termHtml} /></pre>
       </div>
 
       <div class="grid-2">
         <div>
-          <h3>能算准的不交给模型</h3>
-          <p>
-            审计、格式修复、无损校验都在一个纯标准库的 Python 单文件里。
-            跑的是同一个进程，不是同一个模型，所以六个宿主的分数与校验结果必然一致。
-          </p>
+          <h3>{t.lossless.grid1.h}</h3>
+          <p>{t.lossless.grid1.t}</p>
         </div>
         <div>
-          <h3>分数不虚报</h3>
-          <p>
-            71 条规则里 30 条脚本可判定，31 条标记为需模型判断。
-            <code>audit</code> 输出的叫「脚本分」，不给「优」档。脚本分低说明一定有问题，脚本分高不说明没问题。
-          </p>
+          <h3>{t.lossless.grid2.h}</h3>
+          <p set:html={t.lossless.grid2.t} />
         </div>
       </div>
     </div>
