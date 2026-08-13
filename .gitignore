@@ -2,3 +2,5 @@ __pycache__/
 *.pyc
 .DS_Store
 .gstack/
+node_modules/
+site/install.sh

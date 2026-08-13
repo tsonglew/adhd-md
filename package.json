@@ -1,0 +1,45 @@
+{
+  "name": "adhd-md",
+  "version": "0.1.0",
+  "description": "把 Markdown 改造成 ADHD 友好、可扫读的版本。一份 skill 通用于 Claude Code / Codex / Grok Build / Gemini CLI / Cursor / opencode。只重排信息，绝不删信息。",
+  "keywords": [
+    "markdown",
+    "adhd",
+    "readability",
+    "accessibility",
+    "agent-skill",
+    "claude-code",
+    "codex",
+    "linter",
+    "formatter",
+    "documentation"
+  ],
+  "homepage": "https://tsonglew.github.io/adhd-md/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tsonglew/adhd-md.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tsonglew/adhd-md/issues"
+  },
+  "license": "MIT",
+  "author": "Tsonglew <tsonglew@gmail.com>",
+  "type": "commonjs",
+  "bin": {
+    "adhd-md": "bin/cli.js"
+  },
+  "files": [
+    "bin/",
+    "skill/",
+    "scripts/install.sh",
+    "dist/",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "test": "python3 skill/scripts/adhd_md.py selftest"
+  }
+}

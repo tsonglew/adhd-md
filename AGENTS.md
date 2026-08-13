@@ -28,3 +28,13 @@ python3 scripts/build_standalone.py
 `dist/` 是生成产物，不要手改。
 
 规则的阈值、扣分、轴/档在三处必须一致：`references/rules.md` 的表、`references/rubric.md` 的扣分表、`scripts/adhd_md.py` 的 `DEDUCT` 字典。改一处就要同步另两处。
+
+## 分发相关
+
+三条安装路径共用 `scripts/install.sh`，不要分叉出第二份：
+
+- `npx github:tsonglew/adhd-md` —— `bin/cli.js` 调它，并强制 `--copy`（npx 缓存会被清理，软链会变死链）
+- `curl … | bash` —— 脚本自己下 tarball。站点上的 `install.sh` 由 Pages workflow 从 `scripts/` 复制，不是第二份源码
+- `git clone` + `bash scripts/install.sh` —— 软链到仓库，方便开发
+
+给 `skill/` 加新文件时，检查 `package.json` 的 `files` 字段是否覆盖 —— 漏了的话 npx 装出来会缺文件，本地却看不出问题。

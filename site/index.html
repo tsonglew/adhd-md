@@ -75,7 +75,7 @@
     </p>
 
     <div class="cmd reveal" style="--d:300ms">
-      <code id="install-cmd">bash scripts/install.sh</code>
+      <code id="install-cmd">npx github:tsonglew/adhd-md</code>
       <button type="button" class="copy" data-copy="#install-cmd" aria-label="复制安装命令">复制</button>
     </div>
 
@@ -321,17 +321,29 @@ scope=format → <span class="bad">失败</span>
 
         <ol class="steps">
           <li>
-            <p>克隆并安装。脚本会探测本机装了哪些 agent，只往存在的宿主里放软链。</p>
+            <p>装。三种方式任选一种，脚本会探测本机装了哪些 agent，只往存在的宿主里放。</p>
+            <p class="way">有 Node</p>
             <div class="cmd sm">
-              <code id="c1">git clone https://github.com/tsonglew/adhd-md &amp;&amp; cd adhd-md
-bash scripts/install.sh</code>
+              <code id="c1">npx github:tsonglew/adhd-md</code>
               <button type="button" class="copy" data-copy="#c1" aria-label="复制">复制</button>
             </div>
+            <p class="way">没 Node</p>
+            <div class="cmd sm">
+              <code id="c1b">curl -fsSL https://tsonglew.github.io/adhd-md/install.sh | bash</code>
+              <button type="button" class="copy" data-copy="#c1b" aria-label="复制">复制</button>
+            </div>
+            <p class="way">想改源码</p>
+            <div class="cmd sm">
+              <code id="c1c">git clone https://github.com/tsonglew/adhd-md &amp;&amp; cd adhd-md
+bash scripts/install.sh</code>
+              <button type="button" class="copy" data-copy="#c1c" aria-label="复制">复制</button>
+            </div>
+            <p class="note-sm">克隆装的是软链，<code>git pull</code> 即更新。npx 与 curl 装的是复制，重跑一次即更新。</p>
           </li>
           <li>
             <p>先审一篇看看分数和问题清单。</p>
             <div class="cmd sm">
-              <code id="c2">python3 skill/scripts/adhd_md.py audit 你的文档.md</code>
+              <code id="c2">npx github:tsonglew/adhd-md audit 你的文档.md</code>
               <button type="button" class="copy" data-copy="#c2" aria-label="复制">复制</button>
             </div>
           </li>

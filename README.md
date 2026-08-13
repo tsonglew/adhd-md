@@ -27,17 +27,27 @@
 
 ## 装 + 跑（约 2 分钟）
 
+三种装法，任选一种：
+
 ```bash
-git clone https://github.com/tsonglew/adhd-md && cd adhd-md
-bash scripts/install.sh
+# 有 Node —— 不留任何文件在当前目录
+npx github:tsonglew/adhd-md
+
+# 没 Node
+curl -fsSL https://tsonglew.github.io/adhd-md/install.sh | bash
+
+# 想改源码
+git clone https://github.com/tsonglew/adhd-md && cd adhd-md && bash scripts/install.sh
 ```
 
 安装脚本会探测本机装了哪些 agent，只往存在的宿主里放软链。canonical skill 落在 `~/.agents/skills/adhd-md`，改一处六个宿主同时生效。
 
+从 git 克隆装是软链，`git pull` 即更新；npx 与 curl 装是复制，重跑一次即更新。
+
 跑一下试试：
 
 ```bash
-python3 skill/scripts/adhd_md.py audit 你的文档.md
+npx github:tsonglew/adhd-md audit 你的文档.md
 ```
 
 或者在任意 agent 里直接说人话：
@@ -110,6 +120,14 @@ scripts/install.sh        探测 + 安装
 
 ## CLI
 
+有 Node 的话不用装，`npx` 直接跑：
+
+```bash
+npx github:tsonglew/adhd-md audit 文档.md
+```
+
+装过之后也可以直接调脚本：
+
 ```bash
 adhd_md.py audit FILE [--json] [--min-score N] [--level 1|2|3]
 adhd_md.py fmt FILE [--write] [--check] [--toc] [--strip-emoji]
@@ -133,7 +151,7 @@ python3 skill/scripts/adhd_md.py audit --min-score 70 docs/*.md
 | 分数很高但文档明显很烂 | `audit` 输出的是脚本分，把 31 条需模型判断的规则按满分计入。脚本分低说明一定有问题，脚本分高不说明没问题 |
 | `verify --scope=format` 失败 | 改动越界了。`prose_tokens_added` 是新写了措辞，`prose_tokens_missing` 是删了词。回退，或改用 `scope=content` |
 | agent 没自动触发 | Codex 用 `/adhd-md`，其他宿主明确说「用 adhd-md skill」 |
-| 想卸载 | `bash scripts/install.sh --uninstall` |
+| 想卸载 | `npx github:tsonglew/adhd-md install --uninstall`，或 `bash scripts/install.sh --uninstall` |
 
 ## 深入
 

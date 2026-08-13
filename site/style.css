@@ -451,6 +451,12 @@ h3 { font-size: 1.02rem; font-weight: 700; margin: 0 0 .5rem; }
   background: var(--mark-2); border-left: 2px solid var(--mark);
   font-size: .95rem;
 }
+.steps .way {
+  margin: 1rem 0 -.2rem;
+  font: 500 .68rem/1 var(--mono); letter-spacing: .12em; text-transform: uppercase;
+  color: var(--mark);
+}
+.steps .note-sm { margin-top: .9rem; font-size: .82rem; color: var(--ink-3); }
 
 /* ─────────── 页脚 ─────────── */
 .foot { border-top: 1px solid var(--rule); padding-block: 2.6rem 3.2rem; }
