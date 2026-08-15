@@ -69,7 +69,7 @@ npx github:tsonglew/adhd-md audit 你的文档.md
 | level | 适用 | 力度 |
 |---|---|---|
 | `light` | 规范、合同、API 文档 | 只做零风险项 |
-| `standard`（默认） | README、教程、设计文档 | 拆段、列表化、改标题、写 TL;DR |
+| `standard`（默认） | README、教程、设计文档 | 拆段、列表化、改标题、写 TL;DR、给时间预估 |
 | `deep` | 会议记录、长文、乱笔记 | 全量重构骨架 |
 
 ## 无损保证
@@ -111,7 +111,7 @@ bash scripts/install.sh --project
 ```text
 skill/                    唯一真源
   SKILL.md                主流程
-  references/             规则库、评分、中文专项、反模式、文档骨架、示例语料
+  references/             规则库、评分、中文专项、反模式、文档骨架、示例语料、证据库
   scripts/adhd_md.py      确定性工具层，纯标准库，零依赖
 dist/                     自包含单文件版（由脚本生成，勿手改）
 site/                     官网，Astro 构建，GitHub Actions 部署到 Pages
@@ -119,7 +119,10 @@ site/                     官网，Astro 构建，GitHub Actions 部署到 Pages
   src/layouts/             页头 / 页脚 / 元信息
   public/                  图标与预览图位图产物
   og.html icon-square.svg  预览图与图标的源模板（位图产物由 scripts/build-og.sh 渲染）
-docs/host-matrix.md       六个宿主的实证结论
+docs/
+  eval.md                  验证结论
+  host-matrix.md           六个宿主的实证结论
+  adhd-research.md         产品与研究的调研快照
 scripts/install.sh        探测 + 安装
 ```
 
@@ -153,7 +156,7 @@ python3 skill/scripts/adhd_md.py audit --min-score 70 docs/*.md
 
 | 症状 | 原因与解法 |
 |---|---|
-| 分数很高但文档明显很烂 | `audit` 输出的是脚本分，把 33 条需模型判断的规则按满分计入。脚本分低说明一定有问题，脚本分高不说明没问题 |
+| 分数很高但文档明显很烂 | `audit` 输出的是脚本分，把 37 条需模型判断的规则按满分计入。脚本分低说明一定有问题，脚本分高不说明没问题 |
 | `verify --scope=format` 失败 | 改动越界了。`prose_tokens_added` 是新写了措辞，`prose_tokens_missing` 是删了词。回退，或改用 `scope=content` |
 | agent 没自动触发 | Codex 用 `/adhd-md`，其他宿主明确说「用 adhd-md skill」 |
 | 想卸载 | `npx github:tsonglew/adhd-md install --uninstall`，或 `bash scripts/install.sh --uninstall` |
@@ -172,7 +175,9 @@ npm run build    # 构建到 site/dist/，Pages workflow 部署的就是它
 
 ## 深入
 
-- [规则库](skill/references/rules.md)：75 条规则，带轴/档/阈值。去 AI 味的 M 组十条也在里面，每条写明它是哪一种阅读成本
+- [规则库](skill/references/rules.md)：78 条规则，带轴/档/阈值。去 AI 味的 M 组十四条也在里面，每条写明它是哪一种阅读成本
+- [规则证据库](skill/references/evidence.md)：每条规则对应的 ADHD 机制、产品模式与文献出处
+- [调研与依据](docs/adhd-research.md)：市面 ADHD 友好产品扫描 + 相关研究综述 + 采纳/不采纳清单
 - [反模式](skill/references/antipatterns.md)：八种优化过头，附自检清单
 - [示例语料](skill/references/examples/README.md)：4 组 before/after，含「故意没改什么」
 - [评分细则](skill/references/rubric.md)

@@ -15,7 +15,7 @@
 改完必须跑：
 
 ```bash
-python3 skill/scripts/adhd_md.py selftest        # 34 项，含示例语料回归
+python3 skill/scripts/adhd_md.py selftest        # 48 项，含示例语料回归
 python3 scripts/build_standalone.py --check      # dist/ 是否与 skill/ 同步
 ```
 
@@ -28,6 +28,8 @@ python3 scripts/build_standalone.py
 `dist/` 是生成产物，不要手改。
 
 规则的阈值、扣分、轴/档在三处必须一致：`references/rules.md` 的表、`references/rubric.md` 的扣分表、`scripts/adhd_md.py` 的 `DEDUCT` 字典。改一处就要同步另两处。
+
+新增或改动规则的机制依据时，同步更新 `references/evidence.md` 的映射。
 
 ## 分发相关
 

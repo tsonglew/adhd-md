@@ -31,6 +31,7 @@ const zh = {
       { label: "反模式", href: "https://github.com/tsonglew/adhd-md/blob/main/skill/references/antipatterns.md" },
       { label: "宿主矩阵", href: "https://github.com/tsonglew/adhd-md/blob/main/docs/host-matrix.md" },
       { label: "验证结论", href: "https://github.com/tsonglew/adhd-md/blob/main/docs/eval.md" },
+      { label: "调研与依据", href: "https://github.com/tsonglew/adhd-md/blob/main/docs/adhd-research.md" },
       { label: "反馈问题", href: "https://github.com/tsonglew/adhd-md/issues/new/choose" },
     ],
   },
@@ -127,10 +128,10 @@ const zh = {
         lede: "先改内容再改格式，最后统一校验。",
         can: "另一根轴",
         canTextHtml:
-          "<code>light</code> 只做零风险项，适合规范与 API 文档。<code>standard</code> 拆段、列表化、改标题、写 TL;DR。<code>deep</code> 全量重构骨架，适合会议记录和乱笔记。",
+          "<code>light</code> 只做零风险项，适合规范与 API 文档。<code>standard</code> 拆段、列表化、改标题、写 TL;DR、给时间预估。<code>deep</code> 全量重构骨架，适合会议记录和乱笔记。",
         cant: "怎么用",
         cantText: "直接说人话：「把 README 改成 ADHD 友好的，只改格式」",
-        seal: "75 条规则按轴与档过滤",
+        seal: "78 条规则按轴与档过滤",
       },
     ],
   },
@@ -170,7 +171,7 @@ const zh = {
     },
     grid2: {
       h: "分数不虚报",
-      t: "75 条规则里 44 条脚本可判定（42 条计分、2 条提示），31 条标记为需模型判断。<code>audit</code> 输出的叫「脚本分」，不给「优」档。脚本分低说明一定有问题，脚本分高不说明没问题。",
+      t: "78 条规则里 34 条只由模型判断，另有 3 条只提示不扣分 —— 这 37 条在脚本分里都按满分计入。<code>audit</code> 输出的叫「脚本分」，不给「优」档。脚本分低说明一定有问题，脚本分高不说明没问题。",
     },
   },
   hosts: {
@@ -241,6 +242,7 @@ const en: typeof zh = {
       { label: "Anti-patterns", href: "https://github.com/tsonglew/adhd-md/blob/main/skill/references/antipatterns.md" },
       { label: "Host matrix", href: "https://github.com/tsonglew/adhd-md/blob/main/docs/host-matrix.md" },
       { label: "What we verified", href: "https://github.com/tsonglew/adhd-md/blob/main/docs/eval.md" },
+      { label: "Research & evidence", href: "https://github.com/tsonglew/adhd-md/blob/main/docs/adhd-research.md" },
       { label: "Report an issue", href: "https://github.com/tsonglew/adhd-md/issues/new/choose" },
     ],
   },
@@ -337,10 +339,10 @@ const en: typeof zh = {
         lede: "Content first, then format, then one combined check.",
         can: "The other axis",
         canTextHtml:
-          "<code>light</code> does zero-risk fixes only, for specs and API docs. <code>standard</code> splits, lists, retitles, and writes a TL;DR. <code>deep</code> rebuilds the whole skeleton, for meeting notes and messy drafts.",
+          "<code>light</code> does zero-risk fixes only, for specs and API docs. <code>standard</code> splits, lists, retitles, writes a TL;DR, and adds time estimates. <code>deep</code> rebuilds the whole skeleton, for meeting notes and messy drafts.",
         cant: "How to use it",
         cantText: "Just say it in plain words: “Make README.md ADHD-friendly, format only”",
-        seal: "75 rules filtered by axis and level",
+        seal: "78 rules filtered by axis and level",
       },
     ],
   },
@@ -380,7 +382,7 @@ const en: typeof zh = {
     },
     grid2: {
       h: "Scores don't inflate themselves",
-      t: "Of the 75 rules, 44 are script-checkable (42 score, 2 advisory) and 31 need model judgment. <code>audit</code> prints a “script score” and never a grade. A low script score always means problems; a high one doesn't always mean none.",
+      t: "Of the 78 rules, 34 are model-judged and 3 more are advisory-only — all 37 count as full marks in the script score. <code>audit</code> prints a “script score” and never a grade. A low script score always means problems; a high one doesn't always mean none.",
     },
   },
   hosts: {
