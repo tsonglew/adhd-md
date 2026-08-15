@@ -20,7 +20,7 @@ const zh = {
     twitterImageAlt: "adhd-md 预览图：脚本分 87.8 到 100，正文一个词都没改。",
   },
   skip: "跳到正文",
-  nav: ["对照", "三种改法", "去 AI 味", "无损", "宿主"],
+  nav: ["对照", "三种改法", "去 AI 味", "无损", "评测", "宿主"],
   langSwitch: { label: "EN", href: "/adhd-md/en/" },
   themeToggle: { ariaToDark: "切换到暗色", ariaToLight: "切换到亮色" },
   footer: {
@@ -193,6 +193,30 @@ const zh = {
     noteLink: "验证结论",
     noteSmallAfter: "里写清了哪些验过、哪些没验、有哪些已知局限。",
   },
+  eval: {
+    h2: "真实 agent 评测：新规则会执行，也不会被滥用",
+    subHtml:
+      "Codex 0.36.0 + <code>gpt-5.6-sol</code>，4 个语料各跑 <code>scope=both</code> 完整工作流（审计 → 改写 → verify → 报告）。",
+    head: ["用例", "level", "脚本分", "H4 行为"],
+    rows: [
+      { doc: "中文 README", level: "standard", score: "87.8 → 100", h4: "加「约 1 分钟读完」，合理" },
+      { doc: "英文 API 参考", level: "light", score: "83.9 → 89.2", h4: "没加，符合 light 排除" },
+      { doc: "中文会议记录", level: "deep", score: "76.2 → 100", h4: "加「约 2 分钟」+ 读完收益，合理" },
+      { doc: "英文 runbook", level: "standard", score: "72.8 → 100", h4: "前两轮漏掉；补规则详解后给出「四步响应路径」" },
+    ],
+    findings: [
+      {
+        h: "没有滥用",
+        t: "4 例零「每节塞时间」、零编造时长；light 档正确不加时间预估。",
+      },
+      {
+        h: "judge 规则只写表里会漏",
+        t: "runbook 前两轮漏 H4。在 <code>rules.md</code> 补写法示例后，第三轮给出 <code>Step 1 of 4</code>、每步预期输出、复合动作拆成子步骤。",
+      },
+    ],
+    link: "完整评测过程、三轮迭代与复现方法",
+    linkHref: "https://github.com/tsonglew/adhd-md/blob/main/docs/eval.md",
+  },
   start: {
     h2: "两分钟装好",
     s1: "装。三种方式任选一种，脚本会探测本机装了哪些 agent，只往存在的宿主里放。",
@@ -231,7 +255,7 @@ const en: typeof zh = {
     twitterImageAlt: "adhd-md preview: score 87.8 to 100, not a single word changed.",
   },
   skip: "Skip to content",
-  nav: ["Compare", "Three modes", "AI slop", "Lossless", "Hosts"],
+  nav: ["Compare", "Three modes", "AI slop", "Lossless", "Eval", "Hosts"],
   langSwitch: { label: "中文", href: "/adhd-md/" },
   themeToggle: { ariaToDark: "Switch to dark mode", ariaToLight: "Switch to light mode" },
   footer: {
@@ -403,6 +427,30 @@ const en: typeof zh = {
       "The other four hosts are only verified to load the skill, not to run it well.",
     noteLink: "Verification notes",
     noteSmallAfter: "list what's been checked, what hasn't, and the known limits.",
+  },
+  eval: {
+    h2: "Real-agent eval: the new rules run — and don't run wild",
+    subHtml:
+      "Codex 0.36.0 + <code>gpt-5.6-sol</code>, four docs, each through the full <code>scope=both</code> workflow (audit → rewrite → verify → report).",
+    head: ["Doc", "level", "Script score", "H4 behavior"],
+    rows: [
+      { doc: "Chinese README", level: "standard", score: "87.8 → 100", h4: "Added “about 1 minute” — reasonable" },
+      { doc: "English API reference", level: "light", score: "83.9 → 89.2", h4: "Not added — light excludes H4" },
+      { doc: "Chinese meeting notes", level: "deep", score: "76.2 → 100", h4: "Added “about 2 minutes” + takeaway — reasonable" },
+      { doc: "English runbook", level: "standard", score: "72.8 → 100", h4: "Missed at first; after rule examples, gave a “four-step response”" },
+    ],
+    findings: [
+      {
+        h: "No overuse",
+        t: "Zero per-section time labels, zero invented durations; the light run correctly added none.",
+      },
+      {
+        h: "Judge rules get skipped without examples",
+        t: "The runbook missed H4 on the first two runs. After adding worked examples to <code>rules.md</code>, the third run produced <code>Step 1 of 4</code>, per-step expected output, and split compound actions.",
+      },
+    ],
+    link: "Full evaluation, the three iterations, and how to reproduce",
+    linkHref: "https://github.com/tsonglew/adhd-md/blob/main/docs/eval.md",
   },
   start: {
     h2: "Installed in two minutes",

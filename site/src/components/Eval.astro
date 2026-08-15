@@ -1,0 +1,37 @@
+---
+import type { UI } from "../i18n/ui";
+interface Props { t: UI }
+const { t } = Astro.props;
+---
+
+<section class="band" id="eval">
+  <div class="wrap sec">
+    <span class="num">07</span>
+    <div class="sec-body">
+      <h2>{t.eval.h2}</h2>
+      <p class="sub" set:html={t.eval.subHtml} />
+
+      <table class="tax">
+        <thead><tr>{t.eval.head.map((h) => <th>{h}</th>)}</tr></thead>
+        <tbody>
+          {t.eval.rows.map((row) => (
+            <tr><td>{row.doc}</td><td>{row.level}</td><td>{row.score}</td><td>{row.h4}</td></tr>
+          ))}
+        </tbody>
+      </table>
+
+      <div class="grid-2">
+        {t.eval.findings.map((f) => (
+          <div>
+            <h3>{f.h}</h3>
+            <p set:html={f.t} />
+          </div>
+        ))}
+      </div>
+
+      <p class="small">
+        <a href={t.eval.linkHref}>{t.eval.link}</a>
+      </p>
+    </div>
+  </div>
+</section>
