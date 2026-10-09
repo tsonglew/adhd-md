@@ -6,6 +6,7 @@ on:
     paths:
       - "site/**"
       - "scripts/install.sh"
+      - "skill/**"
       - ".github/workflows/pages.yml"
   workflow_dispatch:
 
@@ -29,7 +30,9 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: 站点自审（吃自己的狗粮）
-        run: python3 skill/scripts/adhd_md.py selftest
+        run: |
+          python3 skill/scripts/adhd_md.py selftest
+          python3 scripts/build_standalone.py --check
 
       - uses: actions/setup-node@v4
         with:

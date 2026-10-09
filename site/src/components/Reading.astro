@@ -1,0 +1,175 @@
+---
+import type { UI } from "../i18n/ui";
+interface Props { t: UI }
+const { t } = Astro.props;
+const r = t.reading;
+const initialPosition = r.position.replace("{current}", "1").replace("{total}", String(r.sourceChunks.length));
+---
+
+<section class="band reading-band" id="reading" aria-labelledby="reading-heading">
+  <div class="wrap sec">
+    <span class="num" aria-hidden="true">02b</span>
+    <div class="sec-body">
+      <h2 id="reading-heading">{r.h2}</h2>
+      <p class="sub">{r.sub}</p>
+
+      <div class="reading-layout">
+        <div class="reading-demo" data-reader-demo data-position-template={r.position}>
+          <p class="reading-label">{r.previewLabel}</p>
+          <div class="reading-paper">
+            <div class="reading-topline">
+              <span class="reading-doctitle">{r.docTitle}</span>
+              <span class="reading-position" data-reading-position aria-live="polite" aria-atomic="true" hidden>{initialPosition}</span>
+            </div>
+            <div class="reading-viewport" data-reading-viewport id="reading-current" tabindex="0" role="region" aria-label={r.regionLabel} aria-describedby="reading-keys">
+              {r.sourceChunks.map((chunk, index) => (
+                <article class="reading-chunk" data-reading-chunk={index}>
+                  <h3>{chunk.title}</h3>
+                  <p class="reading-source-label">{r.originalLabel}</p>
+                  <p class="reading-original">{chunk.text}</p>
+                </article>
+              ))}
+            </div>
+            <div class="reading-controls" data-reading-controls hidden>
+              <button type="button" data-reading-prev disabled aria-controls="reading-current"><span aria-hidden="true">←</span> {r.previous}</button>
+              <div class="reading-ticks" aria-hidden="true">
+                {r.sourceChunks.map((_, index) => <i data-reading-tick={index}></i>)}
+              </div>
+              <button type="button" data-reading-next aria-controls="reading-current">{r.next} <span aria-hidden="true">→</span></button>
+            </div>
+          </div>
+          <p class="reading-keys" id="reading-keys" data-reading-keys hidden>{r.keyboardHint}</p>
+          <details class="reading-full-source">
+            <summary>{r.sourceToggle}</summary>
+            <pre>{r.sourceMarkdown}</pre>
+          </details>
+          <p class="reading-note">{r.previewNote}</p>
+          <a class="btn reading-full-link" href={r.fullDemoHref}>{r.fullDemo} <span aria-hidden="true">↗</span></a>
+          {r.fullDemoNote && <p class="reading-note reading-locale-note">{r.fullDemoNote}</p>}
+        </div>
+
+        <aside class="reading-companion" aria-labelledby="reading-chat-label">
+          <p class="reading-label" id="reading-chat-label">{r.chatLabel}</p>
+          <div class="reading-message reading-user">
+            <p class="reading-speaker">{r.userLabel}</p>
+            <p>{r.userText}</p>
+          </div>
+          <div class="reading-message reading-assistant">
+            <p class="reading-speaker">{r.assistantLabel}</p>
+            <p class="reading-source-label">{r.quoteLabel}</p>
+            <blockquote>{r.quote}</blockquote>
+            <p class="reading-source-label">{r.explanationLabel}</p>
+            <p>{r.explanation}</p>
+            <p class="reading-pause">{r.chatPrompt}</p>
+          </div>
+          <p class="reading-note">{r.chatNote}</p>
+        </aside>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-reader-demo]").forEach((demo) => {
+    const chunks = [...demo.querySelectorAll<HTMLElement>("[data-reading-chunk]")];
+    const position = demo.querySelector<HTMLElement>("[data-reading-position]")!;
+    const previous = demo.querySelector<HTMLButtonElement>("[data-reading-prev]")!;
+    const next = demo.querySelector<HTMLButtonElement>("[data-reading-next]")!;
+    const viewport = demo.querySelector<HTMLElement>("[data-reading-viewport]")!;
+    const ticks = [...demo.querySelectorAll<HTMLElement>("[data-reading-tick]")];
+    let current = 0;
+
+    const render = () => {
+      chunks.forEach((chunk, index) => { chunk.hidden = index !== current; });
+      ticks.forEach((tick, index) => { tick.classList.toggle("is-current", index === current); });
+      position.textContent = demo.dataset.positionTemplate!
+        .replace("{current}", String(current + 1))
+        .replace("{total}", String(chunks.length));
+      previous.disabled = current === 0;
+      next.disabled = current === chunks.length - 1;
+    };
+    const move = (delta: number) => {
+      current = Math.max(0, Math.min(chunks.length - 1, current + delta));
+      render();
+      // Keep a usable keyboard focus when the selected control reaches a boundary.
+      if (document.activeElement === previous && previous.disabled || document.activeElement === next && next.disabled) {
+        viewport.focus({ preventScroll: true });
+      }
+    };
+
+    demo.dataset.enhanced = "true";
+    render();
+    position.hidden = false;
+    demo.querySelector<HTMLElement>("[data-reading-controls]")!.hidden = false;
+    demo.querySelector<HTMLElement>("[data-reading-keys]")!.hidden = false;
+    previous.addEventListener("click", () => move(-1));
+    next.addEventListener("click", () => move(1));
+    demo.addEventListener("keydown", (event) => {
+      if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
+      if (![viewport, previous, next].includes(event.target as HTMLElement)) return;
+      if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+      event.preventDefault();
+      move(event.key === "ArrowLeft" ? -1 : 1);
+    });
+  });
+</script>
+
+<style>
+  .reading-band { scroll-margin-top: 5rem; }
+  .reading-layout { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: clamp(1.5rem, 4vw, 3rem); align-items: start; }
+  .reading-layout > * { min-width: 0; }
+  .reading-layout [hidden] { display: none !important; }
+  .reading-label { font: 500 .73rem/1.65 var(--mono); letter-spacing: .07em; color: var(--mark); margin: 0 0 .85rem; }
+  .reading-paper { border: 1px solid var(--rule); background: var(--paper-2); }
+  .reading-topline { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .5rem; border-bottom: 1px solid var(--rule); padding: .85rem 1.3rem; }
+  .reading-doctitle { font: 400 1.4rem/1.2 var(--serif); }
+  .reading-position { font: 500 .7rem/1.4 var(--mono); color: var(--mark); font-variant-numeric: tabular-nums; }
+  .reading-viewport { padding: 1.5rem clamp(1rem, 2.5vw, 1.8rem); min-height: 21rem; outline-offset: -4px; }
+  .reading-chunk + .reading-chunk { margin-top: 1.5rem; }
+  .reading-demo[data-enhanced] .reading-chunk { margin-top: 0; }
+  .reading-viewport h3 { margin: 0 0 1.2rem; font-size: 1.12rem; line-height: 1.6; }
+  .reading-source-label { font: 500 .68rem/1.5 var(--mono); color: var(--ink-2); margin: 0 0 .45rem; letter-spacing: .04em; }
+  .reading-original { margin: 0; font-size: 1rem; line-height: 2; white-space: pre-wrap; overflow-wrap: anywhere; }
+  .reading-controls { display: flex; align-items: center; justify-content: space-between; gap: .6rem; padding: 1rem 1.3rem; border-top: 1px solid var(--rule); }
+  .reading-controls button { appearance: none; background: var(--paper); color: var(--ink); border: 1px solid var(--rule); padding: .65rem .8rem; font: 500 .8rem/1.4 var(--sans); cursor: pointer; min-height: 44px; white-space: nowrap; }
+  .reading-controls button:hover:enabled { border-color: var(--mark); color: var(--mark); }
+  .reading-controls button:disabled { color: var(--ink-3); opacity: .6; cursor: default; }
+  .reading-ticks { display: flex; gap: .25rem; }
+  .reading-ticks i { width: .9rem; height: 3px; background: var(--rule); }
+  .reading-ticks i.is-current { background: var(--mark); }
+  .reading-keys { margin: .7rem 0 1rem; font-size: .73rem; color: var(--ink-2); line-height: 1.75; }
+  .reading-full-source { margin-top: 1rem; border-block: 1px solid var(--rule); }
+  .reading-full-source summary { cursor: pointer; padding: .75rem 0; font-size: .85rem; color: var(--ink-2); }
+  .reading-full-source pre { font: 400 .84rem/1.9 var(--sans); white-space: pre-wrap; overflow-wrap: anywhere; margin: .25rem 0 1rem; }
+  .reading-note { color: var(--ink-2); font-size: .8rem; line-height: 1.8; margin: 1rem 0 1.1rem; }
+  .reading-full-link { font-size: .83rem; }
+  .reading-full-link span { margin-left: .5rem; }
+  .reading-locale-note { margin-top: .6rem; font-size: .73rem; }
+  .reading-message { border: 1px solid var(--rule); padding: 1.15rem 1.2rem; }
+  .reading-message > p { font-size: .85rem; line-height: 1.85; margin: 0 0 .85rem; }
+  .reading-message > p:last-child { margin-bottom: 0; }
+  .reading-message .reading-speaker { font: 500 .69rem/1.5 var(--mono); color: var(--ink-2); margin-bottom: .65rem; }
+  .reading-message .reading-source-label { font: 500 .67rem/1.5 var(--mono); margin-bottom: .4rem; }
+  .reading-user { margin-left: 2rem; background: var(--paper-2); }
+  .reading-assistant { margin-top: .85rem; border-left: 2px solid var(--ok); }
+  .reading-assistant blockquote { margin: 0 0 1.1rem; padding-left: .8rem; border-left: 1px solid var(--rule); color: var(--ink-2); font-size: .8rem; line-height: 1.9; }
+  .reading-assistant .reading-pause { margin-top: 1.1rem; padding-top: .85rem; border-top: 1px solid var(--rule); font-size: .82rem; color: var(--ok); }
+  @media (max-width: 1000px) {
+    .reading-layout { grid-template-columns: minmax(0, 1fr); gap: 2.5rem; }
+    .reading-viewport { min-height: 17rem; }
+    .reading-companion { max-width: 38rem; }
+  }
+  @media (max-width: 420px) {
+    .reading-controls { padding-inline: .85rem; }
+    .reading-controls button { padding-inline: .6rem; }
+    .reading-ticks i { width: .65rem; }
+    .reading-viewport { min-height: 23rem; }
+  }
+  @media print {
+    .reading-layout { display: block; }
+    .reading-layout [data-reading-chunk][hidden] { display: block !important; }
+    .reading-controls, .reading-keys, .reading-position, .reading-ticks { display: none !important; }
+    .reading-viewport { min-height: 0; }
+    .reading-companion { margin-top: 2rem; }
+  }
+</style>

@@ -44,6 +44,17 @@ bash scripts/install.sh</code>
         </li>
       </ol>
 
+      <div class="reading-start">
+        <h3>{t.start.readingH}</h3>
+        <p>{t.start.readingIntro}</p>
+        <blockquote>{t.start.readingQuote}</blockquote>
+        <p>{t.start.readingPage}</p>
+        <div class="cmd sm">
+          <code id="read-command">{t.start.readingCmd}</code>
+        </div>
+        <p class="reading-note">{t.start.readingNote}</p>
+      </div>
+
       <div class="grid-2 tail">
         <div>
           <h3>{t.start.ciH}</h3>
@@ -60,3 +71,10 @@ bash scripts/install.sh</code>
     </div>
   </div>
 </section>
+
+<style>
+  .reading-start { max-width: 44rem; border-top: 1px solid var(--rule); margin-top: 2rem; padding-top: 1.6rem; }
+  .reading-start p { color: var(--ink-2); font-size: .92rem; margin-block: .7rem; }
+  .reading-start blockquote { margin: 1rem 0 1.4rem; border-left: 2px solid var(--ok); padding: .65rem 1rem; background: var(--paper); }
+  .reading-start .reading-note { font-size: .84rem; max-width: 39rem; }
+</style>

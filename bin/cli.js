@@ -16,7 +16,7 @@ const path = require("path");
 const ROOT = path.join(__dirname, "..");
 const PKG = require(path.join(ROOT, "package.json"));
 
-const TOOL_CMDS = ["audit", "fmt", "verify", "report", "init", "selftest"];
+const TOOL_CMDS = ["audit", "fmt", "verify", "report", "init", "read", "selftest"];
 
 /**
  * 帮助里该印哪种调用方式。
@@ -33,7 +33,7 @@ function invocation() {
 
 const X = invocation();
 
-const USAGE = `adhd-md ${PKG.version} — 把 Markdown 改造成 ADHD 友好、可扫读的版本
+const USAGE = `adhd-md ${PKG.version} — ADHD 友好排版、分段陪读与离线阅读
 
 安装到 agent 宿主
   ${X}                        装到本机所有支持 SKILL.md 的宿主
@@ -47,10 +47,13 @@ const USAGE = `adhd-md ${PKG.version} — 把 Markdown 改造成 ADHD 友好、�
   ${X} verify 原文.md 新文.md --scope=format   无损校验
   ${X} report 原文.md 新文.md                  改前改后对比
   ${X} init --type=readme                      生成文档骨架
+  ${X} read 文档.md                           生成离线专注阅读页
+  ${X} read 文档.md --json                    输出陪读分段与原文位置
   ${X} selftest                                自检
 
 装好之后，在任意 agent 里直接说人话即可：
   「把 README.md 改成 ADHD 友好的，只改格式」
+  「陪我读 README.md，一次一小段，不修改原文」
 
 文档  https://tsonglew.github.io/adhd-md/`;
 

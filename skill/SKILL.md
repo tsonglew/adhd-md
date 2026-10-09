@@ -1,6 +1,6 @@
 ---
 name: adhd-md
-description: 把 Markdown 文档改造成 ADHD 友好、可扫读的版本，可选择只改格式、只改内容或两者兼改，并用脚本校验没有丢信息。Use when the user asks to make a document ADHD-friendly, more skimmable, or easier to read; when they say 文档太长看不下去 / 排版太密 / 全是大段文字 / 帮我把这个文档改得好读一点 / 优化一下排版; or asks to audit, lint, or restructure Markdown for readability. Triggers include ADHD friendly, ADHD 友好, 注意力友好, 可扫读, skimmable, wall of text, 文字墙, 大段文字, 改排版, 重排文档, make this readable.
+description: 把 Markdown 文档改造成 ADHD 友好、可扫读的版本，可选择只改格式、只改内容或两者兼改，并用脚本校验没有丢信息。也能保留原文，逐段陪读已有文档、解释重点、暂停续读，或生成离线专注阅读页。Use when the user asks to make a document ADHD-friendly, more skimmable, or easier to read; when they say 文档太长看不下去 / 排版太密 / 全是大段文字 / 帮我把这个文档改得好读一点 / 优化一下排版; or asks to audit, lint, or restructure Markdown for readability. Triggers include ADHD friendly, ADHD 友好, 注意力友好, 可扫读, skimmable, wall of text, 文字墙, 大段文字, 改排版, 重排文档, make this readable, 陪我读, 带我读, 读不进去, 从上次继续, focus reader, guided reading.
 ---
 
 # adhd-md
@@ -9,16 +9,34 @@ description: 把 Markdown 文档改造成 ADHD 友好、可扫读的版本，可
 
 **铁律：只重排信息，绝不删信息。** 篇幅太长就折叠或移到附录，不许删。违反这条，其他做得再好都是失败。
 
+也可以保留原文，陪用户一次读一小段，或生成可在浏览器打开的离线阅读页。
+
 ## 什么时候用
 
 用户给了一个 Markdown 文件（或一段 Markdown），希望它更好读、更好扫、更适合注意力容易断的人。
 
+用户想读懂已有文档、长文或笔记时，使用 `mode=read`。直接粘贴的文本也能陪读；网页、PDF 等通过宿主工具取得可读文本后再处理。
+
 不适用的情况：
-- 输入不是 Markdown（先转换，或直接拒绝）
+
+- 改写模式的输入不是 Markdown（先转换，或直接拒绝）
 - 用户要的是**内容审查**（事实核查、逻辑校对）—— 那不是这个 skill
 - 用户要的是**翻译**或**扩写** —— 都不是
 
-## 两个参数
+## 先选模式
+
+| mode | 做什么 | 用户会怎么说 |
+|---|---|---|
+| `edit` | 改写或审计 Markdown，走下方工作流 | 改排版 / 帮我改得好读一点 / 审计 |
+| `read` | 保留原文，逐段陪读或生成阅读页 | 陪我读 / 带我读 / 读不进去 / 从上次继续 |
+
+`mode=read` 先读 [references/reading.md](references/reading.md)，按其中的陪读或阅读页流程执行。单文件版对应附录 D。不要运行 `fmt --write`，不要给原文打分后自动改写。
+
+用户只想开始阅读时，直接从第一小段开始；有阅读目标就用，没有也能开始。明确要求两个功能时，生成阅读页并开始第一段陪读。
+
+下方的 `scope`、`level`、改写工作流和输出契约仅用于 `mode=edit`。用户只说「优化一下」时保留原有默认值。
+
+## 改写的两个参数
 
 ### scope：改什么
 
@@ -42,7 +60,7 @@ description: 把 Markdown 文档改造成 ADHD 友好、可扫读的版本，可
 
 用户没说就用 `both` + `standard`，并在报告开头一句话说明用了什么档，让人能反悔。
 
-## 工作流
+## 改写工作流
 
 ### 第 0 步 · 决定写哪里
 
@@ -84,6 +102,7 @@ python3 <skill>/scripts/adhd_md.py fmt --write 文件.md
 顺序：**先 content 再 format**。措辞定了，排版决策才稳。
 
 改之前必读：
+
 - `references/rules.md` —— 规则全表，含阈值
 - `references/antipatterns.md` —— 八种过度优化，**这个必读**
 - `references/cjk.md` —— 文档是中文时读
@@ -142,6 +161,10 @@ cp 文件.md /tmp/adhd-orig.md   # 改之前
 
 ## 没有 shell 的宿主怎么办
 
+`mode=read` 的对话陪读不需要 shell。直接按 `references/reading.md` 处理已取得的原文，并在暂停时给出可复制书签。
+
+离线 HTML 生成器需要 Python 3；没有执行能力就说明无法运行生成器，不声称已经创建文件。
+
 拿不到 Bash / 命令执行时：
 
 1. 跳过 audit / fmt / verify，按 `references/rules.md` 人工过一遍
@@ -184,10 +207,11 @@ cp 文件.md /tmp/adhd-orig.md   # 改之前
 
 | 文件 | 什么时候读 |
 |---|---|
-| `references/rules.md` | 每次都读。规则全表 + 阈值 + 轴/档标记 |
-| `references/antipatterns.md` | 每次都读。八种过度优化 + 自检清单 |
+| `references/reading.md` | `mode=read`。陪读、来源边界、书签与离线阅读页 |
+| `references/rules.md` | 每次改写都读。规则全表 + 阈值 + 轴/档标记 |
+| `references/antipatterns.md` | 每次改写都读。八种过度优化 + 自检清单 |
 | `references/rubric.md` | 需要解释分数、或要手工补 judge 项评分时 |
-| `references/cjk.md` | 文档是中文 |
+| `references/cjk.md` | 改写的文档是中文 |
 | `references/doc-types.md` | `level=deep` 且要重排整体骨架 |
 | `references/evidence.md` | 解释「为什么这样改」或做规则取舍时 |
 

@@ -23,6 +23,7 @@ APPENDIX = [
     ("A", "规则库", "references/rules.md"),
     ("B", "反模式：优化过头", "references/antipatterns.md"),
     ("C", "中文文档专项", "references/cjk.md"),
+    ("D", "陪读与离线阅读页", "references/reading.md"),
 ]
 
 PREAMBLE = """<!-- 本文件由 scripts/build_standalone.py 从 skill/ 生成，请勿手改。 -->
@@ -31,9 +32,11 @@ PREAMBLE = """<!-- 本文件由 scripts/build_standalone.py 从 skill/ 生成，
 
 > **这个版本用于没有命令执行能力的环境**：网页版 LLM，或任何不能跑 shell 的 agent。
 
-下文所有 `python3 .../adhd_md.py` 命令**全部跳过**。改为按附录 A 的规则人工执行，用附录 B 末尾的自检清单自查。
+下文所有 `python3 .../adhd_md.py` 命令**全部跳过**。改写时按附录 A 的规则人工执行，用附录 B 末尾的自检清单自查。
 
-**必须在报告里写明「未做机器校验」。** 假装跑过校验比不校验更糟。
+**改写报告必须写明「未做机器校验」。** 假装跑过校验比不校验更糟。
+
+陪读使用附录 D，直接处理已取得的原文，一次一小段，并在暂停时给出书签。对话陪读不需要 shell；离线 HTML 生成器需要完整版和 Python 3，不能在这里声称已经运行或生成文件。
 
 能跑命令的环境请用完整版，带确定性审计与无损校验脚本。
 """

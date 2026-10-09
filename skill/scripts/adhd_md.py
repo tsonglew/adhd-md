@@ -2,7 +2,7 @@
 """adhd-md 的确定性工具层：审计、格式修复、无损校验。
 
 设计原则：能用规则算准的事情不交给模型。
-纯标准库，单文件，Python 3.9+。
+纯标准库，Python 3.9+。阅读页生成器位于同目录 reader.py。
 
 子命令：
   audit   评分 + 逐条 findings
@@ -10,6 +10,7 @@
   verify  无损校验门禁（format 档可证明无损）
   report  改前改后分数对比
   init    生成文档骨架
+  read    生成离线阅读页或陪读分段数据，保留原文
   selftest 自检
 """
 from __future__ import annotations
@@ -1603,10 +1604,58 @@ def cmd_init(a):
     return 0
 
 
+def cmd_read(a):
+    from reader import build_reading_data, render_reader
+
+    if a.json and a.output:
+        print("read: --json 输出到标准输出，不能同时指定 --output。", file=sys.stderr)
+        return 2
+    try:
+        if a.file == "-":
+            stream = getattr(sys.stdin, "buffer", sys.stdin)
+            original = stream.read()
+            if isinstance(original, bytes):
+                original = original.decode("utf-8")
+            source_name = "stdin.md"
+        else:
+            source = Path(a.file)
+            if source.suffix.lower() not in {".md", ".markdown", ".mdown", ".txt", ".text"}:
+                raise ValueError("请提供 UTF-8 Markdown 或纯文本文件；网页、PDF、Word 请先提取正文。")
+            with source.open(encoding="utf-8", newline="") as handle:
+                original = handle.read()
+            source_name = source.name
+        if not original.strip("\ufeff \t\r\n"):
+            raise ValueError("文档为空，请提供要阅读的正文。")
+        if "\x00" in original:
+            raise ValueError("文件含二进制内容，请先转换为 UTF-8 文本。")
+        data = build_reading_data(original, source_name, chunk_size=a.chunk_size)
+        if a.json:
+            print(json.dumps(data, ensure_ascii=False, indent=2))
+            return 0
+        output = Path(a.output) if a.output else (
+            Path("stdin.reader.html") if a.file == "-" else Path(a.file).with_suffix(".reader.html"))
+        page = render_reader(data)
+        # Exclusive creation also refuses symlinks and hardlinks to existing files.
+        with output.open("x", encoding="utf-8", newline="\n") as handle:
+            handle.write(page)
+        print(f"已生成阅读页：{output.resolve()}（{len(data['chunks'])} 段）")
+        print("用浏览器打开即可阅读；原文保持不变。")
+        return 0
+    except FileExistsError:
+        print("read: 输出文件已存在；请用 -o 指定新文件名。", file=sys.stderr)
+    except UnicodeError:
+        print("read: 文件不是有效的 UTF-8 文本，请先转换编码。", file=sys.stderr)
+    except (OSError, ValueError) as exc:
+        print(f"read: {exc}", file=sys.stderr)
+    return 2
+
+
 def cmd_selftest(a):
     import unittest
     sys.argv = sys.argv[:1]
-    suite = unittest.TestLoader().loadTestsFromNames(["__main__.SelfTest"])
+    loader = unittest.TestLoader()
+    suite = loader.loadTestsFromTestCase(SelfTest)
+    suite.addTests(loader.discover(str(Path(__file__).parent / "tests"), pattern="test_reader*.py"))
     res = unittest.TextTestRunner(verbosity=2).run(suite)
     return 0 if res.wasSuccessful() else 1
 
@@ -2007,6 +2056,13 @@ def main(argv=None):
     p = sub.add_parser("init", help="生成文档骨架")
     p.add_argument("--type", required=True, choices=sorted(SKELETONS))
     p.set_defaults(fn=cmd_init)
+
+    p = sub.add_parser("read", help="生成离线阅读页，或输出陪读分段 JSON")
+    p.add_argument("file", help="UTF-8 Markdown / 纯文本文件；- 从标准输入读取")
+    p.add_argument("-o", "--output", help="HTML 输出路径（默认 <原名>.reader.html，不覆盖已有文件）")
+    p.add_argument("--chunk-size", type=int, default=900, help="每段目标字符数，完整代码块等可以超出（默认 900）")
+    p.add_argument("--json", action="store_true", help="只输出原文、分段和源位置，供 AI 陪读使用")
+    p.set_defaults(fn=cmd_read)
 
     p = sub.add_parser("selftest", help="自检")
     p.set_defaults(fn=cmd_selftest)

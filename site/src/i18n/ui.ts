@@ -2,6 +2,48 @@
  * 站点文案。中文是主语言，英文是翻译。
  * 带 _html 后缀的字段允许内联 <code> 等标记（内容来自本文件，不经用户输入）。
  */
+const zhReadingChunks = [
+  {
+    title: "用途与接入",
+    text: "md-cache 是一个 Markdown 渲染缓存中间件，把渲染结果按内容哈希缓存到本地磁盘，命中时直接返回，避免重复渲染。它需要 Node 18 以上版本，依赖只有一个 lru-cache。装好之后在渲染管线里包一层 withCache 就行。",
+  },
+  {
+    title: "默认值与过期时间",
+    text: "缓存目录默认是 .cache/md，可以用 MD_CACHE_DIR 环境变量改。默认最大条目数是 500，用 maxEntries 选项改。默认 TTL 是 7 天，用 ttl 选项改，单位是毫秒。设成 0 表示永不过期，但磁盘会一直涨，生产环境不建议。",
+  },
+  {
+    title: "使用前要知道的限制",
+    text: "如果渲染函数有副作用，不要用这个中间件，因为命中缓存时渲染函数根本不会被调用。如果你的 Markdown 里嵌了时间戳或随机数，输出会被缓存住，看起来像是不刷新，这不是 bug。",
+  },
+  {
+    title: "这篇示例给出的测试结果",
+    text: "实测在 1200 篇文档的站点上，冷启动构建 42 秒，二次构建 3.1 秒，快十三倍。",
+  },
+];
+
+const enReadingChunks = [
+  {
+    title: "Purpose and setup",
+    text: "md-cache is a Markdown rendering cache middleware that stores render results on disk keyed by content hash, and returns them directly on hit so nothing renders twice. It requires Node 18+, and its only dependency is lru-cache. Once installed, wrap your rendering pipeline with withCache.",
+  },
+  {
+    title: "Defaults and expiration",
+    text: "The cache directory defaults to .cache/md, and you can change it with the MD_CACHE_DIR environment variable. The default entry limit is 500, changeable via the maxEntries option. The default TTL is 7 days, changeable via the ttl option in milliseconds. Setting it to 0 means never expire, but the disk grows forever, which production environments should avoid.",
+  },
+  {
+    title: "Limits to know before you use it",
+    text: "If your render function has side effects, don't use this middleware, because on a cache hit the render function never runs. If your Markdown embeds timestamps or random values, the output gets frozen by the cache and looks like it never refreshes. That's not a bug.",
+  },
+  {
+    title: "Results reported in this sample",
+    text: "Measured on a site with 1,200 documents: cold build 42 seconds, second build 3.1 seconds. Thirteen times faster.",
+  },
+];
+
+// Both the embedded preview and generated standalone reader use this source.
+const readingSource = (chunks: { text: string }[]) =>
+  "# md-cache\n\n" + chunks.map((chunk) => chunk.text).join("\n\n") + "\n";
+
 const zh = {
   lang: "zh-CN",
   otherUrl: "/adhd-md/en/",
@@ -44,6 +86,7 @@ const zh = {
     creed1: "只重排信息，绝不删信息。",
     creed2: "篇幅太长就折叠或移到附录。格式档的改动可被脚本证明无损。",
     buttons: ["看源码", "看对照"],
+    readingLink: "试试陪读",
   },
   problem: {
     h2: "读不下去的文档，问题多半在排版",
@@ -99,6 +142,36 @@ const zh = {
     footWords: "新增词 0，删除词 0。",
     asideHtml:
       "注意改后没有给配置列表加小标题。「配置」这两个字原文里没有，加了就是新写措辞，越界成 <code>content</code>。结构可以大改，一个词都动不了，格式档的天花板就在这里。",
+  },
+  reading: {
+    nav: "陪读",
+    h2: "已经有文档了？一起读下去",
+    sub: "同一篇 md-cache 文档，一次只看一小段。可以自己按节奏读，也可以请 agent 解释卡住的地方。",
+    previewLabel: "动手试试 · 聚焦阅读",
+    docTitle: "md-cache",
+    originalLabel: "原文片段",
+    previewNote: "这里演示分段阅读。完整阅读页还支持字号、行距和本地进度保存。",
+    sourceChunks: zhReadingChunks,
+    sourceMarkdown: readingSource(zhReadingChunks),
+    position: "第 {current} / {total} 段",
+    previous: "上一段",
+    next: "下一段",
+    keyboardHint: "聚焦阅读区后，也可用 ← → 换段。随时可以停在这里。",
+    regionLabel: "md-cache 分段阅读示例",
+    sourceToggle: "查看完整原文",
+    fullDemo: "打开完整阅读页",
+    fullDemoHref: "/adhd-md/reader-demo.html",
+    fullDemoNote: "",
+    chatLabel: "对话示意 · 让 agent 陪你读",
+    userLabel: "你",
+    userText: "TTL 是什么？只带我看这一点。",
+    assistantLabel: "陪读 agent",
+    quoteLabel: "对应原文",
+    quote: "默认 TTL 是 7 天，用 ttl 选项改，单位是毫秒。设成 0 表示永不过期，但磁盘会一直涨，生产环境不建议。",
+    explanationLabel: "讲解",
+    explanation: "TTL 就是缓存保留多久。这里默认保留 7 天；自己填写 ttl 时，数值的单位要用毫秒。0 会让缓存一直保留，也会带来原文提到的磁盘增长问题。",
+    chatPrompt: "想继续看下一段，还是先停在这里？",
+    chatNote: "在已安装 skill 的 agent 里发送这类请求即可开始；可以追问、跳过，或留个书签下次接着读。",
   },
   scope: {
     h2: "只改格式，只改内容，或者两者都改",
@@ -219,6 +292,12 @@ const zh = {
   },
   start: {
     h2: "两分钟装好",
+    readingH: "已有文档，也可以陪你读",
+    readingIntro: "在对话里一次读一小段，解释卡住的地方；随时暂停，下次从书签继续。",
+    readingQuote: "陪我读这篇文档，一次一小段，不修改原文",
+    readingPage: "想自己读，就生成离线阅读页。",
+    readingCmd: "npx github:tsonglew/adhd-md read your-doc.md",
+    readingNote: "用浏览器打开生成的 your-doc.reader.html。可切换全文、调整字号与行距，并在当前浏览器记住进度。支持 Markdown 和纯文本，保留完整原文。",
     s1: "装。三种方式任选一种，脚本会探测本机装了哪些 agent，只往存在的宿主里放。",
     wayNode: "有 Node",
     wayNoNode: "没 Node",
@@ -232,7 +311,7 @@ const zh = {
     ciCmd: "adhd_md.py fmt --check docs/*.md\nadhd_md.py audit --min-score 70 docs/*.md",
     noShellH: "没有命令执行能力的环境",
     noShellHtml:
-      "网页版 LLM 直接粘贴自包含单文件 <a href=\"https://github.com/tsonglew/adhd-md/blob/main/dist/adhd-md.standalone.md\">adhd-md.standalone.md</a> ，30 KB，规则全带。降级后没有机器校验，报告里必须写明。",
+      "网页版 LLM 直接粘贴自包含单文件 <a href=\"https://github.com/tsonglew/adhd-md/blob/main/dist/adhd-md.standalone.md\">adhd-md.standalone.md</a>，包含改写与陪读规则。没有机器校验，改写报告里必须写明；对话陪读可以直接开始。",
   },
 };
 
@@ -279,6 +358,7 @@ const en: typeof zh = {
     creed1: "Rearrange information. Never delete it.",
     creed2: "Too long? Collapse it or move it to an appendix. Format-mode changes are provably lossless.",
     buttons: ["Source", "See the demo"],
+    readingLink: "Try reading mode",
   },
   problem: {
     h2: "Unreadable docs are usually a layout problem",
@@ -334,6 +414,36 @@ const en: typeof zh = {
     footWords: "Words added: 0. Words deleted: 0.",
     asideHtml:
       "Notice what the fixed version doesn't do: no heading above the config list. The word “Configuration” isn't in the original — adding it would be new wording, which crosses into <code>content</code>. You can restructure everything, but you can't touch a single word. That's the ceiling of format mode, and it's the point.",
+  },
+  reading: {
+    nav: "Read",
+    h2: "Already have a document? Read it at your pace",
+    sub: "The same md-cache document, one short section at a time. Read on your own, or ask your agent to explain where you get stuck.",
+    previewLabel: "Try it · focused reading",
+    docTitle: "md-cache",
+    originalLabel: "Original excerpt",
+    previewNote: "This preview shows section-by-section reading. The full reader also offers type size, line spacing, and locally saved progress.",
+    sourceChunks: enReadingChunks,
+    sourceMarkdown: readingSource(enReadingChunks),
+    position: "Section {current} of {total}",
+    previous: "Previous",
+    next: "Next",
+    keyboardHint: "Focus the reading area, then use ← → to move. You can stop here anytime.",
+    regionLabel: "md-cache section-by-section reading example",
+    sourceToggle: "View the complete original",
+    fullDemo: "Open the full reader",
+    fullDemoHref: "/adhd-md/en/reader-demo.html",
+    fullDemoNote: "Standalone reader controls are currently in Chinese.",
+    chatLabel: "Example conversation · read with your agent",
+    userLabel: "You",
+    userText: "What does TTL mean? Let's just read that part.",
+    assistantLabel: "Reading companion",
+    quoteLabel: "From the original",
+    quote: "The default TTL is 7 days, changeable via the ttl option in milliseconds. Setting it to 0 means never expire, but the disk grows forever, which production environments should avoid.",
+    explanationLabel: "Explanation",
+    explanation: "TTL means how long a cached result is kept. Here the default is 7 days; when you set ttl yourself, use milliseconds. A value of 0 keeps the cache indefinitely, with the disk-growth risk the original mentions.",
+    chatPrompt: "Would you like the next section, or shall we pause here?",
+    chatNote: "Send a request like this to an agent with the skill installed. Ask questions, skip ahead, or leave a bookmark to return to later.",
   },
   scope: {
     h2: "Format only, content only, or both",
@@ -454,6 +564,12 @@ const en: typeof zh = {
   },
   start: {
     h2: "Installed in two minutes",
+    readingH: "Read the documents you already have",
+    readingIntro: "Read one short section at a time in chat, ask about what feels unclear, and pause with a bookmark to return to.",
+    readingQuote: "Read this document with me, one short section at a time. Keep the original unchanged.",
+    readingPage: "For reading on your own, generate an offline reader.",
+    readingCmd: "npx github:tsonglew/adhd-md read your-doc.md",
+    readingNote: "Open the generated your-doc.reader.html in a browser. Switch to the full text, adjust type size and spacing, and keep your place in this browser. Supports Markdown and plain text; the complete source is preserved.",
     s1: "Install. Any of the three ways works — the script detects which agents you have and only touches those hosts.",
     wayNode: "With Node",
     wayNoNode: "Without Node",
@@ -467,7 +583,7 @@ const en: typeof zh = {
     ciCmd: "adhd_md.py fmt --check docs/*.md\nadhd_md.py audit --min-score 70 docs/*.md",
     noShellH: "No command execution available",
     noShellHtml:
-      "Web-chat LLMs can paste the self-contained single file, <a href=\"https://github.com/tsonglew/adhd-md/blob/main/dist/adhd-md.standalone.md\">adhd-md.standalone.md</a>, 30 KB with all rules. The catch: no machine checks — say so in your report.",
+      "Web-chat LLMs can paste the self-contained <a href=\"https://github.com/tsonglew/adhd-md/blob/main/dist/adhd-md.standalone.md\">adhd-md.standalone.md</a>, with editing and guided reading rules. Editing reports must state that machine checks were unavailable; guided reading can start directly.",
   },
 };
 

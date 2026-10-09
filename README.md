@@ -2,15 +2,17 @@
 
 把 Markdown 改造成 ADHD 友好的样子：结论前置、段落切碎、动作明确。**只重排信息，绝不删信息。**
 
+也能保留已有文档，在 AI 对话里逐段陪读，或生成离线专注阅读页。
+
 同一份 skill 在 Claude Code、Codex、Grok Build、Gemini CLI、Cursor、opencode 里都能用。
 
 <img width="962" height="741" alt="image" src="https://github.com/user-attachments/assets/da16f89a-f732-471c-9bfc-509714e05a66" />
-
 
 [看官网的 before/after 对照](https://tsonglew.github.io/adhd-md/)
 
 - [能干什么](#能干什么)
 - [装 + 跑（约 2 分钟）](#装--跑约-2-分钟)
+- [阅读已有文档](#阅读已有文档)
 - [两个参数](#两个参数)
 - [无损保证](#无损保证)
 - [支持哪些 agent](#支持哪些-agent)
@@ -28,6 +30,11 @@
 - **两者兼改**：默认档
 - **去 AI 味**：翻案腔、预告式冒号、装深刻的话、黑话、破折号密度，逐条报位置
 - **确定性修复**：中英文间距、中文标点、序号、空行、代码块语言标签，脚本直接修，不用模型
+
+阅读已有资料：
+
+- **对话陪读**：一次读一小段，解释重点与术语，可以回看、跳过、暂停和用书签续读
+- **离线阅读页**：把已有 Markdown / 文本生成 HTML，逐段阅读、调字号行距、保存进度，原文保持不变
 
 ## 装 + 跑（约 2 分钟）
 
@@ -58,7 +65,42 @@ npx github:tsonglew/adhd-md audit 你的文档.md
 
 > 把 README.md 改成 ADHD 友好的，只改格式
 
+## 阅读已有文档
+
+想有人带着读，在装好 skill 的 agent 里说：
+
+> 用 adhd-md 陪我读这份文档，一次一小段，先别修改它。
+
+agent 会保留原文，指出当前读到的位置，再讲解这一段。可以随时说「继续」「解释一下」「回到上一段」「跳过」或「暂停」。
+
+暂停时会给书签，下次贴回书签即可续读；跳过的内容会留在待读清单里。对话陪读不需要命令执行能力。
+
+支持本地 Markdown、纯文本或粘贴内容。网页和 PDF 需要宿主先取得可读文本；无法访问或识别的部分会明确标出。
+
+想自己专注阅读，运行下面任一命令（需要 Python 3；第一种另需 Node）：
+
+```bash
+npx github:tsonglew/adhd-md read 文档.md
+python3 skill/scripts/adhd_md.py read 文档.md
+```
+
+命令生成 `文档.reader.html`，用浏览器打开即可。页面支持逐段切换、回看完整原文、调整字号与行距，并在浏览器允许时保存本地进度。
+
+生成器不上传原文、不调用模型；生成文件包含原文，分享时请按原文的分享范围处理。
+
+自定义片段大小和输出位置：
+
+```bash
+python3 skill/scripts/adhd_md.py read 文档.txt --chunk-size 900 -o /tmp/文档.reader.html
+```
+
+`--chunk-size` 是目标字符数，代码块或表格可能超过目标。输出路径已存在时拒绝覆盖，换一个新路径即可。需要 AI 解释时继续在 agent 中陪读，也可以直接说「生成阅读页，再陪我读第一段」。
+
+完整行为与书签格式见 [陪读与离线阅读页](skill/references/reading.md)。
+
 ## 两个参数
+
+下面的 `scope`、`level` 用于改写文档。陪读使用 `mode=read`，保留原文件；原有改写功能使用 `mode=edit`。
 
 | scope | 边界 | 怎么说 |
 |---|---|---|
@@ -145,6 +187,16 @@ adhd_md.py init --type=readme|tutorial|reference|adr|runbook|notes
 adhd_md.py selftest
 ```
 
+阅读页命令：
+
+```bash
+adhd_md.py read FILE [-o OUTPUT] [--chunk-size 900] [--json]
+```
+
+`read --json` 只输出分段和来源定位数据，供 agent 使用，不生成 HTML。`read` 接收 UTF-8 Markdown / 文本；网页和 PDF 先通过宿主工具提取文本。
+
+输入 `-` 可从标准输入读取，默认生成 `stdin.reader.html`。`--json` 不能与 `-o` 同用。
+
 接 CI：
 
 ```bash
@@ -174,6 +226,8 @@ npm run build    # 构建到 site/dist/，Pages workflow 部署的就是它
 改 `og.html` 或 `icon-square.svg` 之后重跑 `bash scripts/build-og.sh`，位图产物写进 `site/public/`。
 
 ## 深入
+
+[陪读与离线阅读页](skill/references/reading.md) 介绍来源范围、分段讲解、跳过与续读书签。
 
 - [规则库](skill/references/rules.md)：78 条规则，带轴/档/阈值。去 AI 味的 M 组十四条也在里面，每条写明它是哪一种阅读成本
 - [规则证据库](skill/references/evidence.md)：每条规则对应的 ADHD 机制、产品模式与文献出处
