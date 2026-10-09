@@ -1,6 +1,6 @@
 ---
 name: adhd-md
-description: 把 Markdown 文档改造成 ADHD 友好、可扫读的版本，可选择只改格式、只改内容或两者兼改，并用脚本校验没有丢信息。也能保留原文，逐段陪读已有文档、解释重点、暂停续读，或生成离线专注阅读页。Use when the user asks to make a document ADHD-friendly, more skimmable, or easier to read; when they say 文档太长看不下去 / 排版太密 / 全是大段文字 / 帮我把这个文档改得好读一点 / 优化一下排版; or asks to audit, lint, or restructure Markdown for readability. Triggers include ADHD friendly, ADHD 友好, 注意力友好, 可扫读, skimmable, wall of text, 文字墙, 大段文字, 改排版, 重排文档, make this readable, 陪我读, 带我读, 读不进去, 从上次继续, focus reader, guided reading.
+description: 把 Markdown 文档改造成 ADHD 友好、可扫读的版本，可选择只改格式、只改内容或两者兼改，并用脚本校验没有丢信息。也能自动提取网页、HTML、PDF 与扫描件的正文，保留来源，逐段陪读已有文档、解释重点、暂停续读，或生成离线专注阅读页。Use when the user asks to make a document ADHD-friendly, more skimmable, or easier to read; when they say 文档太长看不下去 / 排版太密 / 全是大段文字 / 帮我把这个文档改得好读一点 / 优化一下排版; or asks to audit, lint, or restructure Markdown for readability. Triggers include ADHD friendly, ADHD 友好, 注意力友好, 可扫读, skimmable, wall of text, 文字墙, 大段文字, 改排版, 重排文档, make this readable, 陪我读, 带我读, 读不进去, 从上次继续, focus reader, guided reading.
 ---
 
 # adhd-md
@@ -15,7 +15,9 @@ description: 把 Markdown 文档改造成 ADHD 友好、可扫读的版本，可
 
 用户给了一个 Markdown 文件（或一段 Markdown），希望它更好读、更好扫、更适合注意力容易断的人。
 
-用户想读懂已有文档、长文或笔记时，使用 `mode=read`。直接粘贴的文本也能陪读；网页、PDF 等通过宿主工具取得可读文本后再处理。
+用户想读懂已有文档、长文或笔记时，使用 `mode=read`。直接粘贴的文本也能陪读。
+
+网页链接、本地 HTML 和 PDF 可通过 `read` 自动提取后阅读，或用 `extract` 另存为 Markdown；PDF 与扫描件需要本机的提取或 OCR 工具。没有 shell 时使用宿主读取能力，按来源标出缺口。
 
 不适用的情况：
 

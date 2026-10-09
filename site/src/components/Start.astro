@@ -53,6 +53,16 @@ bash scripts/install.sh</code>
           <code id="read-command">{t.start.readingCmd}</code>
         </div>
         <p class="reading-note">{t.start.readingNote}</p>
+        <details class="extraction-setup">
+          <summary>{t.start.extractionH}</summary>
+          <p>{t.start.extractionNote}</p>
+          <p class="way">{t.start.extractionMac}</p>
+          <div class="cmd sm"><code>brew install poppler tesseract tesseract-lang</code></div>
+          <p class="way">{t.start.extractionLinux}</p>
+          <div class="cmd sm"><code>sudo apt install poppler-utils tesseract-ocr tesseract-ocr-chi-sim</code></div>
+          <p class="reading-note">{t.start.extractionLimit}</p>
+        </details>
+        <p class="reading-note">{t.start.extractionCmd}</p>
       </div>
 
       <div class="grid-2 tail">
@@ -76,5 +86,8 @@ bash scripts/install.sh</code>
   .reading-start { max-width: 44rem; border-top: 1px solid var(--rule); margin-top: 2rem; padding-top: 1.6rem; }
   .reading-start p { color: var(--ink-2); font-size: .92rem; margin-block: .7rem; }
   .reading-start blockquote { margin: 1rem 0 1.4rem; border-left: 2px solid var(--ok); padding: .65rem 1rem; background: var(--paper); }
-  .reading-start .reading-note { font-size: .84rem; max-width: 39rem; }
+  .reading-start .reading-note { font-size: .84rem; max-width: 39rem; overflow-wrap: anywhere; }
+  .extraction-setup { margin: 1rem 0; border-block: 1px solid var(--rule); padding: .85rem 0; }
+  .extraction-setup summary { cursor: pointer; font-size: .9rem; }
+  .extraction-setup summary:focus-visible { outline: 2px solid var(--ok); outline-offset: 4px; }
 </style>

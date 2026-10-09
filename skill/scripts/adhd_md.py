@@ -11,6 +11,7 @@
   report  改前改后分数对比
   init    生成文档骨架
   read    生成离线阅读页或陪读分段数据，保留原文
+  extract 自动提取网页或 PDF 正文
   selftest 自检
 """
 from __future__ import annotations
@@ -1604,50 +1605,66 @@ def cmd_init(a):
     return 0
 
 
-def cmd_read(a):
-    from reader import build_reading_data, render_reader
+def _source_command(a, *, extracted=False):
+    from sources import export_markdown, load_source, output_path
 
+    command = "extract" if extracted else "read"
     if a.json and a.output:
-        print("read: --json 输出到标准输出，不能同时指定 --output。", file=sys.stderr)
+        print(f"{command}: --json 输出到标准输出，不能同时指定 --output。", file=sys.stderr)
         return 2
     try:
+        original = None
         if a.file == "-":
             stream = getattr(sys.stdin, "buffer", sys.stdin)
             original = stream.read()
             if isinstance(original, bytes):
                 original = original.decode("utf-8")
-            source_name = "stdin.md"
+        result = load_source(a.file, timeout=a.timeout, ocr=a.ocr,
+                             ocr_lang=a.ocr_lang, stdin_text=original)
+        if extracted:
+            data = result
+            content = export_markdown(result)
         else:
-            source = Path(a.file)
-            if source.suffix.lower() not in {".md", ".markdown", ".mdown", ".txt", ".text"}:
-                raise ValueError("请提供 UTF-8 Markdown 或纯文本文件；网页、PDF、Word 请先提取正文。")
-            with source.open(encoding="utf-8", newline="") as handle:
-                original = handle.read()
-            source_name = source.name
-        if not original.strip("\ufeff \t\r\n"):
-            raise ValueError("文档为空，请提供要阅读的正文。")
-        if "\x00" in original:
-            raise ValueError("文件含二进制内容，请先转换为 UTF-8 文本。")
-        data = build_reading_data(original, source_name, chunk_size=a.chunk_size)
+            from reader import build_reading_data, render_reader
+
+            data = build_reading_data(result["text"], result["source_name"], chunk_size=a.chunk_size)
+            if result.get("title"):
+                data["title"] = result["title"]
+            if result.get("origin"):
+                data["origin"] = result["origin"]
+            content = None
         if a.json:
             print(json.dumps(data, ensure_ascii=False, indent=2))
             return 0
-        output = Path(a.output) if a.output else (
-            Path("stdin.reader.html") if a.file == "-" else Path(a.file).with_suffix(".reader.html"))
-        page = render_reader(data)
+        output = Path(a.output) if a.output else output_path(a.file, result, extracted=extracted)
+        if not extracted:
+            content = render_reader(data)
         # Exclusive creation also refuses symlinks and hardlinks to existing files.
-        with output.open("x", encoding="utf-8", newline="\n") as handle:
-            handle.write(page)
-        print(f"已生成阅读页：{output.resolve()}（{len(data['chunks'])} 段）")
-        print("用浏览器打开即可阅读；原文保持不变。")
+        with output.open("x", encoding="utf-8", newline="") as handle:
+            handle.write(content)
+        if extracted:
+            print(f"已提取正文：{output.resolve()}")
+        else:
+            print(f"已生成阅读页：{output.resolve()}（{len(data['chunks'])} 段）")
+            print("用浏览器打开即可阅读；原文保持不变。")
+        for warning in result.get("origin", {}).get("warnings", []):
+            print(f"{command}: {warning}", file=sys.stderr)
         return 0
     except FileExistsError:
-        print("read: 输出文件已存在；请用 -o 指定新文件名。", file=sys.stderr)
+        print(f"{command}: 输出文件已存在；请用 -o 指定新文件名。", file=sys.stderr)
     except UnicodeError:
-        print("read: 文件不是有效的 UTF-8 文本，请先转换编码。", file=sys.stderr)
+        print(f"{command}: 无法解码正文；Markdown / 文本文件请使用 UTF-8 编码。", file=sys.stderr)
     except (OSError, ValueError) as exc:
-        print(f"read: {exc}", file=sys.stderr)
+        print(f"{command}: {exc}", file=sys.stderr)
     return 2
+
+
+def cmd_read(a):
+    return _source_command(a)
+
+
+def cmd_extract(a):
+    return _source_command(a, extracted=True)
 
 
 def cmd_selftest(a):
@@ -1656,6 +1673,7 @@ def cmd_selftest(a):
     loader = unittest.TestLoader()
     suite = loader.loadTestsFromTestCase(SelfTest)
     suite.addTests(loader.discover(str(Path(__file__).parent / "tests"), pattern="test_reader*.py"))
+    suite.addTests(loader.discover(str(Path(__file__).parent / "tests"), pattern="test_extract*.py"))
     res = unittest.TextTestRunner(verbosity=2).run(suite)
     return 0 if res.wasSuccessful() else 1
 
@@ -2057,12 +2075,23 @@ def main(argv=None):
     p.add_argument("--type", required=True, choices=sorted(SKELETONS))
     p.set_defaults(fn=cmd_init)
 
-    p = sub.add_parser("read", help="生成离线阅读页，或输出陪读分段 JSON")
-    p.add_argument("file", help="UTF-8 Markdown / 纯文本文件；- 从标准输入读取")
-    p.add_argument("-o", "--output", help="HTML 输出路径（默认 <原名>.reader.html，不覆盖已有文件）")
+    def source_arguments(parser, output_help):
+        parser.add_argument("file", help="Markdown / 文本 / HTML / PDF 文件，或 HTTP(S) 网址；- 读取标准输入")
+        parser.add_argument("-o", "--output", help=output_help)
+        parser.add_argument("--timeout", type=float, default=20, help="网络请求及每次提取工具调用的超时秒数（默认 20）")
+        parser.add_argument("--ocr", choices=["auto", "never", "always"], default="auto", help="PDF OCR：无文字页自动识别 / 不识别 / 所有页识别")
+        parser.add_argument("--ocr-lang", help="Tesseract 语言，如 chi_sim+eng；默认使用已安装的中英文语言")
+
+    p = sub.add_parser("read", help="自动提取并生成离线阅读页，或输出陪读分段 JSON")
+    source_arguments(p, "HTML 输出路径（默认 <原名>.reader.html，不覆盖已有文件）")
     p.add_argument("--chunk-size", type=int, default=900, help="每段目标字符数，完整代码块等可以超出（默认 900）")
     p.add_argument("--json", action="store_true", help="只输出原文、分段和源位置，供 AI 陪读使用")
     p.set_defaults(fn=cmd_read)
+
+    p = sub.add_parser("extract", help="自动提取网页 / PDF 正文，保存 Markdown 或输出 JSON")
+    source_arguments(p, "Markdown 输出路径（默认 <原名>.extracted.md，不覆盖已有文件）")
+    p.add_argument("--json", action="store_true", help="输出正文和提取来源信息，不写文件")
+    p.set_defaults(fn=cmd_extract)
 
     p = sub.add_parser("selftest", help="自检")
     p.set_defaults(fn=cmd_selftest)

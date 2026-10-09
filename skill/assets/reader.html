@@ -61,6 +61,14 @@
     .eyebrow { color: var(--muted); font-size: 11px; font-weight: 600; letter-spacing: .14em; }
     .document-title { margin: 12px 0 10px; font: 600 26px/1.5 "Songti SC", "SimSun", Georgia, serif; overflow-wrap: anywhere; }
     .source-name { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.6; overflow-wrap: anywhere; }
+    .source-link { display: inline-block; margin-top: 8px; font-size: 12px; }
+    .extraction-info { margin: 0 0 22px; padding: 17px 20px; border: 1px solid var(--line); border-radius: 7px; background: #edf0e8; font-size: 12px; line-height: 1.8; overflow-wrap: anywhere; }
+    .extraction-info p { margin: 0; }
+    .extraction-info p + p { margin-top: 5px; }
+    .extraction-info ul { margin: 10px 0 0; padding-left: 1.4em; }
+    .extraction-info li + li { margin-top: 5px; }
+    .source-code-details { margin-top: 30px; padding-top: 18px; border-top: 1px solid var(--line); }
+    .source-code-details summary { font-size: 13px; width: fit-content; margin-bottom: 18px; }
     .location { margin-top: 28px; padding-bottom: 26px; border-bottom: 1px solid var(--line); }
     .location-row { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 11px; font-size: 12px; }
     .location-row strong { font-weight: 500; font-variant-numeric: tabular-nums; }
@@ -225,6 +233,7 @@
       <span class="eyebrow">你的阅读桌</span>
       <h1 id="document-title" class="document-title"></h1>
       <p id="source-name" class="source-name"></p>
+      <a id="source-link" class="source-link" target="_blank" rel="noopener noreferrer" hidden>打开来源</a>
       <div class="location">
         <div class="location-row"><strong id="location-label"></strong><span id="completion-label" class="completion-label"></span></div>
         <progress id="reading-progress" aria-label="当前段落位置"></progress>
@@ -254,6 +263,12 @@
         </details>
       </div>
 
+      <section id="extraction-info" class="extraction-info" aria-label="提取来源与核对提示" hidden>
+        <p id="extraction-method"></p>
+        <p id="extraction-note"></p>
+        <ul id="extraction-warnings" hidden></ul>
+      </section>
+
       <div class="reading-page">
         <div class="page-heading">
           <div class="page-meta"><span id="section-label" class="section-label"></span><span id="line-range" class="line-range"></span></div>
@@ -272,9 +287,14 @@
 
         <section id="original-view" aria-labelledby="original-heading" hidden>
           <h2 id="original-heading" class="reading-heading" tabindex="-1">原始文本</h2>
-          <p class="original-note">这里保留输入文件的完整文字、空行和 Markdown 标记。下载可取回这份原始文本。</p>
+          <p id="original-note" class="original-note">这里保留输入文件的完整文字、空行和 Markdown 标记。下载可取回这份原始文本。</p>
           <a id="download-source" class="download-link" download>下载原始文本</a>
           <pre id="original-text" class="original-text"></pre>
+          <details id="source-code-details" class="source-code-details" hidden>
+            <summary>查看取得的 HTML 源码</summary>
+            <p class="original-note">保留用于核对。这里只显示源码文字，不运行其中的脚本。</p>
+            <pre id="source-html" class="original-text"></pre>
+          </details>
         </section>
 
         <section id="pause-view" class="rest-panel" aria-labelledby="pause-heading" hidden>
@@ -327,6 +347,8 @@
       }
 
       const chunks = data.chunks;
+      const origin = data.origin && typeof data.origin === "object" && !Array.isArray(data.origin) ? data.origin : null;
+      const sourcePreservation = origin ? "提取文本已保留，需结合来源核对" : "原文完整保留";
       const storageKey = "adhd-md.reader.v1:" + data.source_hash;
       const allowedViews = ["focus", "full", "original"];
       const clamp = (value, minimum, maximum, fallback) => (
@@ -378,6 +400,45 @@
       byId("print-title").textContent = title;
       byId("source-name").textContent = sourceName;
       byId("original-text").textContent = data.source_text;
+      if (origin) {
+        byId("extraction-info").hidden = false;
+        const methodLabels = { "stdlib-htmlparser": "网页正文提取", "pdftotext": "PDF 文字层", "pdftotext+tesseract": "PDF 文字层与本机 OCR", "tesseract": "本机 OCR" };
+        const method = typeof origin.method === "string" ? origin.method : "自动提取";
+        byId("extraction-method").textContent = "提取方式：" + (Object.prototype.hasOwnProperty.call(methodLabels, method) ? methodLabels[method] : method);
+        byId("extraction-note").textContent = origin.kind === "pdf"
+          ? "这里展示 PDF 的提取文本。页码可供核对；图片、表格、公式与 OCR 识别结果请结合原 PDF 阅读。"
+          : "这里展示网页的提取文本。正文之外的可见文字保留在附录；动态内容、图片与页面交互请回看来源。";
+        byId("original-heading").textContent = "提取文本";
+        byId("original-note").textContent = "这里保留用于分段阅读的完整提取稿。下载可取回 Markdown 文本；来源文件保持不变。";
+        byId("download-source").textContent = "下载提取文本";
+        document.querySelector('[data-view="original"]').textContent = "提取文本";
+        document.querySelector('[data-view="full"]').textContent = "通读提取稿";
+        byId("full-view").setAttribute("aria-label", "完整提取稿");
+        byId("storage-note").textContent = sourcePreservation + " · 阅读器不会自动翻页 · 打印会包含提取全文";
+        if (typeof origin.location === "string") {
+          byId("source-name").textContent = origin.location;
+          try {
+            const url = new URL(origin.location);
+            if (url.protocol === "https:" || url.protocol === "http:") {
+              byId("source-link").href = url.href;
+              byId("source-link").textContent = origin.kind === "pdf" ? "打开原始 PDF" : "打开原始网页";
+              byId("source-link").hidden = false;
+            }
+          } catch (_) { /* Local paths remain text, never executable links. */ }
+        }
+        if (Array.isArray(origin.warnings)) {
+          origin.warnings.filter((warning) => typeof warning === "string" && warning.trim()).forEach((warning) => {
+            const item = document.createElement("li");
+            item.textContent = warning;
+            byId("extraction-warnings").append(item);
+          });
+          byId("extraction-warnings").hidden = !byId("extraction-warnings").childElementCount;
+        }
+        if (typeof origin.original_html === "string" && origin.original_html) {
+          byId("source-html").textContent = origin.original_html;
+          byId("source-code-details").hidden = false;
+        }
+      }
 
       function save() {
         try {
@@ -385,7 +446,7 @@
           localStorage.setItem(storageKey, JSON.stringify(state));
         } catch (_) {
           storageAvailable = false;
-          byId("storage-note").textContent = "当前浏览器无法保存位置；关闭后可能需要重新定位。原文完整保留，打印会包含全文。";
+          byId("storage-note").textContent = "当前浏览器无法保存位置；关闭后可能需要重新定位。" + sourcePreservation + "，打印会包含全文。";
         }
       }
 
@@ -394,9 +455,13 @@
       }
 
       function lineRange(chunk) {
-        return Number.isInteger(chunk.start_line) && Number.isInteger(chunk.end_line)
-          ? "原文第 " + chunk.start_line + "–" + chunk.end_line + " 行"
-          : "";
+        if (!Number.isInteger(chunk.start_line) || !Number.isInteger(chunk.end_line)) return "";
+        const range = (origin ? "提取稿第 " : "原文第 ") + chunk.start_line + "–" + chunk.end_line + " 行";
+        if (!origin || !Array.isArray(origin.pages)) return range;
+        const pages = origin.pages.filter((page) => page && Number.isInteger(page.number) &&
+          Number.isInteger(page.start_line) && Number.isInteger(page.end_line) &&
+          page.start_line <= chunk.end_line && page.end_line >= chunk.start_line).map((page) => page.number);
+        return pages.length ? "PDF 第 " + [...new Set(pages)].join("、") + " 页 · " + range : range;
       }
 
       // HTML is rendered and sanitized by the generator. All other source fields use textContent.
@@ -425,7 +490,7 @@
         meta.className = "full-chunk-label";
         const section = document.createElement("span");
         section.className = "section-label";
-        section.textContent = "第 " + (index + 1) + " / " + chunks.length + " 段";
+        section.textContent = "第 " + (index + 1) + " / " + chunks.length + " 段" + (origin ? " · " + lineRange(chunk) : "");
         const jump = document.createElement("button");
         jump.type = "button";
         jump.textContent = "从这一段开始专注阅读";
@@ -438,12 +503,23 @@
         byId("full-content").append(article);
       });
 
-      // Blob is built from the exact input string, not reconstructed rendered content.
+      // Plain text downloads preserve the exact input. Extraction exports attach
+      // provenance to the untouched extracted Markdown, as the CLI does.
       let sourceUrl;
       try {
-        sourceUrl = URL.createObjectURL(new Blob([data.source_text], { type: "text/plain;charset=utf-8" }));
+        let downloadText = data.source_text;
+        if (origin) {
+          const oneLine = (value) => typeof value === "string" ? value.split(/[\r\n\v\f\x85\u2028\u2029]/).join(" ") : "";
+          const notes = ["> 提取来源：" + oneLine(origin.location), "> 提取方式：" + oneLine(origin.method)];
+          if (Array.isArray(origin.warnings)) {
+            origin.warnings.filter((warning) => typeof warning === "string").forEach((warning) => notes.push("> 提取说明：" + oneLine(warning)));
+          }
+          downloadText = notes.join("\n>\n") + "\n\n" + data.source_text;
+        }
+        sourceUrl = URL.createObjectURL(new Blob([downloadText], { type: "text/plain;charset=utf-8" }));
         byId("download-source").href = sourceUrl;
-        byId("download-source").download = sourceName.split(/[\\/]/).pop() || "original.md";
+        const basename = sourceName.split(/[\\/]/).pop() || "original.md";
+        byId("download-source").download = origin ? basename.replace(/(?:\.extracted)?\.[^.]+$/, "") + ".extracted.md" : basename;
       } catch (_) {
         byId("download-source").hidden = true;
       }
@@ -490,7 +566,7 @@
         byId("section-label").textContent = state.paused ? "已暂停"
           : finishedPanel ? "本次阅读已结束"
           : state.view === "full" ? "完整文档 · " + chunks.length + " 段"
-          : state.view === "original" ? "原文完整保留"
+          : state.view === "original" ? (origin ? "完整提取稿" : "原文完整保留")
           : "第 " + (state.index + 1) + " / " + chunks.length + " 段";
         byId("line-range").textContent = state.view === "focus" && !state.paused && !finishedPanel ? lineRange(chunk) : "";
         byId("reading-heading").textContent = chunkTitle(chunk, state.index);

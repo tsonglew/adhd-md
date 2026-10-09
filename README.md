@@ -34,7 +34,8 @@
 阅读已有资料：
 
 - **对话陪读**：一次读一小段，解释重点与术语，可以回看、跳过、暂停和用书签续读
-- **离线阅读页**：把已有 Markdown / 文本生成 HTML，逐段阅读、调字号行距、保存进度，原文保持不变
+- **离线阅读页**：把已有 Markdown、文本、网页或 PDF 生成 HTML，逐段阅读、调字号行距、保存进度，原文件保持不变
+- **自动提取**：网页链接、本地 HTML 和 PDF 可直接读取；扫描页可用本机 OCR，并保留来源与页码
 
 ## 装 + 跑（约 2 分钟）
 
@@ -75,7 +76,9 @@ agent 会保留原文，指出当前读到的位置，再讲解这一段。可�
 
 暂停时会给书签，下次贴回书签即可续读；跳过的内容会留在待读清单里。对话陪读不需要命令执行能力。
 
-支持本地 Markdown、纯文本或粘贴内容。网页和 PDF 需要宿主先取得可读文本；无法访问或识别的部分会明确标出。
+支持本地 Markdown、纯文本或粘贴内容。网页链接、本地 HTML 和 PDF 可自动提取；有命令执行能力的 agent 可以直接运行生成器。
+
+无法访问或识别的部分会明确标出。
 
 想自己专注阅读，运行下面任一命令（需要 Python 3；第一种另需 Node）：
 
@@ -84,9 +87,45 @@ npx github:tsonglew/adhd-md read 文档.md
 python3 skill/scripts/adhd_md.py read 文档.md
 ```
 
-命令生成 `文档.reader.html`，用浏览器打开即可。页面支持逐段切换、回看完整原文、调整字号与行距，并在浏览器允许时保存本地进度。
+命令生成 `文档.reader.html`，用浏览器打开即可。页面支持逐段切换、回看全文、调整字号与行距，并在浏览器允许时保存本地进度。
 
-生成器不上传原文、不调用模型；生成文件包含原文，分享时请按原文的分享范围处理。
+### 直接读取网页和 PDF
+
+网址、HTML 和 PDF 使用同一入口：
+
+```bash
+python3 skill/scripts/adhd_md.py read "https://example.com/article" -o /tmp/article.reader.html
+python3 skill/scripts/adhd_md.py read 文档.pdf
+python3 skill/scripts/adhd_md.py read 保存的网页.html
+```
+
+想单独保存提取稿，再交给 agent 陪读：
+
+```bash
+python3 skill/scripts/adhd_md.py extract 文档.pdf
+```
+
+会生成 `文档.extracted.md`，保留来源和 PDF 页码。网页正文优先，其余可见文字放附录；依赖 JavaScript 或登录的页面需要宿主读取工具或导出正文。
+
+生成器不上传原文、不调用模型；输入网址时会请求该地址。生成文件包含文本和来源信息，网页阅读页还保留取得的 HTML 源码，分享时请按原文的分享范围处理。
+
+### 准备 PDF 与 OCR 工具
+
+PDF 需要 Poppler；扫描页另需 Tesseract 与对应语言包。安装一次即可：
+
+```bash
+# macOS（Homebrew）
+brew install poppler tesseract tesseract-lang
+
+# Ubuntu / Debian
+sudo apt install poppler-utils tesseract-ocr tesseract-ocr-chi-sim
+```
+
+默认对没有可读文本的 PDF 页尝试 OCR。可用 `--ocr never` 只读文本层，或 `--ocr always --ocr-lang chi_sim+eng` 对每页做中英文 OCR；已有文本层也会保留。
+
+依赖缺失会给出安装提示，不自行安装。
+
+提取稿保留页码、来源和缺口说明。图片、公式、表格和 OCR 结果仍需回看原 PDF 核对，文本提取不等同于 PDF 视觉内容的无损转换。
 
 自定义片段大小和输出位置：
 
@@ -168,6 +207,8 @@ docs/
 scripts/install.sh        探测 + 安装
 ```
 
+Python 模块只依赖标准库。`skill/scripts/` 中还包含提取与阅读模块；PDF / OCR 功能调用本机的 Poppler 与 Tesseract 工具。
+
 ## CLI
 
 有 Node 的话不用装，`npx` 直接跑：
@@ -193,7 +234,17 @@ adhd_md.py selftest
 adhd_md.py read FILE [-o OUTPUT] [--chunk-size 900] [--json]
 ```
 
-`read --json` 只输出分段和来源定位数据，供 agent 使用，不生成 HTML。`read` 接收 UTF-8 Markdown / 文本；网页和 PDF 先通过宿主工具提取文本。
+独立提取正文：
+
+```bash
+adhd_md.py extract SOURCE [-o OUTPUT] [--json]
+```
+
+`read --json` 只输出分段和来源定位数据，供 agent 使用，不生成 HTML。`extract --json` 输出提取文本与来源元数据。
+
+`read` 的 `FILE` 和 `extract` 的 `SOURCE` 均支持 UTF-8 Markdown / 文本、本地 HTML、PDF 和 HTTP(S) 网页或 PDF 链接。两个命令都支持 `--timeout 20`、`--ocr auto|never|always` 和 `--ocr-lang chi_sim+eng`。
+
+`extract` 默认输出 `<原名>.extracted.md`；网址输出由标题或来源命名，保存在当前目录。
 
 输入 `-` 可从标准输入读取，默认生成 `stdin.reader.html`。`--json` 不能与 `-o` 同用。
 
@@ -211,6 +262,8 @@ python3 skill/scripts/adhd_md.py audit --min-score 70 docs/*.md
 | 分数很高但文档明显很烂 | `audit` 输出的是脚本分，把 37 条需模型判断的规则按满分计入。脚本分低说明一定有问题，脚本分高不说明没问题 |
 | `verify --scope=format` 失败 | 改动越界了。`prose_tokens_added` 是新写了措辞，`prose_tokens_missing` 是删了词。回退，或改用 `scope=content` |
 | agent 没自动触发 | Codex 用 `/adhd-md`，其他宿主明确说「用 adhd-md skill」 |
+| PDF 提示缺少工具 | 安装 Poppler；扫描件还需 Tesseract 和对应语言包。只读取文字层时可用 `--ocr never`，未识别页仍会标出 |
+| 网页只读到登录或加载提示 | 自动提取不执行网页 JavaScript，也不读取浏览器登录态；用宿主浏览器取得正文，或导出 HTML / 文本 |
 | 想卸载 | `npx github:tsonglew/adhd-md install --uninstall`，或 `bash scripts/install.sh --uninstall` |
 
 ## 开发官网

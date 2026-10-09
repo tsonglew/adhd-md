@@ -16,7 +16,7 @@ const path = require("path");
 const ROOT = path.join(__dirname, "..");
 const PKG = require(path.join(ROOT, "package.json"));
 
-const TOOL_CMDS = ["audit", "fmt", "verify", "report", "init", "read", "selftest"];
+const TOOL_CMDS = ["audit", "fmt", "verify", "report", "init", "read", "extract", "selftest"];
 
 /**
  * 帮助里该印哪种调用方式。
@@ -48,12 +48,18 @@ const USAGE = `adhd-md ${PKG.version} — ADHD 友好排版、分段陪读与离
   ${X} report 原文.md 新文.md                  改前改后对比
   ${X} init --type=readme                      生成文档骨架
   ${X} read 文档.md                           生成离线专注阅读页
+  ${X} read 文档.pdf                          提取 PDF 后生成阅读页
+  ${X} read "https://example.com/article"       提取网页后生成阅读页
+  ${X} extract 文档.pdf                       只提取，另存 Markdown
   ${X} read 文档.md --json                    输出陪读分段与原文位置
   ${X} selftest                                自检
 
 装好之后，在任意 agent 里直接说人话即可：
   「把 README.md 改成 ADHD 友好的，只改格式」
   「陪我读 README.md，一次一小段，不修改原文」
+
+网页与 HTML 使用 Python 标准库；PDF 需 Poppler，扫描页另需 Tesseract。
+read / extract 可加 --ocr auto|never|always、--ocr-lang chi_sim+eng、--timeout 20。
 
 文档  https://tsonglew.github.io/adhd-md/`;
 
@@ -112,7 +118,7 @@ function doTool(argv) {
   if (!py) {
     die(
       [
-        "需要 Python 3.9 以上（工具层只用标准库，不装任何依赖）。",
+        "需要 Python 3.9 以上（Python 只用标准库；PDF / OCR 另需本机工具）。",
         "  macOS   xcode-select --install",
         "  Debian  sudo apt install python3",
       ].join("\n")
