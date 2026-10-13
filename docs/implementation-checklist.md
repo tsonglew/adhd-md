@@ -36,11 +36,11 @@ P1；无前置任务。新增 [独立 CI 工作流](../.github/workflows/ci.yml)
 - [x] 用受控 `git`、`rm`、`cat` 命令桩跑卸载回归；`rm` 桩拒绝操作临时根外的目标
 - [x] 用六个宿主 CLI 命令桩验证安装探测，并用本地 tarball 模拟 curl 下载、解包、自检和复制安装
 - [x] 配置 PR 和主分支运行 Python、CLI、安装器回归、单文件同步和官网构建
-- [ ] 在 GitHub 验证 PR 检查实际运行，并注入失败测试与生成产物漂移，确认变红且不触发部署
+- [x] 在 GitHub 验证 PR 检查实际运行，并注入失败测试与生成产物漂移，确认变红且不触发部署
 - [x] 增加并运行实际 npm tarball 清单与包内 CLI 冒烟检查
 - [x] PR 工作流采用只读仓库权限；Pages 发布仍由独立工作流执行
 - [x] 配置 Python 3.9 / 3.14 与 macOS / Linux 核心检查矩阵
-- [ ] 等托管矩阵通过后，再确认并记录 Python 支持范围
+- [x] 等托管矩阵通过后，再确认并记录 Python 支持范围
 - [x] 配置 Node 18 CLI 检查和 Node 22.12.0 官网构建，直接测试站点声明的最低版本
 - [x] 在 Ubuntu 检查 job 安装 Poppler、Tesseract 和简体中文模型，并运行真实 PDF/OCR 集成用例
 
@@ -50,15 +50,19 @@ P1；无前置任务。新增 [独立 CI 工作流](../.github/workflows/ci.yml)
 
 补充本机证据（2026-10-13）：`bash scripts/check_npm_package.sh` 对当前源码执行 `npm pack`，核对包内必需文件并拒绝缓存 / 临时文件；从解包后的临时目录验证 CLI 版本、帮助和 `selftest`（190 项），通过，实际 tarball 共 36 个文件。仓库完整 `unittest discover`（201 项）、`build_standalone.py --check`、官网构建和 `git diff --check` 也通过。该结果验证本机包内容与 smoke test，不代替 GitHub Actions 托管运行及失败注入。
 
-Node 边界说明：官网 CI 已固定到 `22.12.0`，与 `site/package.json` 的最低版本一致。lockfile 中 `undici@8.10.0` 声明 Node `>=22.19.0`，本机官网构建运行在 Node `24.14.0`，因此最低版本兼容性仍以 GitHub 上的精确版本构建结果为准；不能仅凭当前本机构建关闭该项风险。
+Node 边界说明：官网 GitHub Actions 已在 `22.12.0` 完成 `npm ci` 和 Astro 构建，Node CLI job 在 `18.20.8` 完成实际 tarball smoke。lockfile 中 `undici@8.10.0` 声明 Node `>=22.19.0`；当前证据证明锁定版本可完成站点构建，不扩大到未运行的 Node 运行时场景。
 
-外部权限阻塞（2026-10-13）：`gh auth status` 显示本机令牌无效；连接器可读取 `tsonglew/adhd-md`，但创建 Git blob 返回 403 `Resource not accessible by integration`。因此没有创建分支、提交或 PR。恢复 GitHub 写权限后，再创建草稿 PR 并运行托管检查与失败注入。
+初始外部权限阻塞（2026-10-13，已解决）：`gh auth status` 最初显示本机令牌无效；连接器可读取 `tsonglew/adhd-md`，但创建 Git blob 返回 403 `Resource not accessible by integration`，当时没有创建分支、提交或 PR。用户完成本机设备登录后恢复了写权限，实际 PR 与托管验收记录见下。
 
-终检更新（2026-10-13）：`python3 skill/scripts/adhd_md.py selftest` 199 项通过，完整 unittest 217 项通过，规则生成器 unittest 4 项通过。重新生成并检查单文件版、`python3 scripts/build_rules.py --check`、官网构建和 `git diff --check` 均通过；npm tarball 共 37 个文件，包内 smoke 通过。该结果仍不代替 GitHub 托管矩阵、Node 22.12.0 构建及失败注入。
+权限恢复与托管验收（2026-10-13）：用户完成本机 `gh` 设备登录后，创建了 [草稿 PR #2](https://github.com/tsonglew/adhd-md/pull/2)。干净代码提交 `aa79c8d` 对应 GitHub Actions run `38398278808` 六个 job 全部通过：Python 3.9 / 3.14 × Ubuntu / macOS、Node CLI 和官网构建；Ubuntu Python 3.14 job 安装 Poppler、Tesseract 与 `chi_sim` 并通过真实 PDF/OCR 用例。实际解释器为 Python 3.9.25（Ubuntu）、3.9.13（macOS 26 arm64）、3.14.8（Ubuntu）和 3.14.7（macOS 26 arm64）；Node CLI 为 18.20.8，官网为 22.12.0。
+
+失败注入分别运行，避免一个失败短路另一个门禁。Run `38398646992` 的临时失败测试被 Python selftest 和 Node tarball smoke 明确捕获为 `AssertionError: temporary CI failure injection`；run `38398894878` 的 standalone 漂移被四个 Python job 的 `build_standalone.py --check` 捕获，Node CLI 与官网 job 通过。两次注入分支上 `gh run list --workflow pages.yml --branch codex/adhd-md-reliability-m0-m5` 均无结果，Pages 工作流没有启动。临时提交已从分支移除，standalone 同步检查恢复通过。
+
+本机终检更新（2026-10-13）：`python3 skill/scripts/adhd_md.py selftest` 199 项通过，完整 unittest 217 项通过，规则生成器 unittest 4 项通过。重新生成并检查单文件版、`python3 scripts/build_rules.py --check`、官网构建和 `git diff --check` 均通过；npm tarball 共 37 个文件，包内 smoke 通过。以上为托管权限恢复前的本机证据；GitHub 结果随后补记。
 
 M0 要求现有检查和隔离夹具可用。后续新增回归随各自任务接入，CI-01 不等待这些任务完成。
 
-- [ ] CI-01 已验收，PR 链接、环境、失败与恢复记录已填写
+- [x] CI-01 已验收，PR 链接、环境、失败与恢复记录已填写
 
 ### SAFE-01 明确格式变换与校验边界
 
@@ -272,9 +276,9 @@ P2；最终验收依赖 READ-01、READ-02、READ-03 和 CI-01。修改 [reader.h
 - [打印第 1 页](evidence/read04-print-page-1.png)
 - [打印第 2 页](evidence/read04-print-page-2.png)
 
-空文件 CLI 回归验证 `read` 与 `extract` 都返回错误且不生成半成品；空 chunk 页面使用 `role=alert` 提示重新生成阅读器。`selftest` 190 项、完整 unittest 198 项通过。READ-01 显示用例和 READ-03 性能样例都包含在自测中。所有本机浏览器验收项通过；最终关闭仍依赖尚未完成的 CI-01 托管工作流验证。
+空文件 CLI 回归验证 `read` 与 `extract` 都返回错误且不生成半成品；空 chunk 页面使用 `role=alert` 提示重新生成阅读器。`selftest` 199 项、完整 unittest 217 项通过。READ-01 显示用例和 READ-03 性能样例都包含在自测中。所有本机浏览器验收项通过；CI-01 托管矩阵现已通过。
 
-- [ ] READ-04 已验收，浏览器回归与异常状态记录已填写（本机验收已完成，等待 CI-01 托管工作流通过）
+- [x] READ-04 已验收，浏览器回归与异常状态记录已填写（本机浏览器与 CI-01 托管工作流均通过）
 
 ## M3 完善分发和官网
 
@@ -328,7 +332,7 @@ P2；依赖 CI-01，安装验收依赖 INS-02、INS-03。修改 [package.json](.
 
 验收时清理模拟 npx 缓存，已安装副本仍工作。包内运行覆盖 audit、verify、read、extract 及安装入口；远程提取使用本地服务或桩。
 
-- [x] PKG-01 本机已验收，包清单和解包运行记录已填写（托管 CI 结果待 CI-01）
+- [x] PKG-01 已验收，包清单和解包运行记录已填写（本机及 Node 18.20.8 托管 tarball smoke 均通过）
 
 本机证据（2026-10-13）：`bash scripts/check_npm_package.sh` 通过。`npm pack` 清单共 36 个文件，运行 `python3 -m unittest discover -s skill/scripts/tests` 前后清单一致；必需脚本、reader asset、references、tests、standalone、README 与 MIT license 全部存在，未夹带缓存或临时产物。把实际 tarball 解到模拟 `_npx/.../node_modules/adhd-md` 后，验证 CLI 版本、帮助和错误调用提示，并运行 `audit`、`verify`、`read`、本地 HTML `extract`、HTTP 响应桩驱动的 URL `extract` 与 `selftest`。再从 tarball 安装到隔离 `ADHD_MD_HOME`，删除模拟 npx 缓存，确认安装副本仍可运行上述命令；安装目录无临时锁，链接不指向缓存。`.github/workflows/ci.yml` 的 Node CLI job 运行同一包检查脚本。脚本不依赖本机监听端口或外网。
 
@@ -451,7 +455,7 @@ P2；最终验收依赖 FMT-02、SCORE-01，测试夹具可提前准备。更新
 
 准备进度（2026-10-13）：已冻结 [`held-out v1 语料与答案键`](eval-corpus/held-out/manifest.md)，共 12 篇中英文合成案例，覆盖 README、教程、参考、runbook、会议记录和边界 Markdown；与已参与调参及 `selftest` 的 4 组回归样例分开。`shasum -a 256 -c SHA256SUMS` 验证全部 12 例与 manifest 均通过；运行模板包含宿主发现、加载、工具、参数、原始产物、verify、分数、未判定项和独立复核字段。曾尝试在临时目录启动 Codex CLI，但只读用户态状态目录阻止 CLI 初始化；Claude Code 又被本机前置 hook 因缓存目录只读而阻止，返回 0 turns、0 成本。两次都没有模型响应或可计入的评测结果。模型矩阵与人工复核尚未执行，EVAL-01 保持未完成。
 
-宿主状态补充（2026-10-13）：[`host-matrix.md`](host-matrix.md) 已记录六个宿主 CLI 的本机版本和本轮执行状态；版本可用性不等于 skill 加载或任务执行。未产生响应的 Codex 与 Claude 仍标为未验证，Grok、Gemini、Cursor 和 opencode 本轮未运行。Python / Node 与 PDF/OCR 的本机精确版本也已记录；配置的 CI 版本矩阵仍等 GitHub 托管结果，未据此扩大兼容声明。
+宿主状态补充（2026-10-13）：[`host-matrix.md`](host-matrix.md) 已记录六个宿主 CLI 的本机版本和本轮执行状态；版本可用性不等于 skill 加载或任务执行。未产生响应的 Codex 与 Claude 仍标为未验证，Grok、Gemini、Cursor 和 opencode 本轮未运行。Python / Node 与 PDF/OCR 的本机精确版本，以及 GitHub Actions 实测版本已记录；CI 只验证 Python 3.9 / 3.14 两端点和所列 Node 版本，不推断所有中间版本或宿主模型行为。
 
 - [ ] EVAL-01 已验收，原始产物和独立复核记录已填写
 
@@ -490,9 +494,9 @@ P2；完整候选依赖 M0 至 M4、EVAL-01。EVAL-02 可以明确延期，延�
 
 - [ ] REL-01 已验收，候选版本、检查结果和发布记录已填写
 
-本机候选准备记录（2026-10-13）：新增 [`CHANGELOG.md`](../CHANGELOG.md)，保持版本 `0.1.0` 不变并标为 Unreleased；其中列出本轮用户可见改动、JSON / verify / 写回 / 卸载迁移说明、已知限制和未关闭门禁。变更记录纳入 npm `files`，实际 `npm pack` tarball 38 个文件；测试前后清单一致，解包副本的 CLI、audit、verify、read、HTML / URL extract、自检及隔离安装通过。三种安装入口、更新、作用域卸载和模拟缓存清理由隔离测试覆盖；curl 路径使用本地 tarball 夹具，不访问发布站点。README、skill、英中文案、standalone 与规则表同步检查均通过；官网以本机 Node 24.14.0 构建通过。精确本机工具和宿主版本见 [宿主矩阵](host-matrix.md)。GitHub PR、Python 3.9 / Node 18 / Node 22.12.0 托管矩阵、失败注入、EVAL-01 模型结果与独立复核仍未完成；因此没有创建版本标签或正式发行产物，REL-01 保持未关闭。
+本机候选准备记录（2026-10-13）：新增 [`CHANGELOG.md`](../CHANGELOG.md)，保持版本 `0.1.0` 不变并标为 Unreleased；其中列出本轮用户可见改动、JSON / verify / 写回 / 卸载迁移说明、已知限制和未关闭门禁。变更记录纳入 npm `files`，实际 `npm pack` tarball 38 个文件；测试前后清单一致，解包副本的 CLI、audit、verify、read、HTML / URL extract、自检及隔离安装通过。三种安装入口、更新、作用域卸载和模拟缓存清理由隔离测试覆盖；curl 路径使用本地 tarball 夹具，不访问发布站点。README、skill、英中文案、standalone 与规则表同步检查均通过；官网在本机 Node 24.14.0 和 GitHub Node 22.12.0 构建通过。精确本机与托管工具版本见 [宿主矩阵](host-matrix.md)。CI-01、READ-04、PKG-01 已通过；EVAL-01 模型结果与独立复核仍未完成，EVAL-02 依用户说明暂缓；因此没有创建版本标签或正式发行产物，REL-01 保持未关闭。
 
-终检（2026-10-13）：`python3 skill/scripts/adhd_md.py selftest` 199 项通过；`python3 -m unittest discover -s skill/scripts/tests -v` 217 项通过；`python3 -m unittest discover -s scripts/tests -v` 4 项通过。`python3 scripts/build_rules.py --check`、`python3 scripts/build_standalone.py --check`、`bash -n scripts/install.sh scripts/check_npm_package.sh scripts/build-og.sh`、`bash scripts/check_npm_package.sh`、`cd site && npm run build` 与 `git diff --check` 均通过。此次未运行的检查不是本机失败：GitHub 托管 CI 与失败注入、其它 Python / Node 版本矩阵和模型 / 读者试验仍待外部条件满足。
+终检（2026-10-13）：`python3 skill/scripts/adhd_md.py selftest` 199 项通过；`python3 -m unittest discover -s skill/scripts/tests -v` 217 项通过；`python3 -m unittest discover -s scripts/tests -v` 4 项通过。`python3 scripts/build_rules.py --check`、`python3 scripts/build_standalone.py --check`、`bash -n scripts/install.sh scripts/check_npm_package.sh scripts/build-og.sh`、`bash scripts/check_npm_package.sh`、`cd site && npm run build` 与 `git diff --check` 均通过。GitHub Actions run `38398278808` 的六个 job 通过；两类故障注入均使预期 PR 检查变红，且没有触发 Pages。未运行的检查仅剩模型回归、独立人工复核和自愿读者试验；EVAL-02 暂缓，REL-01 因评测未完成保持开放。
 
 ## 检查入口
 

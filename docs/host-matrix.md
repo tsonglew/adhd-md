@@ -30,7 +30,22 @@
 | Cursor | `cursor-agent 2026.01.23-916f423`；`cursor 3.24.12` | 未运行 |
 | opencode | `1.18.35` | 未运行 |
 
-同一台 macOS `27.0.1` 主机上的辅助工具版本为 Python `3.14.5`、Node `24.14.0`、npm `11.19.0`、Bash `5.3.9`、Poppler `26.06.0`、Tesseract `5.5.0`；Tesseract 已安装 `chi_sim`。本机实际构建和集成测试只证明这些版本下的结果。CI 配置了 Python `3.9` / `3.14`、Node `18` CLI 与 Node `22.12.0` 官网矩阵；GitHub 托管运行通过前，不把配置的矩阵当成实测兼容范围。
+同一台 macOS `27.0.1` 主机上的辅助工具版本为 Python `3.14.5`、Node `24.14.0`、npm `11.19.0`、Bash `5.3.9`、Poppler `26.06.0`、Tesseract `5.5.0`；Tesseract 已安装 `chi_sim`。本机实际构建和集成测试只证明这些版本下的结果。
+
+## 2026-10-13 GitHub Actions 实测
+
+[草稿 PR #2](https://github.com/tsonglew/adhd-md/pull/2) 的 run `38398278808`（代码提交 `aa79c8d`）六个 job 全部通过：
+
+| 检查 | GitHub runner / 版本 | 结果 |
+|---|---|---|
+| Python 3.9 | Ubuntu latest / CPython 3.9.25 | 全部测试、规则生成器和 standalone 同步通过 |
+| Python 3.9 | macOS 26 arm64 / CPython 3.9.13 | 全部测试、规则生成器和 standalone 同步通过 |
+| Python 3.14 | Ubuntu latest / CPython 3.14.8 | 全部测试通过；Poppler、Tesseract、`chi_sim` 检查及真实 PDF/OCR 用例通过 |
+| Python 3.14 | macOS 26 arm64 / CPython 3.14.7 | 全部测试、规则生成器和 standalone 同步通过 |
+| Node CLI | Ubuntu / Node 18.20.8 | CLI 入口和实际 npm tarball smoke 通过 |
+| 官网构建 | Ubuntu / Node 22.12.0 | `npm ci` 与 Astro build 通过 |
+
+该矩阵实测配置的 Python 3.9 / 3.14 两端点、macOS / Ubuntu runner，以及所列 Node 版本；不代表所有中间 Python 版本或六个宿主 CLI 的模型执行结果。
 
 未实测项在 P5 安装脚本里按「目录存在则装」处理，不写死假设。
 
