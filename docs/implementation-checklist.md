@@ -58,6 +58,8 @@ Node 边界说明：官网 GitHub Actions 已在 `22.12.0` 完成 `npm ci` 和 A
 
 失败注入分别运行，避免一个失败短路另一个门禁。Run `38398646992` 的临时失败测试被 Python selftest 和 Node tarball smoke 明确捕获为 `AssertionError: temporary CI failure injection`；run `38398894878` 的 standalone 漂移被四个 Python job 的 `build_standalone.py --check` 捕获，Node CLI 与官网 job 通过。两次注入分支上 `gh run list --workflow pages.yml --branch codex/adhd-md-reliability-m0-m5` 均无结果，Pages 工作流没有启动。临时提交已从分支移除，standalone 同步检查恢复通过。
 
+跳过项记录：Python 3.9 / Ubuntu、Python 3.9 / macOS 和 Python 3.14 / macOS 三个 job 各跳过 3 个 `RealPopplerTest`，原因均为 `Poppler is optional; install it for the real PDF smoke test`；Python 3.14 / Ubuntu job 安装 Poppler、Tesseract 与 `chi_sim` 后 217 项全通过，没有跳过。
+
 本机终检更新（2026-10-13）：`python3 skill/scripts/adhd_md.py selftest` 199 项通过，完整 unittest 217 项通过，规则生成器 unittest 4 项通过。重新生成并检查单文件版、`python3 scripts/build_rules.py --check`、官网构建和 `git diff --check` 均通过；npm tarball 共 37 个文件，包内 smoke 通过。以上为托管权限恢复前的本机证据；GitHub 结果随后补记。
 
 M0 要求现有检查和隔离夹具可用。后续新增回归随各自任务接入，CI-01 不等待这些任务完成。
@@ -481,10 +483,9 @@ P3；依赖 EVAL-01、READ-04。新增读者试验方案和结果记录。
 
 P2；完整候选依赖 M0 至 M4、EVAL-01。EVAL-02 可以明确延期，延期时本路线图仍有未完成项。
 
-- [ ] 跑完通用检查及受影响模块的回归，记录工具版本与跳过原因
 - [x] 跑完通用检查及受影响模块的回归，记录工具版本与跳过原因
 - [x] 从隔离夹具和实际 npm tarball 验证三种安装入口、更新、卸载和缓存清理后的运行
-- [x] 核对 Python、Node、宿主和 PDF/OCR 的本机实测范围；标明 CI 范围仍待托管实测
+- [x] 核对 Python、Node、宿主和 PDF/OCR 的本机与 CI 实测范围
 - [x] 更新 README、skill、英文官网、单文件版和变更记录的行为说明
 - [x] 核对 parser、verify 和 JSON 兼容变化，在变更记录中提供迁移或恢复方法
 - [x] 检查未关闭任务、已知限制和评测结论，变更记录引用对应证据
@@ -496,7 +497,7 @@ P2；完整候选依赖 M0 至 M4、EVAL-01。EVAL-02 可以明确延期，延�
 
 本机候选准备记录（2026-10-13）：新增 [`CHANGELOG.md`](../CHANGELOG.md)，保持版本 `0.1.0` 不变并标为 Unreleased；其中列出本轮用户可见改动、JSON / verify / 写回 / 卸载迁移说明、已知限制和未关闭门禁。变更记录纳入 npm `files`，实际 `npm pack` tarball 38 个文件；测试前后清单一致，解包副本的 CLI、audit、verify、read、HTML / URL extract、自检及隔离安装通过。三种安装入口、更新、作用域卸载和模拟缓存清理由隔离测试覆盖；curl 路径使用本地 tarball 夹具，不访问发布站点。README、skill、英中文案、standalone 与规则表同步检查均通过；官网在本机 Node 24.14.0 和 GitHub Node 22.12.0 构建通过。精确本机与托管工具版本见 [宿主矩阵](host-matrix.md)。CI-01、READ-04、PKG-01 已通过；EVAL-01 模型结果与独立复核仍未完成，EVAL-02 依用户说明暂缓；因此没有创建版本标签或正式发行产物，REL-01 保持未关闭。
 
-终检（2026-10-13）：`python3 skill/scripts/adhd_md.py selftest` 199 项通过；`python3 -m unittest discover -s skill/scripts/tests -v` 217 项通过；`python3 -m unittest discover -s scripts/tests -v` 4 项通过。`python3 scripts/build_rules.py --check`、`python3 scripts/build_standalone.py --check`、`bash -n scripts/install.sh scripts/check_npm_package.sh scripts/build-og.sh`、`bash scripts/check_npm_package.sh`、`cd site && npm run build` 与 `git diff --check` 均通过。GitHub Actions run `38398278808` 的六个 job 通过；两类故障注入均使预期 PR 检查变红，且没有触发 Pages。未运行的检查仅剩模型回归、独立人工复核和自愿读者试验；EVAL-02 暂缓，REL-01 因评测未完成保持开放。
+终检（2026-10-13）：`python3 skill/scripts/adhd_md.py selftest` 199 项通过；`python3 -m unittest discover -s skill/scripts/tests -v` 217 项通过；`python3 -m unittest discover -s scripts/tests -v` 4 项通过。`python3 scripts/build_rules.py --check`、`python3 scripts/build_standalone.py --check`、`bash -n scripts/install.sh scripts/check_npm_package.sh scripts/build-og.sh`、`bash scripts/check_npm_package.sh`、`cd site && npm run build` 与 `git diff --check` 均通过。代码验收 run `38398278808` 与最终文档提交 run `38399525064` 的六个 job 均通过；两类故障注入均使预期 PR 检查变红，且没有触发 Pages。未运行的检查仅剩模型回归、独立人工复核和自愿读者试验；EVAL-02 暂缓，REL-01 因评测未完成保持开放。
 
 ## 检查入口
 

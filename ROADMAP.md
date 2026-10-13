@@ -4,7 +4,7 @@
 
 计划日期为 2026-10-13，审查基线为提交 `3c8b1fb`。实施已启动，逐项状态与验证证据记录在执行清单。
 
-截至 2026-10-13，CI-01、SAFE-01、FMT-01、VER-01、VER-02、FMT-02、INS-01、INS-02、INS-03、READ-01 至 READ-04、PKG-01、WEB-01、BUILD-01、LINT-01、RULE-01、SCORE-01 已完成验收。GitHub Actions run `38398278808` 对 Python 3.9 / 3.14 × Ubuntu / macOS、Node 18.20.8 tarball job 与 Node 22.12.0 官网构建全部通过；另外分别注入测试失败与 standalone 漂移，两类 PR 门禁均变红，且没有启动 Pages。最新本机 selftest 199 项、完整 unittest 217 项、规则生成器测试 4 项通过；本机 npm tarball 含 38 个文件且包内 CLI 冒烟通过，规则表和单文件版同步检查、本机官网构建与 `git diff --check` 通过。已补充 Unreleased 变更记录、调用方迁移说明和当前宿主 / 工具版本快照。EVAL-01 的真实宿主模型运行与独立复核仍未完成；EVAL-02 因参与者暂不可安排而暂缓；REL-01 继续开放。
+截至 2026-10-13，CI-01、SAFE-01、FMT-01、VER-01、VER-02、FMT-02、INS-01、INS-02、INS-03、READ-01 至 READ-04、PKG-01、WEB-01、BUILD-01、LINT-01、RULE-01、SCORE-01 已完成验收。GitHub Actions 代码 run `38398278808` 和最终文档 run `38399525064` 对 Python 3.9 / 3.14 × Ubuntu / macOS、Node 18.20.8 tarball job 与 Node 22.12.0 官网构建全部通过；另外分别注入测试失败与 standalone 漂移，两类 PR 门禁均变红，且没有启动 Pages。最新本机 selftest 199 项、完整 unittest 217 项、规则生成器测试 4 项通过；本机 npm tarball 含 38 个文件且包内 CLI 冒烟通过，规则表和单文件版同步检查、本机官网构建与 `git diff --check` 通过。已补充 Unreleased 变更记录、调用方迁移说明和当前宿主 / 工具版本快照。EVAL-01 的真实宿主模型运行与独立复核仍未完成；EVAL-02 因参与者暂不可安排而暂缓；REL-01 继续开放。
 
 ## 当前执行顺序
 

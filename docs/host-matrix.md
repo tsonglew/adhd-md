@@ -34,7 +34,7 @@
 
 ## 2026-10-13 GitHub Actions 实测
 
-[草稿 PR #2](https://github.com/tsonglew/adhd-md/pull/2) 的 run `38398278808`（代码提交 `aa79c8d`）六个 job 全部通过：
+[草稿 PR #2](https://github.com/tsonglew/adhd-md/pull/2) 的代码验收 run `38398278808`（提交 `aa79c8d`）和最终文档提交 run `38399525064`（提交 `e1cdf0f`）六个 job 均全部通过。代码验收 run 的实测环境为：
 
 | 检查 | GitHub runner / 版本 | 结果 |
 |---|---|---|
@@ -46,6 +46,8 @@
 | 官网构建 | Ubuntu / Node 22.12.0 | `npm ci` 与 Astro build 通过 |
 
 该矩阵实测配置的 Python 3.9 / 3.14 两端点、macOS / Ubuntu runner，以及所列 Node 版本；不代表所有中间 Python 版本或六个宿主 CLI 的模型执行结果。
+
+除 Python 3.14 / Ubuntu 外，其余三个 Python job 各跳过 3 个真实 Poppler/OCR 测试，跳过原因是 `Poppler is optional; install it for the real PDF smoke test`。Python 3.14 / Ubuntu job 安装 Poppler、Tesseract 和简体中文 `chi_sim`，对应 PDF/OCR 集成测试均实际运行。
 
 未实测项在 P5 安装脚本里按「目录存在则装」处理，不写死假设。
 
