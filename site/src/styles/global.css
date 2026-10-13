@@ -26,6 +26,7 @@
 
 /* 明暗三态：data-theme 未设置时（无 JS）跟随系统；设置了就用用户的选择 */
 [data-theme="dark"] {
+  color-scheme: dark;
   --paper:   #15140f;
   --paper-2: #1d1b15;
   --paper-3: #26241d;
@@ -105,6 +106,11 @@ strong, b { font-weight: 700; }
 }
 .skip:focus { left: 1rem; top: 1rem; }
 
+.visually-hidden {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+
 :focus-visible { outline: 2px solid var(--mark); outline-offset: 3px; }
 
 /* ─────────── 报头 ─────────── */
@@ -123,8 +129,10 @@ strong, b { font-weight: 700; }
 .masthead nav a:hover { color: var(--mark); }
 .masthead nav .ext::after { content: " ↗"; font-size: .8em; }
 @media (max-width: 620px) {
-  .masthead nav a:not(.ext) { display: none; }
+  .masthead nav a:not(.ext):not(.lang-switch) { display: none; }
 }
+
+[id]:target { scroll-margin-top: 5rem; }
 
 .wordmark {
   font: 400 1.5rem/1 var(--serif);

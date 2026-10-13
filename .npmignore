@@ -1,0 +1,8 @@
+# Python bytecode generated while running the test suite must never ship.
+**/__pycache__/
+**/*.py[cod]
+
+# Local editor and temporary artifacts are not package contents.
+**/.DS_Store
+**/*.tmp
+**/*.swp

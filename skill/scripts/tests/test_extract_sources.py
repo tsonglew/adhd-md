@@ -1,4 +1,5 @@
 """Verify input routing and public CLI behavior without live network services."""
+import io
 import json
 from pathlib import Path
 import subprocess
@@ -31,6 +32,62 @@ class SourceTest(unittest.TestCase):
         self.assertEqual(sources.load_source(str(path))["text"], raw)
         self.assertEqual(sources.load_source("-", stdin_text=raw)["text"], raw)
         self.assertNotIn("origin", sources.load_source(str(path)))
+
+    def test_stdin_limit_is_byte_based_and_never_truncates(self):
+        self.assertEqual(sources.read_stdin(io.BytesIO(b"12345678"), max_bytes=8), "12345678")
+        with self.assertRaisesRegex(ValueError, "超过 0 MiB.*未读取为部分文档"):
+            sources.read_stdin(io.BytesIO(b"123456789"), max_bytes=8)
+        with self.assertRaisesRegex(ValueError, "超过 0 MiB.*未读取为部分文档"):
+            sources.read_stdin(io.StringIO("界" * 3), max_bytes=8)
+        with patch.object(sources, "MAX_LOCAL_BYTES", 8), self.assertRaisesRegex(ValueError, "标准输入超过"):
+            sources.load_source("-", stdin_text="123456789")
+
+    def test_empty_source_refuses_read_and_extract_without_partial_output(self):
+        source = self.root / "empty.md"
+        source.write_bytes(b"")
+        for command, output in (("read", self.root / "empty.reader.html"),
+                                ("extract", self.root / "empty.extracted.md")):
+            with self.subTest(command=command):
+                result = self.command(command, source)
+                self.assertEqual(result.returncode, 2)
+                self.assertIn("文档为空", result.stderr.decode("utf-8"))
+                self.assertFalse(output.exists())
+
+    def test_local_html_links_never_read_link_targets_or_fetch_images(self):
+        source = self.root / "page.html"
+        next_page = self.root / "next.html"
+        image = self.root / "chart.png"
+        source.write_text('<main><a href="next.html#section">Next</a><img src="chart.png" alt="Chart">'
+                          '<img src="https://example.org/track.png" alt="Remote"></main>',
+                          encoding="utf-8")
+        next_page.write_text("must not be read", encoding="utf-8")
+        image.write_bytes(b"must not be read as an image")
+        real_read_bytes = Path.read_bytes
+        read_paths = []
+
+        def guarded_read_bytes(path):
+            read_paths.append(path.resolve())
+            if path.resolve() != source.resolve():
+                raise AssertionError(f"unexpected read of linked resource: {path}")
+            return real_read_bytes(path)
+
+        with patch.object(Path, "read_bytes", guarded_read_bytes), patch("extract_web.fetch_url") as fetch:
+            result = sources.load_source(str(source))
+
+        fetch.assert_not_called()
+        self.assertEqual(read_paths, [source.resolve()])
+        self.assertIn("[Next](next.html#section)", result["text"])
+        self.assertIn("[Chart](chart.png)", result["text"])
+        self.assertIn("[Remote](https://example.org/track.png)", result["text"])
+        exported = sources.export_markdown(result)
+        for target in ("next.html#section", "chart.png", "https://example.org/track.png"):
+            self.assertIn(target, exported)
+
+        cli_result = self.command("extract", source)
+        self.assertEqual(cli_result.returncode, 0, cli_result.stderr)
+        saved = (self.root / "page.extracted.md").read_text(encoding="utf-8")
+        for target in ("next.html#section", "chart.png", "https://example.org/track.png"):
+            self.assertIn(target, saved)
 
     def test_html_cli_extract_and_read_keep_original_and_provenance(self):
         html = '<html><head><title>配置说明</title></head><body><nav>文档导航</nav><main><h1>配置说明</h1><p>超时 30 秒，0 不超时。</p></main><footer>保留版权说明。</footer></body></html>'

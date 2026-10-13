@@ -24,7 +24,8 @@ _RULE = re.compile(r"^ {0,3}(?:(?:\*[ \t]*){3,}|(?:-[ \t]*){3,}|(?:_[ \t]*){3,})
 _SETEXT = re.compile(r"^ {0,3}(=+|-+)[ \t]*$")
 _SENTENCE = re.compile(r'''(?:[。！？]+[”’」』）》）]*|[.!?]+["')\]]*(?=\s|$))[ \t\r\n]*''')
 _INLINE = re.compile(
-    r"(?P<code>(?P<ticks>`+)(?P<codebody>.+?)(?P=ticks))"
+    r"(?P<escape>\\(?P<escaped>[\x21-\x2F\x3A-\x40\x5B-\x60\x7B-\x7E]))"
+    r"|(?P<code>(?P<ticks>`+)(?P<codebody>.+?)(?P=ticks))"
     r"|(?P<link>!?\[[^\]\n]*\]\((?:[^()\n]|\([^()\n]*\))*\))"
     r"|(?P<strong>\*\*(?=\S)(?:.+?\S|\S)\*\*|__(?=\S)(?:.+?\S|\S)__)"
     r"|(?P<em>\*(?=\S)(?:[^*\n]*?\S|\S)\*|(?<!\w)_(?=\S)(?:[^_\n]*?\S|\S)_(?!\w))"
@@ -210,26 +211,34 @@ def _plain_blocks(text: str) -> list[_Block]:
     return blocks
 
 
-def _paragraph_pieces(block: _Block, target: int) -> list[_Block]:
+def _paragraph_pieces(block: _Block, target: int):
+    """Yield lossless paragraph pieces with a single forward scan and no span table."""
     if block.kind != "paragraph" or len(block.source) <= target:
-        return [block]
+        yield block
+        return
     # Do not break an inline code span, emphasis, image or link at punctuation.
-    protected = [(match.start(), match.end()) for match in _INLINE.finditer(block.source)]
-    boundaries = [match.end() for match in _SENTENCE.finditer(block.source)
-                  if not any(left < match.end() < right for left, right in protected)]
-    if not boundaries or boundaries[-1] != len(block.source):
-        boundaries.append(len(block.source))
-    pieces = []
+    inline_spans = iter(_INLINE.finditer(block.source))
+    protected = next(inline_spans, None)
     start = 0
     previous = 0
-    for end in boundaries:
-        if end - start > target and previous > start:
-            pieces.append(_Block("paragraph", block.source[start:previous], block.start + start))
+    last_boundary = 0
+    for match in _SENTENCE.finditer(block.source):
+        boundary = match.end()
+        while protected is not None and protected.end() <= boundary:
+            protected = next(inline_spans, None)
+        if protected is not None and protected.start() < boundary < protected.end():
+            continue
+        if boundary - start > target and previous > start:
+            yield _Block("paragraph", block.source[start:previous], block.start + start)
             start = previous
-        previous = end
+        previous = boundary
+        last_boundary = boundary
+    if last_boundary != len(block.source):
+        if len(block.source) - start > target and previous > start:
+            yield _Block("paragraph", block.source[start:previous], block.start + start)
+            start = previous
     if start < len(block.source):
-        pieces.append(_Block("paragraph", block.source[start:], block.start + start))
-    return pieces
+        yield _Block("paragraph", block.source[start:], block.start + start)
 
 
 def _safe_url(destination: str):
@@ -264,8 +273,13 @@ def _inline(text: str, depth: int = 0) -> str:
     for match in _INLINE.finditer(text):
         output.append(html.escape(text[cursor:match.start()]))
         token = match[0]
-        if match.group("code"):
-            output.append("<code>" + html.escape(match.group("codebody")) + "</code>")
+        if match.group("escape"):
+            output.append(html.escape(match.group("escaped")))
+        elif match.group("code"):
+            body = match.group("codebody")
+            if body.startswith(" ") and body.endswith(" ") and body.strip():
+                body = body[1:-1]
+            output.append("<code>" + html.escape(body) + "</code>")
         elif match.group("link"):
             bracket = token.index("](")
             label = token[2:bracket] if token.startswith("!") else token[1:bracket]

@@ -1,0 +1,101 @@
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  python:
+    name: Python ${{ matrix.python-version }} / ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        python-version: ["3.9", "3.14"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install PDF and OCR test tools
+        if: runner.os == 'Linux' && matrix.python-version == '3.14'
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes poppler-utils tesseract-ocr tesseract-ocr-chi-sim
+
+      - name: Confirm PDF and OCR tools are available
+        if: runner.os == 'Linux' && matrix.python-version == '3.14'
+        run: |
+          command -v pdftotext
+          command -v pdftoppm
+          command -v tesseract
+          tesseract --list-langs | grep -Fxq chi_sim
+
+      - name: Run deterministic self-tests
+        run: python3 skill/scripts/adhd_md.py selftest
+
+      - name: Run module and integration tests
+        run: python3 -m unittest discover -s skill/scripts/tests -v
+
+      - name: Check generated rule tables
+        run: python3 scripts/build_rules.py --check
+
+      - name: Test rule generator validation
+        run: python3 -m unittest discover -s scripts/tests -v
+
+      - name: Check generated standalone skill
+        run: python3 scripts/build_standalone.py --check
+
+  cli:
+    name: Node CLI
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+
+      - name: Check CLI entry points
+        run: |
+          node bin/cli.js --version
+          node bin/cli.js --help
+
+      - name: Pack and smoke-test the actual npm tarball
+        run: bash scripts/check_npm_package.sh
+
+  site:
+    name: Website build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+          cache: npm
+          cache-dependency-path: site/package-lock.json
+
+      - name: Include the shared install script
+        run: cp scripts/install.sh site/public/install.sh
+
+      - name: Build website
+        working-directory: site
+        run: |
+          npm ci
+          npm run build

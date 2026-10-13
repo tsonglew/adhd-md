@@ -1,0 +1,1842 @@
+{
+  "schema_version": 1,
+  "dimensions": {
+    "hook": {
+      "label": "首屏结论力",
+      "weight": 18
+    },
+    "chunk": {
+      "label": "分块粒度",
+      "weight": 18
+    },
+    "scan": {
+      "label": "扫读性",
+      "weight": 13
+    },
+    "sentence": {
+      "label": "句子负荷",
+      "weight": 13
+    },
+    "action": {
+      "label": "行动性",
+      "weight": 12
+    },
+    "typo": {
+      "label": "排版一致性",
+      "weight": 13
+    },
+    "human": {
+      "label": "活人感",
+      "weight": 13
+    }
+  },
+  "global_score_cap": 20,
+  "thresholds": {
+    "language": {
+      "en": {
+        "para": 80,
+        "section": 200,
+        "sent_mean": 20,
+        "sent_p90": 30,
+        "tldr": 120,
+        "frag": 25
+      },
+      "zh": {
+        "para": 160,
+        "section": 400,
+        "sent_mean": 45,
+        "sent_p90": 70,
+        "tldr": 120,
+        "frag": 40
+      }
+    },
+    "limits": {
+      "L6": {
+        "max_items": 7
+      },
+      "N1": {
+        "max_lines_without_toc": 80
+      },
+      "N5": {
+        "max_columns": 5,
+        "max_rows": 10
+      },
+      "C3": {
+        "min_units": 45,
+        "min_commas": 4
+      },
+      "C5": {
+        "min_de_count": 3
+      },
+      "T2": {
+        "max_bold_ratio": 0.08,
+        "max_bold_per_paragraph": 2
+      },
+      "X2": {
+        "min_lines_per_heading": 5,
+        "min_plain_prose_sections": 3
+      },
+      "X5": {
+        "max_bold_ratio": 0.12
+      },
+      "M5": {
+        "dashes_per_thousand_han": 8
+      },
+      "S7": {
+        "min_lines": 600
+      },
+      "N3": {
+        "min_h2_sections": 2
+      },
+      "H1": {
+        "max_lines": 15,
+        "max_summary_sentences": 3,
+        "max_summary_units": {
+          "en": 40,
+          "zh": 80
+        }
+      },
+      "H2": {
+        "max_items": 5
+      },
+      "P1": {
+        "max_sentences": 3
+      },
+      "L1": {
+        "max_depth": 2
+      },
+      "L3": {
+        "min_items": 3
+      },
+      "L5": {
+        "max_lines": 2
+      },
+      "M13": {
+        "number_context": 10
+      },
+      "M14": {
+        "min_chain_count": 2
+      },
+      "P4": {
+        "max_consecutive_lines": 6
+      }
+    }
+  },
+  "rules": [
+    {
+      "id": "S1",
+      "group": "S",
+      "name": "标题不跳级",
+      "axis": "F",
+      "min_level": 1,
+      "automation": "det",
+      "status": "audit",
+      "threshold": "H1→H3 直接跳，插入或降级修正",
+      "evidence_group": "S",
+      "scoring": [
+        {
+          "id": "S1",
+          "dimension": "typo",
+          "points": 10,
+          "cap": 30,
+          "label": "标题跳级",
+          "mode": "per_finding"
+        }
+      ],
+      "finding_ids": [
+        "S1"
+      ]
+    },
+    {
+      "id": "S2",
+      "group": "S",
+      "name": "全文唯一 H1",
+      "axis": "F",
+      "min_level": 1,
+      "automation": "det",
+      "status": "audit",
+      "threshold": "H1 数量 = 1",
+      "evidence_group": "S",
+      "scoring": [
+        {
+          "id": "S2",
+          "dimension": "typo",
+          "points": 10,
+          "cap": 10,
+          "label": "H1 数量 ≠ 1",
+          "mode": "per_finding"
+        }
+      ],
+      "finding_ids": [
+        "S2"
+      ]
+    },
+    {
+      "id": "S3",
+      "group": "S",
+      "name": "两个标题之间正文不超上限",
+      "axis": "F",
+      "min_level": 2,
+      "automation": "lint",
+      "status": "audit",
+      "threshold": "≤200 词 / ≤400 字",
+      "evidence_group": "S",
+      "scoring": [
+        {
+          "id": "S3",
+          "dimension": "chunk",
+          "points": 10,
+          "cap": 40,
+          "label": "章节超限：两标题间 >200 词 / >400 字",
+          "mode": "per_finding"
+        }
+      ],
+      "finding_ids": [
+        "S3"
+      ]
+    },
+    {
+      "id": "S4",
+      "group": "S",
+      "name": "标题写结论，不写话题",
+      "axis": "C",
+      "min_level": 2,
+      "automation": "judge",
+      "status": "judge",
+      "threshold": "「安装」→「用 npm 一行装好」",
+      "evidence_group": "S",
+      "scoring": []
+    },
+    {
+      "id": "S5",
+      "group": "S",
+      "name": "结论/答案块前置",
+      "axis": "F",
+      "min_level": 2,
+      "automation": "judge",
+      "status": "judge",
+      "threshold": "搬移已有块，不新写",
+      "evidence_group": "S",
+      "scoring": []
+    },
+    {
+      "id": "S6",
+      "group": "S",
+      "name": "章节顺序符合文档类型骨架",
+      "axis": "F",
+      "min_level": 3,
+      "automation": "judge",
+      "status": "judge",
+      "threshold": "见 `doc-types.md`",
+      "evidence_group": "S",
+      "scoring": []
+    },
+    {
+      "id": "S7",
+      "group": "S",
+      "name": "超长单文件建议拆分",
+      "axis": "F",
+      "min_level": 3,
+      "automation": "lint",
+      "status": "advisory",
+      "threshold": ">600 行时给拆分建议，不自动拆",
+      "evidence_group": "S",
+      "scoring": [],
+      "finding_ids": [
+        "S7"
+      ]
+    },
+    {
+      "id": "S8",
+      "group": "S",
+      "name": "每节开头一句话交代本节解决什么",
+      "axis": "C",
+      "min_level": 3,
+      "automation": "judge",
+      "status": "judge",
+      "threshold": "标题下第一句",
+      "evidence_group": "S",
+      "scoring": []
+    },
+    {
+      "id": "H1",
+      "group": "H",
+      "name": "前 15 行内出现结论 / TL;DR",
+      "axis": "C",
+      "min_level": 2,
+      "automation": "det/lint",
+      "status": "audit",
+      "threshold": "原文已有结论段则搬移（转 F 轴，走 S5）",
+      "evidence_group": "H",
+      "scoring": [
+        {
+          "id": "H1",
+          "dimension": "hook",
+          "points": 60,
+          "cap": 60,
+          "label": "前 15 行无结论 / TL;DR",
+          "mode": "per_finding"
+        }
+      ],
+      "finding_ids": [
+        "H1"
+      ]
+    },
+    {
+      "id": "H2",
+      "group": "H",
+      "name": "TL;DR 控制长度",
+      "axis": "C",
+      "min_level": 2,
+      "automation": "lint",
+      "status": "audit",
+      "threshold": "≤5 条且 ≤120 字",
+      "evidence_group": "H",
+      "scoring": [
+        {
+          "id": "H2",
+          "dimension": "hook",
+          "points": 15,
+          "cap": 15,
+          "label": "TL;DR 超长：>5 条或 >120 字",
+          "mode": "per_finding"
+        }
+      ],
+      "finding_ids": [
+        "H2"
+      ]
+    },
+    {
+      "id": "H3",
+      "group": "H",
+      "name": "首屏声明「读完你能做到什么」",
+      "axis": "C",
+      "min_level": 3,
+      "automation": "judge",
+      "status": "judge",
+      "threshold": "一句话，写读者收益不写文档结构",
+      "evidence_group": "H",
+      "scoring": [
+        {
+          "id": "H3",
+          "dimension": "hook",
+          "points": 15,
+          "cap": 15,
+          "label": "首屏无「读完你能做到什么」（仅 deep）",
+          "mode": "per_finding"
+        }
+      ]
+    },
+    {
+      "id": "H4",
+      "group": "H",
+      "name": "首屏给时间/篇幅预估",
+      "axis": "C",
+      "min_level": 2,
+      "automation": "judge",
+      "status": "judge",
+      "threshold": "`约 5 分钟` / `3 步`",
+      "evidence_group": "H",
+      "scoring": [
+        {
+          "id": "H4",
+          "dimension": "hook",
+          "points": 10,
+          "cap": 10,
+          "label": "首屏无时间/篇幅预估",
+          "mode": "per_finding"
+        }
+      ]
+    },
+    {
+      "id": "P1",
+      "group": "P",
+      "name": "段落长度上限",
+      "axis": "F",
+      "min_level": 1,
+      "automation": "lint",
+      "status": "audit",
+      "threshold": "≤3 句 **且** ≤80 词 / ≤160 字",
+      "evidence_group": "P/L/W",
+      "scoring": [
+        {
+          "id": "P1",
+          "dimension": "chunk",
+          "points": 8,
+          "cap": 60,
+          "label": "段落超限：>3 句或 >80 词 / >160 字",
+          "mode": "per_finding"
+        }
+      ],
+      "finding_ids": [
+        "P1"
+      ]
+    },
+    {
+      "id": "P2",
+      "group": "P",
+      "name": "一段只讲一件事",
+      "axis": "F",
+      "min_level": 2,
+      "automation": "judge",
+      "status": "judge",
+      "threshold": "出现话题转折即拆",
+      "evidence_group": "P/L/W",
+      "scoring": []
+    },
+    {
+      "id": "P3",
+      "group": "P",
+      "name": "块级元素之间留空行",
+      "axis": "F",
+      "min_level": 1,
+      "automation": "det",
+      "status": "format",
+      "threshold": "标题/列表/代码块前后各一空行",
+      "evidence_group": "P/L/W",
+      "scoring": []
+    },
+    {
+      "id": "P4",
+      "group": "P",
+      "name": "连续密集行强制切分",
+      "axis": "F",
+      "min_level": 1,
+      "automation": "lint",
+      "status": "audit",
+      "threshold": ">6 行无空行且无列表/标题标记",
+      "evidence_group": "P/L/W",
+      "scoring": [
+        {
+          "id": "P4",
+          "dimension": "chunk",
+          "points": 10,
+          "cap": 30,
+          "label": "密集行块：>6 行无空行且无标记",
+          "mode": "per_finding"
+        }
+      ],
+      "finding_ids": [
+        "P4"
+      ]
+    },
+    {
+      "id": "P5",
+      "group": "P",
+      "name": "超长引用块拆分或折叠",
+      "axis": "F",
+      "min_level": 2,
+      "automation": "judge",
+      "status": "judge",
+      "threshold": ">5 行的 `>` 块",
+      "evidence_group": "P/L/W",
+      "scoring": []
+    },
+    {
+      "id": "L1",
+      "group": "L",
+      "name": "嵌套不超两层",
+      "axis": "F",
+      "min_level": 1,
+      "automation": "lint",
+      "status": "audit",
+      "threshold": "三层起压平或提为小节",
+      "evidence_group": "P/L/W",
+      "scoring": [
+        {
+          "id": "L1",
+          "dimension": "scan",
+          "points": 10,
+          "cap": 30,
+          "label": "列表嵌套 ≥3 层",
+          "mode": "per_finding"
+        }
+      ],
+      "finding_ids": [
+        "L1"
+      ]
+    },
+    {
+      "id": "L2",
+      "group": "L",
+      "name": "可枚举的并列句转列表",
+      "axis": "F",
+      "min_level": 2,
+      "automation": "judge",
+      "status": "judge",
+      "threshold": "复用原词，不改写",
+      "evidence_group": "P/L/W",
+      "scoring": []
+    },
+    {
+      "id": "L3",
+      "group": "L",
+      "name": "步骤用有序列表；可追踪的用 `- [ ]`",
+      "axis": "F",
+      "min_level": 2,
+      "automation": "det/lint",
+      "status": "audit",
+      "threshold": "操作步骤禁用无序列表",
+      "evidence_group": "P/L/W",
+      "scoring": [
+        {
+          "id": "L3",
+          "dimension": "scan",
+          "points": 12,
+          "cap": 12,
+          "label": "步骤用无序列表",
+          "mode": "per_finding"
+        }
+      ],
+      "finding_ids": [
+        "L3"
+      ]
+    },
+    {
+      "id": "L4",
+      "group": "L",
+      "name": "列表项平行结构",
+      "axis": "C",
+      "min_level": 2,
+      "automation": "judge",
+      "status": "judge",
+      "threshold": "同词性开头，动词统一时态",
+      "evidence_group": "P/L/W",
+      "scoring": []
+    },
+    {
+      "id": "L5",
+      "group": "L",
+      "name": "单个列表项不超两行",
+      "axis": "F",
+      "min_level": 2,
+      "automation": "lint",
+      "status": "audit",
+      "threshold": "超出则提为小节",
+      "evidence_group": "P/L/W",
+      "scoring": [
+        {
+          "id": "L5",
+          "dimension": "scan",
+          "points": 4,
+          "cap": 20,
+          "label": "列表项 >2 行",
+          "mode": "per_finding"
+        }
+      ],
+      "finding_ids": [
+        "L5"
+      ]
+    },
+    {
+      "id": "L6",
+      "group": "L",
+      "name": "超七项分组加小标题",
+      "axis": "F",
+      "min_level": 2,
+      "automation": "lint",
+      "status": "advisory",
+      "threshold": ">7 项",
+      "evidence_group": "P/L/W",
+      "scoring": [],
+      "finding_ids": [
+        "L6"
+      ]
+    },
+    {
+      "id": "L7",
+      "group": "L",
+      "name": "列表项保持完整语义",
+      "axis": "C",
+      "min_level": 2,
+      "automation": "judge",
+      "status": "judge",
+      "threshold": "见 X3 反模式",
+      "evidence_group": "P/L/W",
+      "scoring": []
+    },
+    {
+      "id": "W1",
+      "group": "W",
+      "name": "句长上限",
+      "axis": "C",
+      "min_level": 2,
+      "automation": "lint",
+      "status": "audit",
+      "threshold": "均值 ≤20 词 / ≤45 字；**单句** ≤30 词 / ≤70 字",
+      "evidence_group": "P/L/W",
+      "scoring": [
+        {
+          "id": "W1m",
+          "dimension": "sentence",
+          "points": 15,
+          "cap": 50,
+          "label": "均句长每超阈值 10%",
+          "mode": "per_finding"
+        },
+        {
+          "id": "W1x",
+          "dimension": "sentence",
+          "points": 8,
+          "cap": 32,
+          "label": "单句超长：>30 词 / >70 字",
+          "mode": "per_finding"
+        }
+      ],
+      "finding_ids": [
+        "W1m",
+        "W1x"
+      ]
+    },
+    {
+      "id": "W2",
+      "group": "W",
+      "name": "主动语态",
+      "axis": "C",
+      "min_level": 2,
+      "automation": "judge",
+      "status": "judge",
+      "threshold": "被动句占比 ≤10%",
+      "evidence_group": "P/L/W",
+      "scoring": []
+    },
+    {
+      "id": "W3",
+      "group": "W",
+      "name": "括号插入语拆出或删除",
+      "axis": "C",
+      "min_level": 2,
+      "automation": "judge",
+      "status": "judge",
+      "threshold": "句中括号内容 >5 词",
+      "evidence_group": "P/L/W",
+      "scoring": []
+    },
+    {
+      "id": "W4",
+      "group": "W",
+      "name": "消灭回扫指令",
+      "axis": "C",
+      "min_level": 2,
+      "automation": "lint",
+      "status": "audit",
+      "threshold": "`如上所述` `见下文` `前面提到` `as mentioned above` → 就地重述",
+      "evidence_group": "P/L/W",
+      "scoring": [
+        {
+          "id": "W4",
+          "dimension": "sentence",
+          "points": 8,
+          "cap": 24,
+          "label": "回扫指令",
+          "mode": "per_finding"
+        }
+      ],
+      "finding_ids": [
+        "W4"
+      ]
+    },
+    {
+      "id": "W5",
+      "group": "W",
+      "name": "术语首现即解释",
+      "axis": "C",
+      "min_level": 2,
+      "automation": "judge",
+      "status": "judge",
+      "threshold": "缩写第一次出现处",
+      "evidence_group": "P/L/W",
+      "scoring": []
+    },
+    {
+      "id": "W6",
+      "group": "W",
+      "name": "删填充词",
+      "axis": "C",
+      "min_level": 2,
+      "automation": "lint",
+      "status": "audit",
+      "threshold": "`基本上` `事实上` `需要注意的是` `值得一提的是` `其实`",
+      "evidence_group": "P/L/W",
+      "scoring": [
+        {
+          "id": "W6",
+          "dimension": "sentence",
+          "points": 2,
+          "cap": 16,
+          "label": "填充词",
+          "mode": "per_finding"
+        }
+      ],
+      "finding_ids": [
+        "W6"
+      ]
+    },
+    {
+      "id": "W7",
+      "group": "W",
+      "name": "第二人称 + 现在时 + 具体动词",
+      "axis": "C",
+      "min_level": 3,
+      "automation": "judge",
+      "status": "judge",
+      "threshold": "「用户应当配置」→「你配置」",
+      "evidence_group": "P/L/W",
+      "scoring": []
+    },
+    {
+      "id": "W8",
+      "group": "W",
+      "name": "一句一从句",
+      "axis": "C",
+      "min_level": 2,
+      "automation": "judge",
+      "status": "judge",
+      "threshold": "禁三层嵌套从句",
+      "evidence_group": "P/L/W",
+      "scoring": []
+    },
+    {
+      "id": "W9",
+      "group": "W",
+      "name": "否定改正面陈述",
+      "axis": "C",
+      "min_level": 3,
+      "automation": "judge",
+      "status": "judge",
+      "threshold": "警告类例外，警告保留否定式",
+      "evidence_group": "P/L/W",
+      "scoring": []
+    },
+    {
+      "id": "A1",
+      "group": "A",
+      "name": "可执行章节结尾给明确下一步",
+      "axis": "C",
+      "min_level": 2,
+      "automation": "judge",
+      "status": "judge",
+      "threshold": "一句话，含动词与对象",
+      "evidence_group": "A",
+      "scoring": [
+        {
+          "id": "A1",
+          "dimension": "action",
+          "points": 12,
+          "cap": 48,
+          "label": "可执行章节无明确下一步（judge）",
+          "mode": "per_finding"
+        }
+      ]
+    },
+    {
+      "id": "A2",
+      "group": "A",
+      "name": "步骤给时间预估",
+      "axis": "C",
+      "min_level": 3,
+      "automation": "judge",
+      "status": "judge",
+      "threshold": "`约 2 分钟`",
+      "evidence_group": "A",
+      "scoring": [
+        {
+          "id": "A2",
+          "dimension": "action",
+          "points": 15,
+          "cap": 15,
+          "label": "步骤无时间预估（仅 deep，judge）",
+          "mode": "per_finding"
+        }
+      ]
+    },
+    {
+      "id": "A3",
+      "group": "A",
+      "name": "多选项时给默认推荐",
+      "axis": "C",
+      "min_level": 3,
+      "automation": "judge",
+      "status": "judge",
+      "threshold": "标注「推荐」并写理由",
+      "evidence_group": "A",
+      "scoring": [
+        {
+          "id": "A3",
+          "dimension": "action",
+          "points": 12,
+          "cap": 12,
+          "label": "多选项无默认推荐（仅 deep，judge）",
+          "mode": "per_finding"
+        }
+      ]
+    },
+    {
+      "id": "A4",
+      "group": "A",
+      "name": "命令可直接复制",
+      "axis": "F",
+      "min_level": 1,
+      "automation": "det/lint",
+      "status": "audit",
+      "threshold": "独立代码块；剥离 `$` `>` 提示符前缀",
+      "evidence_group": "A",
+      "scoring": [
+        {
+          "id": "A4",
+          "dimension": "action",
+          "points": 6,
+          "cap": 24,
+          "label": "命令块带 $ / > 提示符前缀",
+          "mode": "per_finding"
+        }
+      ],
+      "finding_ids": [
+        "A4"
+      ]
+    },
+    {
+      "id": "A5",
+      "group": "A",
+      "name": "给「只做一件事就做这个」",
+      "axis": "C",
+      "min_level": 3,
+      "automation": "judge",
+      "status": "judge",
+      "threshold": "长文档首屏",
+      "evidence_group": "A",
+      "scoring": []
+    },
+    {
+      "id": "A6",
+      "group": "A",
+      "name": "决策点给判断依据",
+      "axis": "C",
+      "min_level": 3,
+      "automation": "judge",
+      "status": "judge",
+      "threshold": "`如果 X，选 Y`",
+      "evidence_group": "A",
+      "scoring": []
+    },
+    {
+      "id": "A7",
+      "group": "A",
+      "name": "可执行步骤给预期输出或验证方法",
+      "axis": "C",
+      "min_level": 2,
+      "automation": "judge",
+      "status": "judge",
+      "threshold": "每步写「跑完会看到什么」或「怎么知道成功」",
+      "evidence_group": "A",
+      "scoring": [
+        {
+          "id": "A7",
+          "dimension": "action",
+          "points": 8,
+          "cap": 32,
+          "label": "步骤无预期输出或验证方法（judge）",
+          "mode": "per_finding"
+        }
+      ]
+    },
+    {
+      "id": "A8",
+      "group": "A",
+      "name": "一步只做一个动作",
+      "axis": "C",
+      "min_level": 2,
+      "automation": "judge",
+      "status": "judge",
+      "threshold": "复合步骤拆开；原文能说「然后」处通常是分界",
+      "evidence_group": "A",
+      "scoring": [
+        {
+          "id": "A8",
+          "dimension": "action",
+          "points": 8,
+          "cap": 24,
+          "label": "复合步骤未拆成单动作（judge）",
+          "mode": "per_finding"
+        }
+      ]
+    },
+    {
+      "id": "N1",
+      "group": "N",
+      "name": "超两屏必须有 TOC",
+      "axis": "F",
+      "min_level": 2,
+      "automation": "det",
+      "status": "audit",
+      "threshold": ">80 行；由已有标题生成，不新写文字",
+      "evidence_group": "N",
+      "scoring": [
+        {
+          "id": "N1",
+          "dimension": "scan",
+          "points": 20,
+          "cap": 20,
+          "label": ">80 行却无 TOC",
+          "mode": "per_finding"
+        }
+      ],
+      "finding_ids": [
+        "N1"
+      ]
+    },
+    {
+      "id": "N2",
+      "group": "N",
+      "name": "链接文本有意义",
+      "axis": "C",
+      "min_level": 2,
+      "automation": "lint",
+      "status": "audit",
+      "threshold": "禁 `here` `点击这里` `这个链接` 与裸 URL",
+      "evidence_group": "N",
+      "scoring": [
+        {
+          "id": "N2",
+          "dimension": "scan",
+          "points": 5,
+          "cap": 20,
+          "label": "链接文本无意义或裸 URL",
+          "mode": "per_finding"
+        }
+      ],
+      "finding_ids": [
+        "N2"
+      ]
+    },
+    {
+      "id": "N3",
+      "group": "N",
+      "name": "大节之间加分割线",
+      "axis": "F",
+      "min_level": 1,
+      "automation": "lint",
+      "status": "advisory",
+      "threshold": "H2 之间",
+      "evidence_group": "N",
+      "scoring": [],
+      "finding_ids": [
+        "N3"
+      ]
+    },
+    {
+      "id": "N4",
+      "group": "N",
+      "name": "可选/深入内容折叠",
+      "axis": "F",
+      "min_level": 2,
+      "automation": "judge",
+      "status": "judge",
+      "threshold": "`<details><summary>` 复用已有标题文字",
+      "evidence_group": "N",
+      "scoring": []
+    },
+    {
+      "id": "N5",
+      "group": "N",
+      "name": "表格尺寸上限",
+      "axis": "F",
+      "min_level": 2,
+      "automation": "lint",
+      "status": "audit",
+      "threshold": "≤5 列 ≤10 行，超出拆表或转小节",
+      "evidence_group": "N",
+      "scoring": [
+        {
+          "id": "N5",
+          "dimension": "scan",
+          "points": 8,
+          "cap": 24,
+          "label": "表格超 5 列或 10 行",
+          "mode": "per_finding"
+        }
+      ],
+      "finding_ids": [
+        "N5"
+      ]
+    },
+    {
+      "id": "N6",
+      "group": "N",
+      "name": "图片有 alt 文本",
+      "axis": "C",
+      "min_level": 2,
+      "automation": "lint",
+      "status": "audit",
+      "threshold": "`![]()` 空 alt",
+      "evidence_group": "N",
+      "scoring": [
+        {
+          "id": "N6",
+          "dimension": "scan",
+          "points": 4,
+          "cap": 12,
+          "label": "图片缺 alt",
+          "mode": "per_finding"
+        }
+      ],
+      "finding_ids": [
+        "N6"
+      ]
+    },
+    {
+      "id": "N7",
+      "group": "N",
+      "name": "多步流程标注进度",
+      "axis": "C",
+      "min_level": 2,
+      "automation": "judge",
+      "status": "judge",
+      "threshold": "≥4 步时标「第 X 步，共 N 步」，走神回来能定位",
+      "evidence_group": "N",
+      "scoring": [
+        {
+          "id": "N7",
+          "dimension": "scan",
+          "points": 10,
+          "cap": 20,
+          "label": "≥4 步流程无进度标注（judge）",
+          "mode": "per_finding"
+        }
+      ]
+    },
+    {
+      "id": "T1",
+      "group": "T",
+      "name": "代码块带语言标签",
+      "axis": "F",
+      "min_level": 1,
+      "automation": "det",
+      "status": "audit",
+      "threshold": "` ``` ` 裸开",
+      "evidence_group": "T",
+      "scoring": [
+        {
+          "id": "T1",
+          "dimension": "typo",
+          "points": 8,
+          "cap": 32,
+          "label": "代码块缺语言标签",
+          "mode": "per_finding"
+        }
+      ],
+      "finding_ids": [
+        "T1"
+      ]
+    },
+    {
+      "id": "T2",
+      "group": "T",
+      "name": "加粗密度上限",
+      "axis": "F",
+      "min_level": 1,
+      "automation": "lint",
+      "status": "audit",
+      "threshold": "≤8% 正文字符，单段 ≤2 处",
+      "evidence_group": "T",
+      "scoring": [
+        {
+          "id": "T2d",
+          "dimension": "typo",
+          "points": 20,
+          "cap": 20,
+          "label": "加粗密度 >8%",
+          "mode": "per_finding"
+        },
+        {
+          "id": "T2p",
+          "dimension": "typo",
+          "points": 3,
+          "cap": 15,
+          "label": "单段加粗 >2 处",
+          "mode": "per_finding"
+        }
+      ],
+      "finding_ids": [
+        "T2d",
+        "T2p"
+      ]
+    },
+    {
+      "id": "T3",
+      "group": "T",
+      "name": "标记语义一致",
+      "axis": "F",
+      "min_level": 2,
+      "automation": "judge",
+      "status": "judge",
+      "threshold": "粗体=关键术语，代码体=字面量，斜体=强调，不混用",
+      "evidence_group": "T",
+      "scoring": []
+    },
+    {
+      "id": "T4",
+      "group": "T",
+      "name": "行尾无多余空格，文件末尾单换行",
+      "axis": "F",
+      "min_level": 1,
+      "automation": "det",
+      "status": "audit",
+      "threshold": "—",
+      "evidence_group": "T",
+      "scoring": [
+        {
+          "id": "T4",
+          "dimension": "typo",
+          "points": 5,
+          "cap": 5,
+          "label": "行尾多余空格 / 末尾换行不规范",
+          "mode": "per_finding"
+        }
+      ],
+      "finding_ids": [
+        "T4"
+      ]
+    },
+    {
+      "id": "T5",
+      "group": "T",
+      "name": "警告用统一 blockquote 标签",
+      "axis": "F",
+      "min_level": 2,
+      "automation": "lint",
+      "status": "advisory",
+      "threshold": "`> **注意**` / `> **警告**`",
+      "evidence_group": "T",
+      "scoring": [],
+      "finding_ids": [
+        "T5"
+      ]
+    },
+    {
+      "id": "T6",
+      "group": "T",
+      "name": "emoji 默认零",
+      "axis": "F",
+      "min_level": 1,
+      "automation": "det",
+      "status": "format",
+      "threshold": "`--emoji=minimal` 时每标题 ≤1，正文仍禁。`✓ ✔ ✗ ✘` 与箭头是排版符号，不计入",
+      "evidence_group": "T",
+      "scoring": []
+    },
+    {
+      "id": "T7",
+      "group": "T",
+      "name": "有序列表用真实递增序号",
+      "axis": "F",
+      "min_level": 1,
+      "automation": "det",
+      "status": "audit",
+      "threshold": "`1. 2. 3.` 而非全 `1.`，便于口头引用「第 3 步」",
+      "evidence_group": "T",
+      "scoring": [
+        {
+          "id": "T7",
+          "dimension": "typo",
+          "points": 5,
+          "cap": 5,
+          "label": "有序列表非递增序号",
+          "mode": "per_finding"
+        }
+      ],
+      "finding_ids": [
+        "T7"
+      ]
+    },
+    {
+      "id": "T8",
+      "group": "T",
+      "name": "除 `<details>` `<br>` 外不用 HTML",
+      "axis": "F",
+      "min_level": 2,
+      "automation": "lint",
+      "status": "audit",
+      "threshold": "—",
+      "evidence_group": "T",
+      "scoring": [
+        {
+          "id": "T8",
+          "dimension": "typo",
+          "points": 5,
+          "cap": 15,
+          "label": "裸 HTML 标签",
+          "mode": "per_finding"
+        }
+      ],
+      "finding_ids": [
+        "T8"
+      ]
+    },
+    {
+      "id": "C1",
+      "group": "C",
+      "name": "中英文、中数字之间加空格",
+      "axis": "F",
+      "min_level": 1,
+      "automation": "det",
+      "status": "audit",
+      "threshold": "`用 npm 装`",
+      "evidence_group": "P/L/W",
+      "scoring": [
+        {
+          "id": "C1",
+          "dimension": "typo",
+          "points": 1,
+          "cap": 15,
+          "label": "中英文之间缺空格",
+          "mode": "per_finding"
+        }
+      ],
+      "finding_ids": [
+        "C1"
+      ]
+    },
+    {
+      "id": "C2",
+      "group": "C",
+      "name": "中文段落用全角标点",
+      "axis": "F",
+      "min_level": 1,
+      "automation": "det",
+      "status": "audit",
+      "threshold": "中文里的半角 `,` `.` `;`",
+      "evidence_group": "P/L/W",
+      "scoring": [
+        {
+          "id": "C2",
+          "dimension": "typo",
+          "points": 2,
+          "cap": 16,
+          "label": "中文段落用半角标点",
+          "mode": "per_finding"
+        }
+      ],
+      "finding_ids": [
+        "C2"
+      ]
+    },
+    {
+      "id": "C3",
+      "group": "C",
+      "name": "破「一逗到底」",
+      "axis": "C",
+      "min_level": 2,
+      "automation": "lint",
+      "status": "audit",
+      "threshold": "单句 >45 字且逗号 ≥4",
+      "evidence_group": "P/L/W",
+      "scoring": [
+        {
+          "id": "C3",
+          "dimension": "sentence",
+          "points": 8,
+          "cap": 32,
+          "label": "中文一逗到底",
+          "mode": "per_finding"
+        }
+      ],
+      "finding_ids": [
+        "C3"
+      ]
+    },
+    {
+      "id": "C4",
+      "group": "C",
+      "name": "长定语前置改后置",
+      "axis": "C",
+      "min_level": 2,
+      "automation": "judge",
+      "status": "judge",
+      "threshold": "「的」前修饰成分 >15 字",
+      "evidence_group": "P/L/W",
+      "scoring": []
+    },
+    {
+      "id": "C5",
+      "group": "C",
+      "name": "「的」连用不超一次",
+      "axis": "C",
+      "min_level": 3,
+      "automation": "lint",
+      "status": "audit",
+      "threshold": "单句 `的` ≥3",
+      "evidence_group": "P/L/W",
+      "scoring": [
+        {
+          "id": "C5",
+          "dimension": "sentence",
+          "points": 3,
+          "cap": 12,
+          "label": "「的」连用 ≥3（仅 deep）",
+          "mode": "per_finding"
+        }
+      ],
+      "finding_ids": [
+        "C5"
+      ]
+    },
+    {
+      "id": "C6",
+      "group": "C",
+      "name": "中文列表项句末统一不加句号",
+      "axis": "F",
+      "min_level": 1,
+      "automation": "lint",
+      "status": "advisory",
+      "threshold": "全文一致即可",
+      "evidence_group": "P/L/W",
+      "scoring": [],
+      "finding_ids": [
+        "C6"
+      ]
+    },
+    {
+      "id": "C7",
+      "group": "C",
+      "name": "删虚词壳",
+      "axis": "C",
+      "min_level": 2,
+      "automation": "lint",
+      "status": "advisory",
+      "threshold": "`进行` `实现` `相关` `方面` `的问题` `工作`",
+      "evidence_group": "P/L/W",
+      "scoring": [],
+      "finding_ids": [
+        "C7"
+      ]
+    },
+    {
+      "id": "C8",
+      "group": "C",
+      "name": "不在句中软换行",
+      "axis": "F",
+      "min_level": 1,
+      "automation": "det",
+      "status": "audit",
+      "threshold": "中文无空格分词，句中换行会破坏渲染与选词",
+      "evidence_group": "P/L/W",
+      "scoring": [
+        {
+          "id": "C8",
+          "dimension": "typo",
+          "points": 3,
+          "cap": 15,
+          "label": "中文句中软换行",
+          "mode": "per_finding"
+        }
+      ],
+      "finding_ids": [
+        "C8"
+      ]
+    },
+    {
+      "id": "M1",
+      "group": "M",
+      "name": "不写翻案腔",
+      "axis": "C",
+      "min_level": 2,
+      "automation": "lint",
+      "status": "audit",
+      "threshold": "`不是…而是` `并非…而是` `看似…实则` `以为…其实` `恰恰相反`",
+      "evidence_group": "M",
+      "scoring": [
+        {
+          "id": "M1",
+          "dimension": "human",
+          "points": 10,
+          "cap": 40,
+          "label": "翻案腔",
+          "mode": "per_finding"
+        }
+      ],
+      "finding_ids": [
+        "M1"
+      ]
+    },
+    {
+      "id": "M2",
+      "group": "M",
+      "name": "同构排比不超两项",
+      "axis": "C",
+      "min_level": 2,
+      "automation": "lint",
+      "status": "advisory",
+      "threshold": "修辞排比留两项；技术枚举不算",
+      "evidence_group": "M",
+      "scoring": [],
+      "finding_ids": [
+        "M2"
+      ]
+    },
+    {
+      "id": "M3",
+      "group": "M",
+      "name": "抽象名词不配具体动词抒情",
+      "axis": "C",
+      "min_level": 2,
+      "automation": "lint",
+      "status": "audit",
+      "threshold": "「时间保管细节」「焦虑显出形状」",
+      "evidence_group": "M",
+      "scoring": [
+        {
+          "id": "M3",
+          "dimension": "human",
+          "points": 5,
+          "cap": 20,
+          "label": "抽象名词配具体动词抒情",
+          "mode": "per_finding"
+        }
+      ],
+      "finding_ids": [
+        "M3"
+      ]
+    },
+    {
+      "id": "M4",
+      "group": "M",
+      "name": "动词不名词化",
+      "axis": "C",
+      "min_level": 2,
+      "automation": "lint",
+      "status": "audit",
+      "threshold": "`进行优化` → `优化`；`实现提升` → 快了多少",
+      "evidence_group": "M",
+      "scoring": [
+        {
+          "id": "M4",
+          "dimension": "human",
+          "points": 4,
+          "cap": 24,
+          "label": "动词名词化",
+          "mode": "per_finding"
+        }
+      ],
+      "finding_ids": [
+        "M4"
+      ]
+    },
+    {
+      "id": "M5",
+      "group": "M",
+      "name": "破折号密度上限",
+      "axis": "F",
+      "min_level": 2,
+      "automation": "lint",
+      "status": "audit",
+      "threshold": "正文段落 >8 个/千字",
+      "evidence_group": "M",
+      "scoring": [
+        {
+          "id": "M5",
+          "dimension": "human",
+          "points": 3,
+          "cap": 18,
+          "label": "破折号超出预算",
+          "mode": "per_finding"
+        }
+      ],
+      "finding_ids": [
+        "M5"
+      ]
+    },
+    {
+      "id": "M6",
+      "group": "M",
+      "name": "不用预告式冒号",
+      "axis": "C",
+      "min_level": 2,
+      "automation": "lint",
+      "status": "audit",
+      "threshold": "`核心是：` `一句话总结：`。字段标签冒号不算",
+      "evidence_group": "M",
+      "scoring": [
+        {
+          "id": "M6",
+          "dimension": "human",
+          "points": 3,
+          "cap": 18,
+          "label": "预告式冒号",
+          "mode": "per_finding"
+        }
+      ],
+      "finding_ids": [
+        "M6"
+      ]
+    },
+    {
+      "id": "M7",
+      "group": "M",
+      "name": "不用开场空话",
+      "axis": "C",
+      "min_level": 2,
+      "automation": "lint",
+      "status": "audit",
+      "threshold": "`说白了` `说穿了` `先说结论`",
+      "evidence_group": "M",
+      "scoring": [
+        {
+          "id": "M7",
+          "dimension": "human",
+          "points": 8,
+          "cap": 24,
+          "label": "开场空话",
+          "mode": "per_finding"
+        }
+      ],
+      "finding_ids": [
+        "M7"
+      ]
+    },
+    {
+      "id": "M8",
+      "group": "M",
+      "name": "不用装深刻",
+      "axis": "C",
+      "min_level": 2,
+      "automation": "lint",
+      "status": "audit",
+      "threshold": "`值得注意的是` `更微妙的是` `还有一层`",
+      "evidence_group": "M",
+      "scoring": [
+        {
+          "id": "M8",
+          "dimension": "human",
+          "points": 5,
+          "cap": 25,
+          "label": "装深刻",
+          "mode": "per_finding"
+        }
+      ],
+      "finding_ids": [
+        "M8"
+      ]
+    },
+    {
+      "id": "M9",
+      "group": "M",
+      "name": "不用商业与模型黑话",
+      "axis": "C",
+      "min_level": 2,
+      "automation": "lint",
+      "status": "audit",
+      "threshold": "`赋能` `闭环` `全链路` `底层逻辑` `降本增效`",
+      "evidence_group": "M",
+      "scoring": [
+        {
+          "id": "M9",
+          "dimension": "human",
+          "points": 8,
+          "cap": 32,
+          "label": "商业与模型黑话",
+          "mode": "per_finding"
+        }
+      ],
+      "finding_ids": [
+        "M9"
+      ]
+    },
+    {
+      "id": "M10",
+      "group": "M",
+      "name": "借喻不包装抽象概念",
+      "axis": "C",
+      "min_level": 2,
+      "automation": "lint",
+      "status": "advisory",
+      "threshold": "`仓库` `温度` `底座` `浪潮`。写本义时不算",
+      "evidence_group": "M",
+      "scoring": [],
+      "finding_ids": [
+        "M10"
+      ]
+    },
+    {
+      "id": "M11",
+      "group": "M",
+      "name": "不用空泛量词与模糊量词",
+      "axis": "C",
+      "min_level": 2,
+      "automation": "lint",
+      "status": "audit",
+      "threshold": "`大量` `各种` `比较稳定` `相对简单` → 换成数字与边界",
+      "evidence_group": "M",
+      "scoring": [
+        {
+          "id": "M11",
+          "dimension": "human",
+          "points": 3,
+          "cap": 18,
+          "label": "空泛量词",
+          "mode": "per_finding"
+        }
+      ],
+      "finding_ids": [
+        "M11"
+      ]
+    },
+    {
+      "id": "M12",
+      "group": "M",
+      "name": "连续句子不以连接词开头",
+      "axis": "C",
+      "min_level": 2,
+      "automation": "lint",
+      "status": "audit",
+      "threshold": "连续两句以 `此外` `而且` `同时` 开头",
+      "evidence_group": "M",
+      "scoring": [
+        {
+          "id": "M12",
+          "dimension": "human",
+          "points": 6,
+          "cap": 24,
+          "label": "连续连接词",
+          "mode": "per_finding"
+        }
+      ],
+      "finding_ids": [
+        "M12"
+      ]
+    },
+    {
+      "id": "M13",
+      "group": "M",
+      "name": "不用无数字的广告宣称",
+      "axis": "C",
+      "min_level": 2,
+      "automation": "lint",
+      "status": "audit",
+      "threshold": "`显著提升` `彻底解决` `业界首创`，句内 10 字内带数字放行",
+      "evidence_group": "M",
+      "scoring": [
+        {
+          "id": "M13",
+          "dimension": "human",
+          "points": 8,
+          "cap": 32,
+          "label": "广告宣称",
+          "mode": "per_finding"
+        }
+      ],
+      "finding_ids": [
+        "M13"
+      ]
+    },
+    {
+      "id": "M14",
+      "group": "M",
+      "name": "不堆叠从句",
+      "axis": "C",
+      "min_level": 2,
+      "automation": "lint",
+      "status": "audit",
+      "threshold": "单句 ≥2 个 `随着` `从而` `进而` → 拆句",
+      "evidence_group": "M",
+      "scoring": [
+        {
+          "id": "M14",
+          "dimension": "human",
+          "points": 5,
+          "cap": 20,
+          "label": "从句堆叠",
+          "mode": "per_finding"
+        }
+      ],
+      "finding_ids": [
+        "M14"
+      ]
+    },
+    {
+      "id": "X1",
+      "group": "X",
+      "name": "emoji 汤",
+      "axis": "F",
+      "min_level": 1,
+      "automation": "det",
+      "status": "audit",
+      "threshold": "正文出现 emoji，或 emoji 数 > 章节数",
+      "outcome": "扣分",
+      "evidence_group": "X",
+      "scoring": [
+        {
+          "id": "X1p",
+          "dimension": "global",
+          "points": 8,
+          "cap": 8,
+          "label": "X1 正文出现 emoji",
+          "mode": "once"
+        },
+        {
+          "id": "X1c",
+          "dimension": "global",
+          "points": 5,
+          "cap": 5,
+          "label": "X1 emoji 数 > 章节数",
+          "mode": "once"
+        }
+      ],
+      "finding_ids": [
+        "X1p",
+        "X1c"
+      ]
+    },
+    {
+      "id": "X2",
+      "group": "X",
+      "name": "碎片化",
+      "axis": "F",
+      "min_level": 1,
+      "automation": "det",
+      "status": "audit",
+      "threshold": "标题密于每 5 行 1 个，或纯正文章节平均 <40 字 / <25 词",
+      "outcome": "扣分",
+      "evidence_group": "X",
+      "scoring": [
+        {
+          "id": "X2",
+          "dimension": "global",
+          "points": 8,
+          "cap": 8,
+          "label": "X2 碎片化（任一触发条件，只扣一次）",
+          "mode": "once"
+        }
+      ],
+      "finding_ids": [
+        "X2"
+      ]
+    },
+    {
+      "id": "X3",
+      "group": "X",
+      "name": "剩词不剩句",
+      "axis": "C",
+      "min_level": 1,
+      "automation": "judge",
+      "status": "judge",
+      "threshold": "列表项被砍成失去主谓的碎词",
+      "outcome": "扣分",
+      "evidence_group": "X",
+      "scoring": [
+        {
+          "id": "X3",
+          "dimension": "global",
+          "points": 5,
+          "cap": 5,
+          "label": "列表项被砍成失去主谓的碎词",
+          "mode": "once"
+        }
+      ]
+    },
+    {
+      "id": "X4",
+      "group": "X",
+      "name": "删信息",
+      "axis": "both",
+      "min_level": 1,
+      "automation": "verify",
+      "status": "gate",
+      "threshold": "`verify` 不通过",
+      "outcome": "**硬失败，拒绝写回**",
+      "evidence_group": "X",
+      "scoring": []
+    },
+    {
+      "id": "X5",
+      "group": "X",
+      "name": "过度加粗",
+      "axis": "F",
+      "min_level": 1,
+      "automation": "det",
+      "status": "audit",
+      "threshold": "加粗 >12%",
+      "outcome": "扣分",
+      "evidence_group": "X",
+      "scoring": [
+        {
+          "id": "X5",
+          "dimension": "global",
+          "points": 6,
+          "cap": 6,
+          "label": "X5 过度加粗",
+          "mode": "once"
+        }
+      ],
+      "finding_ids": [
+        "X5"
+      ]
+    },
+    {
+      "id": "X6",
+      "group": "X",
+      "name": "表格滥用",
+      "axis": "F",
+      "min_level": 1,
+      "automation": "judge",
+      "status": "judge",
+      "threshold": "把叙述性内容硬塞进表格",
+      "outcome": "扣分",
+      "evidence_group": "X",
+      "scoring": [
+        {
+          "id": "X6",
+          "dimension": "global",
+          "points": 5,
+          "cap": 5,
+          "label": "把叙述性内容硬塞进表格",
+          "mode": "once"
+        }
+      ]
+    },
+    {
+      "id": "X7",
+      "group": "X",
+      "name": "折叠滥用",
+      "axis": "F",
+      "min_level": 1,
+      "automation": "judge",
+      "status": "judge",
+      "threshold": "主路径内容被藏进 `<details>`",
+      "outcome": "扣分",
+      "evidence_group": "X",
+      "scoring": [
+        {
+          "id": "X7",
+          "dimension": "global",
+          "points": 5,
+          "cap": 5,
+          "label": "主路径内容被藏进 `<details>`",
+          "mode": "once"
+        }
+      ]
+    },
+    {
+      "id": "X8",
+      "group": "X",
+      "name": "套模板",
+      "axis": "F",
+      "min_level": 1,
+      "automation": "judge",
+      "status": "judge",
+      "threshold": "每节都套同一组空话小标题",
+      "outcome": "扣分",
+      "evidence_group": "X",
+      "scoring": [
+        {
+          "id": "X8",
+          "dimension": "global",
+          "points": 5,
+          "cap": 5,
+          "label": "每节都套同一组空话小标题",
+          "mode": "once"
+        }
+      ]
+    }
+  ]
+}
