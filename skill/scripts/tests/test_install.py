@@ -158,7 +158,11 @@ class InstallScopeTest(unittest.TestCase):
                     'for var in ADHD_MD_FAIL_MV_DEST ADHD_MD_INTERRUPT_MV_DEST; do\n'
                     '  eval wanted="\\${$var:-}"\n'
                     '  if [ "$is_stage" = 1 ] && [ -n "$wanted" ] && [ "$selected_dest" = "$wanted" ]; then\n'
-                    '    if [ "$var" = ADHD_MD_INTERRUPT_MV_DEST ]; then kill -TERM "$PPID"; else exit 92; fi\n'
+                    '    if [ "$var" = ADHD_MD_INTERRUPT_MV_DEST ]; then\n'
+                    '      owner="$ADHD_MD_PROJECT_ROOT/.agents/skills/.adhd-md-install.lock/owner"\n'
+                    '      { IFS= read -r owner_token; IFS= read -r owner_pid; } < "$owner"\n'
+                    '      kill -TERM "$owner_pid"\n'
+                    '    else exit 92; fi\n'
                     '  fi\n'
                     'done\n'
                     'for arg in "$@"; do case "$arg" in -*) continue ;; "$ADHD_MD_TEST_ROOT"/*) ;; *) echo "unsafe mv target: $arg" >&2; exit 97 ;; esac; done\n'
@@ -768,7 +772,7 @@ class InstallScopeTest(unittest.TestCase):
                 archive.add(REPO / rel, arcname=Path("adhd-md-main") / rel, recursive=False)
 
         real = {}
-        for name in ("tar", "mktemp", "python3", "mkdir", "cp", "ln", "mv", "sed", "dirname", "cat"):
+        for name in ("tar", "gzip", "mktemp", "python3", "mkdir", "cp", "ln", "mv", "sed", "dirname", "cat"):
             path = shutil.which(name)
             self.assertIsNotNone(path, f"{name} is required for the local tarball fixture")
             real[name] = path
@@ -798,6 +802,11 @@ class InstallScopeTest(unittest.TestCase):
             'done\n'
             'case "$extract_dir" in "$ADHD_MD_TEST_ROOT"/*) ;; *) echo "unsafe tar target: $extract_dir" >&2; exit 97 ;; esac\n'
             'exec "$ADHD_MD_REAL_TAR" "$@"\n',
+        )
+        self.write_command(
+            "gzip",
+            '#!/bin/sh\n'
+            'exec "$ADHD_MD_REAL_GZIP" "$@"\n',
         )
         self.write_command(
             "mktemp",
@@ -850,6 +859,7 @@ class InstallScopeTest(unittest.TestCase):
             "ADHD_MD_MKTEMP_LOG": str(temp_log),
             "ADHD_MD_REAL_CAT": real["cat"],
             "ADHD_MD_REAL_TAR": real["tar"],
+            "ADHD_MD_REAL_GZIP": real["gzip"],
             "ADHD_MD_REAL_MKTEMP": real["mktemp"],
             "ADHD_MD_REAL_PYTHON": real["python3"],
             "ADHD_MD_REAL_MKDIR": real["mkdir"],

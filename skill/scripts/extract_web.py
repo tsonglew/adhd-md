@@ -156,7 +156,11 @@ def fetch_url(url: str, timeout: float = 20) -> dict:
                     "content_type": headers.get_content_type().lower() if headers.get("Content-Type") else "",
                     "charset": headers.get_content_charset()}
     except HTTPError as exc:
-        exc.close()
+        # Python 3.9's HTTPError.close() can raise when the error has no
+        # response body (for example, a denied request with fp=None).
+        response = getattr(exc, "fp", None)
+        if response is not None:
+            response.close()
         if exc.code in (401, 403):
             message = "网站要求登录或拒绝下载，请在已登录的浏览器中保存 HTML 或 PDF 后导入。"
         elif 300 <= exc.code < 400:

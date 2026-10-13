@@ -383,7 +383,7 @@ else
   # curl | bash：脚本从标准输入来的，本地没有源码，去下一份
   REMOTE=1
   MODE=copy
-  TMP="$(mktemp -d)"
+  TMP="$(mktemp -d "${TMPDIR:-/tmp}/adhd-md-install.XXXXXX")"
   echo "下载源码"
   if command -v curl >/dev/null 2>&1; then
     curl -fsSL "$TARBALL" | tar -xzf - -C "$TMP" --strip-components=1
