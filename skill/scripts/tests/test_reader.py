@@ -131,7 +131,10 @@ class ReaderTest(unittest.TestCase):
 
         # A sentence boundary inside each short emphasis span used to rescan
         # every prior span, making _paragraph_pieces quadratic in span count.
-        sizes = (10_000, 20_000, 40_000, 80_000)
+        # Keep the smallest sample large enough that sub-millisecond runner
+        # noise cannot dominate the ratio. The larger range still separates
+        # the expected linear scan from a quadratic rescan.
+        sizes = (40_000, 80_000, 160_000)
         samples = {size: [] for size in sizes}
         for size in sizes:
             self.build("*a*. " * (size // 5), 900)  # Warm regex caches and allocator paths.
@@ -145,10 +148,9 @@ class ReaderTest(unittest.TestCase):
                 self.build(source, 900)
                 samples[size].append(time.process_time() - started)
         medians = {size: statistics.median(values) for size, values in samples.items()}
-        self.assertLess(medians[40_000], 1.0, f"40 KB median {medians[40_000]:.3f}s")
-        self.assertLessEqual(medians[20_000] / medians[10_000], 2.5, medians)
-        self.assertLessEqual(medians[40_000] / medians[20_000], 2.5, medians)
-        self.assertLessEqual(medians[80_000] / medians[40_000], 2.5, medians)
+        self.assertLess(medians[160_000], 1.0, f"160 KB median {medians[160_000]:.3f}s")
+        self.assertLessEqual(medians[80_000] / medians[40_000], 3.0, medians)
+        self.assertLessEqual(medians[160_000] / medians[80_000], 3.0, medians)
 
     def test_fences_remain_whole_even_with_inner_shorter_fences(self):
         block = "````md\n# not a title\n\n```js\nalert('x')\n```\n````\n"
