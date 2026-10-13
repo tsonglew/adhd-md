@@ -38,10 +38,11 @@
 
   function updateThemeButton() {
     var dark = document.documentElement.dataset.theme === "dark";
-    var en = document.documentElement.lang === "en";
-    themeBtn.setAttribute("aria-label", en
-      ? (dark ? "Switch to light mode" : "Switch to dark mode")
-      : (dark ? "切换到亮色" : "切换到暗色"));
+    if (themeBtn) {
+      themeBtn.setAttribute("aria-label", dark
+        ? themeBtn.dataset.ariaToLight
+        : themeBtn.dataset.ariaToDark);
+    }
     themeColor(dark);
   }
 
@@ -56,19 +57,25 @@
   }
 
   /* ── 复制按钮 ───────────────────────────── */
+  var copyStatus = document.getElementById("copy-status");
+  var copySuccess = document.body.dataset.copySuccess || "Copied.";
+  var copyFailure = document.body.dataset.copyFailure || "Copy failed. Select and copy the text manually.";
+
   document.querySelectorAll(".copy").forEach(function (btn) {
     btn.addEventListener("click", function () {
       var src = document.querySelector(btn.dataset.copy);
       if (!src) return;
       var text = src.textContent;
       var done = function () {
-        var old = btn.textContent;
-        btn.textContent = "已复制";
         btn.classList.add("done");
+        if (copyStatus) copyStatus.textContent = copySuccess;
         setTimeout(function () {
-          btn.textContent = old;
           btn.classList.remove("done");
         }, 1600);
+      };
+      var failed = function () {
+        btn.classList.remove("done");
+        if (copyStatus) copyStatus.textContent = copyFailure;
       };
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(text).then(done, fallback);
@@ -76,13 +83,21 @@
         fallback();
       }
       function fallback() {
-        var ta = document.createElement("textarea");
-        ta.value = text;
-        ta.style.cssText = "position:fixed;opacity:0";
-        document.body.appendChild(ta);
-        ta.select();
-        try { document.execCommand("copy"); done(); } catch (e) { /* 复制不了就算了 */ }
-        document.body.removeChild(ta);
+        var ta = null;
+        try {
+          ta = document.createElement("textarea");
+          ta.value = text;
+          ta.style.cssText = "position:fixed;opacity:0";
+          document.body.appendChild(ta);
+          ta.focus();
+          ta.select();
+          if (document.execCommand("copy")) done();
+          else failed();
+        } catch (e) {
+          failed();
+        } finally {
+          if (ta && ta.parentNode) ta.parentNode.removeChild(ta);
+        }
       }
     });
   });

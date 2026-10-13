@@ -50,7 +50,7 @@ const zh = {
   meta: {
     title: "adhd-md — 把 Markdown 改造成读得下去的样子",
     description:
-      "一份跨 agent 通用的 skill：把 Markdown 改造成 ADHD 友好、可扫读的版本。可只改格式、只改内容或两者兼改。只重排信息，绝不删信息。格式档的改动可被脚本证明无损。",
+      "一份跨 agent 通用的 skill：把 Markdown 改造成 ADHD 友好、可扫读的版本。可只改格式、只改内容或两者兼改。只重排信息，绝不删信息。格式校验有通过、失败、无法判断三态；词序变化不冒充通过。",
     canonical: "https://tsonglew.github.io/adhd-md/",
     ogTitle: "adhd-md — 把 Markdown 改造成读得下去的样子",
     ogDescription:
@@ -58,13 +58,14 @@ const zh = {
     ogImage: "https://tsonglew.github.io/adhd-md/og.png",
     ogImageAlt: "adhd-md：把 Markdown 改造成读得下去的样子。只重排信息，绝不删信息。脚本分 87.8 到 100，正文一个词都没改。",
     twitterTitle: "adhd-md — 把 Markdown 改造成读得下去的样子",
-    twitterDescription: "一份 skill 通用于六个 agent。只重排信息，绝不删信息。格式档的改动可被脚本证明无损。",
+    twitterDescription: "一份 skill 通用于六个 agent。只重排信息，绝不删信息。格式校验有通过、失败、无法判断三态；词序变化不冒充通过。",
     twitterImageAlt: "adhd-md 预览图：脚本分 87.8 到 100，正文一个词都没改。",
   },
   skip: "跳到正文",
-  nav: ["对照", "三种改法", "去 AI 味", "无损", "评测", "宿主"],
+  nav: ["对照", "三种改法", "去 AI 味", "校验边界", "评测", "宿主"],
   langSwitch: { label: "EN", href: "/adhd-md/en/" },
   themeToggle: { ariaToDark: "切换到暗色", ariaToLight: "切换到亮色" },
+  copy: { label: "复制", installLabel: "复制安装命令", success: "已复制到剪贴板。", failure: "复制失败，请手动选择并复制文本。" },
   footer: {
     tagline: "MIT · Python 只用标准库 · PDF / OCR 使用本机工具",
     links: [
@@ -84,7 +85,7 @@ const zh = {
     h1c: "的样子",
     lede: "结论前置、段落切碎、动作明确。在 Claude Code、Codex、Grok Build、Gemini CLI、Cursor、opencode 里都能用同一份 skill。",
     creed1: "只重排信息，绝不删信息。",
-    creed2: "篇幅太长就折叠或移到附录。格式档的改动可被脚本证明无损。",
+    creed2: "篇幅太长就折叠或移到附录。词序或不支持语法无法确认时，格式校验会返回“无法判断”。",
     buttons: ["看源码", "看对照"],
     readingLink: "试试陪读",
   },
@@ -179,12 +180,12 @@ const zh = {
     cards: [
       {
         name: "format",
-        lede: "正文词序列逐字不变，只动标记、空白、块顺序。",
+        lede: "完整原块可移动；句内换序、重复块歧义或不支持语法会返回无法判断。",
         can: "能做",
         canText: "在已有句界拆段 · 并列句转列表（复用原词）· 加粗已有术语 · 块顺序重排 · 补代码块语言标签 · 折叠 · 中英文间距与标点规范",
         cant: "不能做",
         cantText: "改任何一个词 · 新写 TL;DR · 改写标题措辞",
-        seal: "可证明无损",
+        seal: "正文词频 + 原有代码、链接和技术字面值；不确定时停止",
       },
       {
         name: "content",
@@ -193,18 +194,18 @@ const zh = {
         canText: "长句拆短 · 被动改主动 · 新写 TL;DR · 标题改成结论式 · 补时间预估与下一步 · 术语首现解释 · 删填充词",
         cant: "不能做",
         cantText: "动排版结构 · 借「精简」之名删约束、单位、版本号、例外",
-        seal: "不变量保全",
+        seal: "检查原有代码、链接、选项、路径和权限值",
       },
       {
         name: "both",
         tag: "默认",
-        lede: "先改内容再改格式，最后统一校验。",
+        lede: "先改内容再改格式，再运行现有检查并人工复核。",
         can: "另一根轴",
         canTextHtml:
-          "<code>light</code> 只做零风险项，适合规范与 API 文档。<code>standard</code> 拆段、列表化、改标题、写 TL;DR、给时间预估。<code>deep</code> 全量重构骨架，适合会议记录和乱笔记。",
+          "<code>light</code> 只做少量调整，适合规范与 API 文档；写回前仍需检查差异。<code>standard</code> 拆段、列表化、改标题、写 TL;DR、给时间预估。<code>deep</code> 全量重构骨架，适合会议记录和乱笔记。",
         cant: "怎么用",
         cantText: "直接说人话：「把 README 改成 ADHD 友好的，只改格式」",
-        seal: "78 条规则按轴与档过滤",
+        seal: "86 条规则定义：78 条正文规则 + 8 条反模式",
       },
     ],
   },
@@ -232,19 +233,19 @@ const zh = {
     },
   },
   lossless: {
-    h2: "删一个词就会被拦下来",
+    h2: "删词会失败，句内换序需要复核",
     subHtml:
-      "格式档下，剥掉标记后的正文 token 多重集必须完全一致。删词是 <code>missing</code>，新写措辞是 <code>added</code>，两者都拒绝写回。",
-    termAria: "verify 命令输出示例：格式档通过，删词被判硬失败",
+      "校验器只处理声明的 Markdown 子集。它会比较正文 token 词频、原有代码块正文与重复次数、链接目标和技术字面值；数字单位变化按 scope 报错或警告，元数据也按 scope 处理。结构无法可靠解析时返回 <code>unknown</code>，CLI 退出码为 4。<code>pass</code> 只代表已声明检查通过，不是语义等价证明。",
+    termAria: "verify 输出示例：无法映射为完整块移动的换序返回无法判断，删词返回失败",
     termHtml:
-      '<span class="p">$</span> adhd_md.py verify 原文.md 新文.md --scope=format\nscope=format → <span class="ok">通过</span>\n  [警告] blocks_reordered: 检测到块重排，检查悬空指代\n\n<span class="p">$</span> adhd_md.py verify 原文.md 删了一句的.md --scope=format\nscope=format → <span class="bad">失败</span>\n  [硬失败] prose_tokens_missing  count=9\n    items: [生产, 环境, 别, 设成, 0, …]\n    hint: 这些词从正文里消失了。format 档不许删词。',
+      '<span class="p">$</span> adhd_md.py verify 原文.md 新文.md --scope=format\nscope=format → 无法判断（退出码 4）\n  [无法判断] token_order_changed new:3\n    词序变化无法映射为未改写的完整块移动，可能改了句内条件、对象或否定关系。\n\n<span class="p">$</span> adhd_md.py verify 原文.md 删了一句的.md --scope=format\nscope=format → <span class="bad">失败</span>\n  [硬失败] prose_tokens_missing  count=9\n    items: [生产, 环境, 别, 设成, 0, …]\n    hint: 这些词从正文里消失了。format 档不许删词。',
     grid1: {
-      h: "能算准的不交给模型",
-      t: "审计、格式修复、无损校验都在一个纯标准库的 Python 单文件里。跑的是同一个进程，不是同一个模型，所以六个宿主的分数与校验结果必然一致。",
+      h: "明确范围的检查交给脚本",
+      t: "审计、格式修复和部分不变量检查都在一个纯标准库的 Python 单文件里。相同输入会执行相同检查；检查范围之外的内容仍需人工复核。",
     },
     grid2: {
       h: "分数不虚报",
-      t: "78 条规则里 34 条只由模型判断，另有 3 条只提示不扣分 —— 这 37 条在脚本分里都按满分计入。<code>audit</code> 输出的叫「脚本分」，不给「优」档。脚本分低说明一定有问题，脚本分高不说明没问题。",
+      t: "默认 standard + both 适用 75 条规则，其中 23 条需模型判断、7 条仅提示。<code>audit</code> 的脚本分按全文所有适用轴计算；未判定不代表通过，提示项不扣分。",
     },
   },
   hosts: {
@@ -260,7 +261,7 @@ const zh = {
       { name: "opencode", path: "~/.config/opencode/skills/", badge: "加载实测", live: false },
     ],
     note:
-      "Codex headless 跑了完整流程，自己发现目标文件有未提交改动，于是改写到旁路文件而没覆盖原文件。这正是 skill 第 0 步的逻辑。产出与手写版本不同，但同样合格。它把两条警告合成引用块，我把配置转成列表，都是 100 分，都零词改动。",
+      "Codex headless 跑了完整流程，自己发现目标文件有未提交改动，于是改写到旁路文件而没覆盖原文件。这正是 skill 第 0 步的逻辑。历史人工复核认为产出符合 format 约定：它把两条警告合成引用块，我把配置转成列表，都是 100 分、零词改动。当前三态校验不会把块顺序变化自动判通过。",
     noteSmall:
       "另外四个宿主只验证了能加载，没验证执行效果。",
     noteLink: "验证结论",
@@ -269,7 +270,7 @@ const zh = {
   eval: {
     h2: "真实 agent 评测：新规则会执行，也不会被滥用",
     subHtml:
-      "Codex 0.36.0 + <code>gpt-5.6-sol</code>，4 个语料各跑 <code>scope=both</code> 完整工作流（审计 → 改写 → verify → 报告）。",
+      "Codex 0.36.0 + <code>gpt-5.6-sol</code>，4 个语料各跑 <code>scope=both</code> 完整工作流（审计 → 改写 → verify → 报告）。这是 2026-08 的历史评测；当前 verifier 另行记录 <code>pass</code>、<code>fail</code> 与 <code>unknown</code>。",
     head: ["用例", "level", "脚本分", "H4 行为"],
     rows: [
       { doc: "中文 README", level: "standard", score: "87.8 → 100", h4: "加「约 1 分钟读完」，合理" },
@@ -327,7 +328,7 @@ const en: typeof zh = {
   meta: {
     title: "adhd-md — make Markdown readable",
     description:
-      "One skill for six agents: turn Markdown into something ADHD-friendly and skimmable. Fix formatting only, content only, or both. Rearrange information, never delete it — format-mode changes are provably lossless.",
+      "One skill for six agents: turn Markdown into something ADHD-friendly and skimmable. Fix formatting only, content only, or both. Rearrange information, never delete it. Format checks have three states: pass, fail, and unknown; word-order changes never count as a pass.",
     canonical: "https://tsonglew.github.io/adhd-md/en/",
     ogTitle: "adhd-md — make Markdown readable",
     ogDescription:
@@ -336,13 +337,14 @@ const en: typeof zh = {
     ogImageAlt: "adhd-md: make Markdown readable. Rearrange information, never delete it. Score 87.8 to 100, not a single word changed.",
     twitterTitle: "adhd-md — make Markdown readable",
     twitterDescription:
-      "One skill for six agents. Rearrange information, never delete it. Format-mode changes are provably lossless.",
+      "One skill for six agents. Rearrange information, never delete it. Format checks return pass, fail, or unknown; word-order changes never count as a pass.",
     twitterImageAlt: "adhd-md preview: score 87.8 to 100, not a single word changed.",
   },
   skip: "Skip to content",
-  nav: ["Compare", "Three modes", "AI slop", "Lossless", "Eval", "Hosts"],
+  nav: ["Compare", "Three modes", "AI slop", "Check limits", "Eval", "Hosts"],
   langSwitch: { label: "中文", href: "/adhd-md/" },
   themeToggle: { ariaToDark: "Switch to dark mode", ariaToLight: "Switch to light mode" },
+  copy: { label: "Copy", installLabel: "Copy install command", success: "Copied to clipboard.", failure: "Copy failed. Select and copy the text manually." },
   footer: {
     tagline: "MIT · pure-stdlib Python · local tools for PDF / OCR",
     links: [
@@ -362,7 +364,7 @@ const en: typeof zh = {
     h1c: "",
     lede: "Conclusion first, short chunks, clear next steps. The same skill works in Claude Code, Codex, Grok Build, Gemini CLI, Cursor, and opencode.",
     creed1: "Rearrange information. Never delete it.",
-    creed2: "Too long? Collapse it or move it to an appendix. Format-mode changes are provably lossless.",
+    creed2: "Too long? Collapse it or move it to an appendix. Unsupported syntax or word-order changes return unknown.",
     buttons: ["Source", "See the demo"],
     readingLink: "Try reading mode",
   },
@@ -457,12 +459,12 @@ const en: typeof zh = {
     cards: [
       {
         name: "format",
-        lede: "The word sequence stays verbatim. Only markup, whitespace, and block order change.",
+        lede: "Exact unique blocks can move; sentence-order changes, repeated-block ambiguity, or unsupported syntax return unknown.",
         can: "Can do",
         canText: "Split paragraphs at existing sentence breaks · turn parallel sentences into lists (reusing the words) · bold existing terms · reorder blocks · add code fence language tags · collapse sections · fix CJK spacing and punctuation",
         cant: "Can't do",
         cantText: "Change a single word · write a new TL;DR · reword headings",
-        seal: "Provably lossless",
+        seal: "Prose tokens + original code, links, and technical literals; stop if uncertain",
       },
       {
         name: "content",
@@ -471,18 +473,18 @@ const en: typeof zh = {
         canText: "Split long sentences · passive to active · write a TL;DR · conclusion-style headings · add time estimates and next steps · explain terms on first use · cut filler",
         cant: "Can't do",
         cantText: "Touch layout · delete constraints, units, versions, or edge cases in the name of “tightening”",
-        seal: "Invariants preserved",
+        seal: "Checks original code, links, options, paths, and permissions",
       },
       {
         name: "both",
         tag: "default",
-        lede: "Content first, then format, then one combined check.",
+        lede: "Content first, then format; run the available checks and review the result.",
         can: "The other axis",
         canTextHtml:
-          "<code>light</code> does zero-risk fixes only, for specs and API docs. <code>standard</code> splits, lists, retitles, writes a TL;DR, and adds time estimates. <code>deep</code> rebuilds the whole skeleton, for meeting notes and messy drafts.",
+          "<code>light</code> makes only small edits for specs and API docs; review the diff before writing back. <code>standard</code> splits, lists, retitles, writes a TL;DR, and adds time estimates. <code>deep</code> rebuilds the whole skeleton, for meeting notes and messy drafts.",
         cant: "How to use it",
         cantText: "Just say it in plain words: “Make README.md ADHD-friendly, format only”",
-        seal: "78 rules filtered by axis and level",
+        seal: "86 rule definitions: 78 primary rules + 8 anti-patterns",
       },
     ],
   },
@@ -510,19 +512,19 @@ const en: typeof zh = {
     },
   },
   lossless: {
-    h2: "Delete one word and it gets rejected",
+    h2: "Deleted words fail; sentence reordering needs review",
     subHtml:
-      "In format mode, the token multiset of the prose, with markup stripped, must match exactly. A missing token is <code>missing</code>, new wording is <code>added</code> — both refuse to write back.",
-    termAria: "verify command output example: format mode passes, deleting a sentence fails hard",
+      "The verifier handles a declared Markdown subset. It compares prose token counts, original code block bodies and counts, link destinations, and technical literals. Number or unit changes fail or warn by scope; metadata follows the same scope policy. Unsupported structures return <code>unknown</code> (CLI exit code 4). <code>pass</code> means the declared checks passed, not that meaning is equivalent.",
+    termAria: "verify output example: order changes that do not map to whole blocks return unknown; deleted words fail",
     termHtml:
-      '<span class="p">$</span> adhd_md.py verify before.md after.md --scope=format\nscope=format → <span class="ok">passed</span>\n  [warning] blocks_reordered: blocks moved, check for dangling references\n\n<span class="p">$</span> adhd_md.py verify before.md missing-a-sentence.md --scope=format\nscope=format → <span class="bad">failed</span>\n  [hard-fail] prose_tokens_missing  count=9\n    items: [production, do, not, set, 0, …]\n    hint: these words vanished from the prose. format mode forbids deletions.',
+      '<span class="p">$</span> adhd_md.py verify before.md after.md --scope=format\nscope=format → unknown (exit code 4)\n  [unknown] token_order_changed new:3\n    The order change does not map to unchanged whole blocks; it may alter a condition, object, or negation.\n\n<span class="p">$</span> adhd_md.py verify before.md missing-a-sentence.md --scope=format\nscope=format → <span class="bad">failed</span>\n  [hard-fail] prose_tokens_missing  count=9\n    items: [production, do, not, set, 0, …]\n    hint: these words vanished from the prose. format mode forbids deletions.',
     grid1: {
-      h: "What's computable never goes to a model",
-      t: "Audit, format fixes, and lossless verification all live in one pure-stdlib Python file. Same process, not same model — so the scores and checks come out identical across all six hosts.",
+      h: "The script handles checks with clear limits",
+      t: "Audit, format fixes, and selected invariant checks live in one pure-stdlib Python file. The same input runs the same checks; anything outside their scope still needs human review.",
     },
     grid2: {
       h: "Scores don't inflate themselves",
-      t: "Of the 78 rules, 34 are model-judged and 3 more are advisory-only — all 37 count as full marks in the script score. <code>audit</code> prints a “script score” and never a grade. A low script score always means problems; a high one doesn't always mean none.",
+      t: "At the default standard + both settings, 75 rules apply: 23 need model judgment and 7 are advisory-only. <code>audit</code> scores all applicable axes in the document; unjudged rules are not passes, and hints carry no points.",
     },
   },
   hosts: {
@@ -538,7 +540,7 @@ const en: typeof zh = {
       { name: "opencode", path: "~/.config/opencode/skills/", badge: "tested for loading", live: false },
     ],
     note:
-      "Codex ran the whole workflow headless, noticed the target file had uncommitted changes, and wrote to a side file instead of overwriting it — exactly what step 0 of the skill says. Its output differs from my hand-written example, but passes just the same. It merged two warnings into one blockquote; I turned the config into a list. Both scored 100, both changed zero words.",
+      "Codex ran the whole workflow headless, noticed the target file had uncommitted changes, and wrote to a side file instead of overwriting it — exactly what step 0 of the skill says. A historical human review found both outputs fit the format rules: it merged two warnings into one blockquote; I turned the config into a list. Both scored 100 and changed zero words. The current three-state verifier does not auto-pass reordered blocks.",
     noteSmall:
       "The other four hosts are only verified to load the skill, not to run it well.",
     noteLink: "Verification notes",
@@ -547,7 +549,7 @@ const en: typeof zh = {
   eval: {
     h2: "Real-agent eval: the new rules run — and don't run wild",
     subHtml:
-      "Codex 0.36.0 + <code>gpt-5.6-sol</code>, four docs, each through the full <code>scope=both</code> workflow (audit → rewrite → verify → report).",
+      "Codex 0.36.0 + <code>gpt-5.6-sol</code>, four docs, each through the full <code>scope=both</code> workflow (audit → rewrite → verify → report). This is a historical 2026-08 eval; the current verifier records <code>pass</code>, <code>fail</code>, and <code>unknown</code> separately.",
     head: ["Doc", "level", "Script score", "H4 behavior"],
     rows: [
       { doc: "Chinese README", level: "standard", score: "87.8 → 100", h4: "Added “about 1 minute” — reasonable" },

@@ -8,9 +8,45 @@ import unittest
 from unittest.mock import Mock, patch
 from urllib.error import HTTPError, URLError
 from urllib.request import Request
+from html.parser import HTMLParser
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import extract_web
+
+
+class _VisibleText(HTMLParser):
+    """Collect DOM text while allowing table layout checks separately."""
+
+    def __init__(self, *, skip_tables=False):
+        super().__init__(convert_charrefs=True)
+        self.parts = []
+        self.tags = []
+        self.links = []
+        self.skip_tables = skip_tables
+        self.table_depth = 0
+        self.hidden_depth = 0
+
+    def handle_starttag(self, tag, attrs):
+        self.tags.append(tag)
+        if tag == "a":
+            self.links.append((tag, dict(attrs)))
+        if tag in {"head", "title", "script", "style", "template"}:
+            self.hidden_depth += 1
+        if self.skip_tables and tag == "table":
+            self.table_depth += 1
+
+    def handle_endtag(self, tag):
+        if self.skip_tables and tag == "table" and self.table_depth:
+            self.table_depth -= 1
+        if tag in {"head", "title", "script", "style", "template"} and self.hidden_depth:
+            self.hidden_depth -= 1
+
+    def handle_data(self, data):
+        if not self.table_depth and not self.hidden_depth:
+            self.parts.append(data)
+
+    def text(self):
+        return " ".join("".join(self.parts).split())
 
 
 class HTMLExtractionTest(unittest.TestCase):
@@ -62,6 +98,68 @@ class HTMLExtractionTest(unittest.TestCase):
         text = self.extract('<main>Hello<strong> careful </strong>reader. Use<a href="/guide"> this guide </a>today.</main>')["text"]
         self.assertIn("Hello **careful** reader.", text)
         self.assertIn("Use [this guide](https://example.org/guide) today.", text)
+
+    def test_html_text_survives_markdown_extraction_and_reader_dom(self):
+        from reader import build_reading_data
+
+        original_html = r"""<title>Markdown tutorial</title><main>
+        <p>Formula 2*3*4=24; literal ***; *stars*; `ticks`; [brackets]; (parentheses); [label](https://fake.example); backslash \ path.</p>
+        <p># literal heading</p>
+        <p>- literal bullet</p>
+        <p>+ literal plus-list</p>
+        <p>&gt; literal quote</p>
+        <p>1. literal ordered list</p>
+        <p>HTML <strong>bold</strong>, <em>italics</em>, <a href="https://example.org/guide">link</a>, and <code>a &lt; b</code>.</p>
+        <table><thead><tr><th>Name</th><th>Value</th></tr></thead><tbody><tr><td>Pipe</td><td>1*2 | 3</td></tr></tbody></table>
+        </main>"""
+        extracted = self.extract(original_html)
+        text = extracted["text"]
+        self.assertIn(r"2\*3\*4=24", text)
+        self.assertIn(r"\*\*\*", text)
+        self.assertIn(r"\*stars\*", text)
+        self.assertIn(r"\`ticks\`", text)
+        self.assertIn(r"\[brackets\]", text)
+        self.assertIn(r"\(parentheses\)", text)
+        self.assertIn(r"\# literal heading", text)
+        self.assertIn(r"\- literal bullet", text)
+        self.assertIn(r"\+ literal plus-list", text)
+        self.assertIn(r"\> literal quote", text)
+        self.assertIn(r"1\. literal ordered list", text)
+        self.assertIn(r"\\ path", text)
+        self.assertIn(r"1\*2 \| 3", text)
+        self.assertEqual(extracted["origin"]["original_html"], original_html)
+        self.assertEqual(extracted["origin"]["location"], "https://example.org/docs/start")
+
+        reading = build_reading_data(text, extracted["source_name"], chunk_size=900)
+        reading["origin"] = extracted["origin"]
+        self.assertEqual(reading["source_text"], text)
+        self.assertEqual("".join(chunk["source"] for chunk in reading["chunks"]), text)
+        rendered = _VisibleText(skip_tables=True)
+        for chunk in reading["chunks"]:
+            rendered.feed(chunk["html"])
+        source_visible = _VisibleText(skip_tables=True)
+        source_visible.feed(original_html)
+        self.assertEqual(rendered.text(), source_visible.text())
+        self.assertIn("2*3*4=24", rendered.text())
+        self.assertIn("***", rendered.text())
+        self.assertIn("[label](https://fake.example)", rendered.text())
+        self.assertIn("# literal heading", rendered.text())
+        self.assertIn("- literal bullet", rendered.text())
+        self.assertIn("+ literal plus-list", rendered.text())
+        self.assertIn("> literal quote", rendered.text())
+        self.assertIn("1. literal ordered list", rendered.text())
+
+        fragment = _VisibleText()
+        for chunk in reading["chunks"]:
+            fragment.feed(chunk["html"])
+        self.assertIn("1*2 | 3", fragment.text())
+        self.assertEqual(fragment.tags.count("strong"), 1)
+        self.assertEqual(fragment.tags.count("em"), 1)
+        self.assertEqual(fragment.tags.count("code"), 1)
+        self.assertEqual(fragment.tags.count("table"), 1)
+        self.assertEqual(fragment.tags.count("th"), 2)
+        self.assertEqual(fragment.tags.count("td"), 2)
+        self.assertEqual([attrs["href"] for tag, attrs in fragment.links if tag == "a"], ["https://example.org/guide"])
 
     def test_malformed_content_outside_body_is_retained(self):
         text = self.extract("<title>Metadata</title>before<body><main>main content</main></body>after<body>extra body</body>")["text"]
@@ -130,6 +228,60 @@ class HTMLExtractionTest(unittest.TestCase):
         self.assertIn("[流程图](https://example.org/chart.png)", data["text"])
         self.assertIn("[邮箱](mailto:reader@example.org)", data["text"])
         self.assertTrue(any("图片" in warning for warning in data["origin"]["warnings"]))
+
+    def test_local_relative_targets_are_preserved_and_inert_in_reader(self):
+        from reader import build_reading_data
+
+        markup = """<main>
+        <p><a href="next/文档 page.html?q=中文#章节 空格">下一页</a>
+        <a href="#section">本页锚点</a><a href="?mode=wide">查询</a>
+        <a href="../private/page.html">上级目录</a>
+        <a href="file:///private/local note.html">本机文件</a>
+        <a href="javascript:alert(1)">危险脚本</a><a href="data:text/html,bad">危险数据</a>
+        <a href="https://example.org/%zz">损坏地址</a></p>
+        <p><img src="../images/chart 图.png?rev=2#plot" alt="图表">
+        <img src="javascript:alert(1)" alt="不安全图片"><img alt="没有来源"></p>
+        </main>"""
+        data = self.extract(markup, "file:///tmp/docs/source.html")
+        text = data["text"]
+        self.assertIn("next/%E6%96%87%E6%A1%A3%20page.html?q=%E4%B8%AD%E6%96%87#%E7%AB%A0%E8%8A%82%20%E7%A9%BA%E6%A0%BC", text)
+        self.assertIn("(#section)", text)
+        self.assertIn("(?mode=wide)", text)
+        self.assertIn("../private/page.html", text)
+        self.assertIn("file:///private/local%20note.html", text)
+        self.assertIn("../images/chart%20%E5%9B%BE.png?rev=2#plot", text)
+        self.assertNotIn("javascript:", text)
+        self.assertNotIn("data:text", text)
+        self.assertNotIn("%zz", text)
+        self.assertIn("危险脚本", text)
+        self.assertIn("危险数据", text)
+        self.assertIn("损坏地址", text)
+        self.assertIn("不安全图片", text)
+        self.assertIn("没有来源", text)
+        self.assertTrue(any("图片只保留了替代文字" in warning for warning in data["origin"]["warnings"]))
+
+        reading = build_reading_data(text, data["source_name"])
+        fragment = _VisibleText()
+        for chunk in reading["chunks"]:
+            fragment.feed(chunk["html"])
+        self.assertNotIn("img", fragment.tags)
+        self.assertEqual(fragment.links, [], "file and relative targets must remain inert")
+        self.assertIn("file:///private/local%20note.html", fragment.text())
+
+    def test_local_base_resolves_to_recoverable_relative_paths(self):
+        data = self.extract("""<head><base href="../assets/"></head><main>
+        <a href="next.html#section">下一页</a><img src="chart.png" alt="图表">
+        </main>""", "file:///tmp/docs/source.html")
+        self.assertIn("[下一页](../assets/next.html#section)", data["text"])
+        self.assertIn("[图表](../assets/chart.png)", data["text"])
+
+        external_base = self.extract("<base href=\"https://cdn.example/assets/\"><main><a href=\"next.html\">下一页</a></main>",
+                                     "file:///tmp/docs/source.html")
+        self.assertIn("[下一页](https://cdn.example/assets/next.html)", external_base["text"])
+
+        broken_base = self.extract("<base href=\"https://[broken\"><main><a href=\"next.html\">下一页</a></main>")
+        self.assertIn("[下一页](https://example.org/docs/next.html)", broken_base["text"])
+        self.assertTrue(any("base 地址无效" in warning for warning in broken_base["origin"]["warnings"]))
 
     def test_unsafe_links_keep_text_and_do_not_become_destinations(self):
         data = self.extract("""<main><a href="jav&#97;script:alert(1)">按钮文字</a>

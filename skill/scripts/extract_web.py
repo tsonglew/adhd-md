@@ -11,12 +11,13 @@ from dataclasses import dataclass, field
 from html.parser import HTMLParser
 from http.client import HTTPException
 import math
+import posixpath
 from pathlib import Path
 import re
 import socket
 import time
 from urllib.error import HTTPError, URLError
-from urllib.parse import quote, urljoin, urlsplit, urlunsplit
+from urllib.parse import quote, unquote, urljoin, urlsplit, urlunsplit
 from urllib.request import HTTPRedirectHandler, Request, build_opener
 
 
@@ -28,6 +29,18 @@ _BLOCK = frozenset(("address article aside blockquote body caption dd details di
                     "fieldset figcaption figure footer form h1 h2 h3 h4 h5 h6 header hgroup hr "
                     "li main nav ol p pre section summary table tbody td tfoot th thead tr ul").split())
 _SPACE = re.compile(r"[\t\n\r\f ]+")
+_MARKDOWN_TEXT = re.compile(r"([\\`*_{}\[\]()!<>|~])")
+_BLOCK_PREFIX = re.compile(r"(?m)^([ \t]*)([#>+-])")
+_ORDERED_PREFIX = re.compile(r"(?m)^([ \t]*[0-9]{1,9})([.)])(?=[ \t]|$)")
+_BAD_PERCENT = re.compile(r"%(?![0-9A-Fa-f]{2})")
+
+
+def _markdown_text(text):
+    """Escape source text so generated Markdown syntax stays structural only."""
+    text = _SPACE.sub(" ", text)
+    text = _MARKDOWN_TEXT.sub(lambda match: "\\" + match[1], text)
+    text = _BLOCK_PREFIX.sub(lambda match: match[1] + "\\" + match[2], text)
+    return _ORDERED_PREFIX.sub(lambda match: match[1] + "\\" + match[2], text)
 
 
 def _http_url(url: str) -> str:
@@ -297,6 +310,10 @@ class _Renderer:
     def __init__(self, base):
         self.base = base
         self.warnings = []
+        source = urlsplit(base)
+        self.local_source = source.scheme.lower() == "file"
+        self.local_source_dir = posixpath.dirname(unquote(source.path)) if self.local_source else ""
+        self.local_base_explicit = False
 
     def warning(self, message):
         if message not in self.warnings:
@@ -313,34 +330,102 @@ class _Renderer:
         if not raw:
             return ""
         raw = raw.strip()
-        if any(ord(c) < 32 or ord(c) == 127 for c in raw) or "\\" in raw:
+        if any(ord(c) < 32 or ord(c) == 127 for c in raw) or "\\" in raw or _BAD_PERCENT.search(raw):
             self.warning("部分链接含无效字符，已保留文字；请在原始 HTML 中核对链接。")
             return ""
         try:
-            resolved = urljoin(self.base, raw)
-            parts = urlsplit(resolved)
-            if parts.scheme.lower() in ("http", "https"):
-                fragment = parts.fragment
-                resolved = _http_url(resolved)
-                if fragment:
-                    resolved += "#" + fragment
-            elif parts.scheme.lower() in ("mailto", "tel"):
-                pass
-            elif not parts.scheme and not parts.netloc:
-                # Relative links in a local HTML file stay relative and inert
-                # in the offline reader, but remain recoverable in Markdown.
-                pass
-            else:
+            parts = urlsplit(raw)
+            scheme = parts.scheme.lower()
+            base = urlsplit(self.base)
+            if scheme in ("http", "https"):
+                return self.http_destination(urljoin(self.base, raw))
+            if scheme in ("mailto", "tel"):
+                return quote(raw, safe=":/?#@!$&'*+,;=-._~%")
+            if scheme == "file":
+                self.warning("file:// 目标只保留为不可活动文字；阅读器不会自动打开或读取本机文件。")
+                return quote(raw, safe=":/?#@!$&'*+,;=-._~%")
+            if scheme:
                 self.warning("部分链接使用不受支持的协议，已保留文字；请在原始 HTML 中核对链接。")
                 return ""
-            return quote(resolved, safe="/:?#@!$&'*,;=+%~-._")
+            if parts.netloc:
+                if base.scheme.lower() in ("http", "https"):
+                    return self.http_destination(urljoin(self.base, raw))
+                self.warning("部分链接使用不受支持的协议相对地址，已保留文字。")
+                return ""
+            if self.local_source and base.scheme.lower() == "file":
+                if self.local_base_explicit:
+                    resolved = urlsplit(urljoin(self.base, raw))
+                    if resolved.scheme.lower() != "file" or resolved.netloc:
+                        self.warning("本地 HTML 的 base 指向无法安全保留的位置，已保留文字。")
+                        return ""
+                    path = unquote(resolved.path)
+                    relative = posixpath.relpath(path, self.local_source_dir or ".")
+                    if resolved.path.endswith("/") and not relative.endswith("/"):
+                        relative = "./" if relative == "." else relative + "/"
+                    parts = parts._replace(path=relative, query=resolved.query, fragment=resolved.fragment)
+                return self.quote_reference(parts)
+            return self.http_destination(urljoin(self.base, raw))
         except ValueError:
             self.warning("部分链接地址无效，已保留文字；请在原始 HTML 中核对链接。")
             return ""
 
+    @staticmethod
+    def quote_reference(parts):
+        path = quote(parts.path, safe="/:@!$&'*+,;=-._~%")
+        query = quote(parts.query, safe="/?:@!$&'*+,;=-._~%")
+        fragment = quote(parts.fragment, safe="/?:@!$&'*+,;=-._~%#")
+        return (path + ("?" + query if parts.query else "")
+                + ("#" + fragment if parts.fragment else ""))
+
+    @staticmethod
+    def http_destination(url):
+        parts = urlsplit(url)
+        if parts.scheme.lower() not in ("http", "https"):
+            raise ValueError("不支持的网页地址")
+        fragment = parts.fragment
+        normalized = _http_url(urlunsplit((parts.scheme, parts.netloc, parts.path, parts.query, "")))
+        if fragment:
+            normalized += "#" + quote(fragment, safe="/?:@!$&'*+,;=-._~%#")
+        return quote(normalized, safe="/:?#@!$&'*,;=+%~-._")
+
+    def set_base(self, raw):
+        raw = (raw or "").strip()
+        if not raw:
+            return
+        if (any(ord(c) < 32 or ord(c) == 127 for c in raw) or "\\" in raw
+                or _BAD_PERCENT.search(raw)):
+            self.destination(raw)
+            return
+        try:
+            parts = urlsplit(raw)
+        except ValueError:
+            self.warning("页面的 base 地址无效，已忽略；请在原始 HTML 中核对链接。")
+            return
+        scheme = parts.scheme.lower()
+        current = urlsplit(self.base)
+        if scheme in ("http", "https"):
+            destination = self.destination(raw)
+            if destination:
+                self.base = destination
+            return
+        if self.local_source and scheme == "file" and not parts.netloc:
+            self.base = raw
+            self.local_base_explicit = True
+            return
+        if not scheme and not parts.netloc:
+            if self.local_source and current.scheme.lower() == "file":
+                self.base = urljoin(self.base, raw)
+                self.local_base_explicit = True
+            elif current.scheme.lower() in ("http", "https"):
+                destination = self.destination(raw)
+                if destination:
+                    self.base = destination
+            return
+        self.destination(raw)
+
     def render(self, node, excluded=frozenset()):
         if isinstance(node, str):
-            return _SPACE.sub(" ", node)
+            return _markdown_text(node)
         if node in excluded or _hidden(node):
             return ""
         tag = node.tag
@@ -349,6 +434,13 @@ class _Renderer:
             longest = max((len(m[0]) for m in re.finditer(r"`+", content)), default=0)
             fence = "`" * max(3, longest + 1)
             return "\n\n" + fence + "\n" + content + ("" if content.endswith("\n") else "\n") + fence + "\n\n"
+        if tag == "code":
+            content = _SPACE.sub(" ", _plain(node))
+            if not content.strip():
+                return content
+            longest = max((len(m[0]) for m in re.finditer(r"`+", content)), default=0)
+            ticks = "`" * max(1, longest + 1)
+            return ticks + " " + content.strip() + " " + ticks
         if tag == "table":
             return self.table(node, excluded)
         inner = "" if tag in ("ul", "ol") else "".join(self.render(child, excluded) for child in node.children)
@@ -361,15 +453,17 @@ class _Renderer:
         if tag == "img":
             alt = node.attrs.get("alt") or node.attrs.get("title") or "图片（无替代文字）"
             destination = self.destination(node.attrs.get("src"))
-            self.warning("图片保留了替代文字和来源链接，图内文字、图表及公式仍需查看原图核对。")
-            label = alt.replace("[", "\\[").replace("]", "\\]")
-            return "[{}]({})".format(label, destination) if destination else alt
+            if destination:
+                self.warning("图片保留了替代文字和来源链接，图内文字、图表及公式仍需查看原图核对。")
+            else:
+                self.warning("图片只保留了替代文字；来源链接缺失或无效，不能据此定位图片。")
+            label = _markdown_text(alt)
+            return "[{}]({})".format(label, destination) if destination else label
         if tag == "a":
             destination = self.destination(node.attrs.get("href"))
-            label = inner if inner.strip() else (node.attrs.get("href") or "")
+            label = inner if inner.strip() else _markdown_text(node.attrs.get("href") or "")
             if not destination:
                 return label
-            label = label.replace("[", "\\[").replace("]", "\\]")
             return self.decorated(label, "[", "](" + destination + ")")
         if tag in ("strong", "b") and inner.strip():
             return self.decorated(inner, "**", "**")
@@ -377,10 +471,6 @@ class _Renderer:
             return self.decorated(inner, "*", "*")
         if tag in ("sup", "sub") and inner.strip():
             return self.decorated(inner, "^(" if tag == "sup" else "_(", ")")
-        if tag == "code" and inner.strip():
-            longest = max((len(m[0]) for m in re.finditer(r"`+", inner)), default=0)
-            ticks = "`" * max(1, longest + 1)
-            return ticks + " " + inner.strip() + " " + ticks
         if tag == "blockquote":
             return "\n\n" + "\n".join("> " + line for line in inner.strip().splitlines()) + "\n\n"
         if tag in ("ul", "ol"):
@@ -433,7 +523,7 @@ class _Renderer:
                 for child in part.children:
                     value = self.render(child, excluded).strip()
                     if isinstance(child, _Node) and child.tag in ("td", "th"):
-                        cells.append(re.sub(r"\s+", " ", value).replace("|", "\\|"))
+                        cells.append(re.sub(r"\s+", " ", value))
                     elif value:
                         extras.append(value)
                 if cells:
@@ -476,9 +566,7 @@ def extract_html(html_text: str, source_location: str) -> dict:
     # Honor a document's first safe base URL without ever loading it.
     base = next((node.attrs.get("href") for node in nodes if node.tag == "base" and node.attrs.get("href")), None)
     if base:
-        resolved = renderer.destination(base)
-        if resolved and urlsplit(resolved).scheme in ("http", "https"):
-            renderer.base = resolved
+        renderer.set_base(base)
     regions = []
 
     def select(node):

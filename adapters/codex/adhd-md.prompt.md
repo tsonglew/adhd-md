@@ -13,4 +13,4 @@ argument-hint: <文件.md> [--scope=format|content|both] [--level=light|standard
 
 确定性工具层在 `__CANON__/scripts/adhd_md.py`，用 `python3` 调。
 
-铁律：只重排信息，绝不删信息。`scope=format` 时 `verify` 是硬门禁，不通过必须回退。
+铁律：只重排信息，绝不删信息。当前 `verify --scope=format` 比较正文 token 多重集，不检查词序、语义、frontmatter 或链接目标；通过不等于完整无损。先预览格式化结果，保留原文并人工复核后再写回。详细边界见 `SKILL.md`。

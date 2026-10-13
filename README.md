@@ -14,7 +14,7 @@
 - [装 + 跑（约 2 分钟）](#装--跑约-2-分钟)
 - [阅读已有文档](#阅读已有文档)
 - [两个参数](#两个参数)
-- [无损保证](#无损保证)
+- [校验边界](#校验边界)
 - [支持哪些 agent](#支持哪些-agent)
 - [目录结构](#目录结构)
 - [CLI](#cli)
@@ -25,7 +25,7 @@
 ## 能干什么
 
 - **审计**：给文档打分（0–100，七个维度），逐条指出问题与行号
-- **只改格式**：正文一个词都不动，只重排结构。改动可被脚本证明无损
+- **只改格式**：目标是保留正文用词，只调整标记、空白和块顺序；当前校验边界见下文
 - **只改内容**：只改措辞，不动排版风格
 - **两者兼改**：默认档
 - **去 AI 味**：翻案腔、预告式冒号、装深刻的话、黑话、破折号密度，逐条报位置
@@ -55,6 +55,8 @@ git clone https://github.com/tsonglew/adhd-md && cd adhd-md && bash scripts/inst
 安装脚本会探测本机装了哪些 agent，只往存在的宿主里放软链。canonical skill 落在 `~/.agents/skills/adhd-md`，改一处六个宿主同时生效。
 
 从 git 克隆装是软链，`git pull` 即更新；npx 与 curl 装是复制，重跑一次即更新。
+
+项目级安装会把可运行的 canonical 副本放进仓库 `.agents/skills/adhd-md`，再复制到受支持的宿主目录。它不依赖 npx 缓存或 curl 下载目录；升级时在同一仓库重新运行 `bash scripts/install.sh --project`。
 
 跑一下试试：
 
@@ -143,26 +145,48 @@ python3 skill/scripts/adhd_md.py read 文档.txt --chunk-size 900 -o /tmp/文档
 
 | scope | 边界 | 怎么说 |
 |---|---|---|
-| `format` | 正文词序列逐字不变，只动标记、空白、块顺序 | 只改格式 / 别动我的字 |
+| `format` | 不改措辞；标题、代码、链接目标和 frontmatter 受保护。无法确认时返回 `unknown` | 只改格式 / 别动我的字 |
 | `content` | 只改措辞与信息组织，不碰排版风格 | 只改内容 / 句子太长 |
-| `both`（默认） | 全都改 | 优化一下 |
+| `both`（默认） | 全都改；校验范围与 `content` 相同 | 优化一下 |
 
 | level | 适用 | 力度 |
 |---|---|---|
-| `light` | 规范、合同、API 文档 | 只做零风险项 |
+| `light` | 规范、合同、API 文档 | 只做少量调整，并检查差异 |
 | `standard`（默认） | README、教程、设计文档 | 拆段、列表化、改标题、写 TL;DR、给时间预估 |
 | `deep` | 会议记录、长文、乱笔记 | 全量重构骨架 |
 
-## 无损保证
+## 校验边界
 
-`scope=format` 下的改动可以证明无损。剥掉标记后的正文 token 多重集必须完全一致，删一个词或新写一个词都会被 `verify` 拒绝。
+### 支持的语法与变换边界
+
+校验器实现的是 Markdown 子集，不是完整 CommonMark / GFM 解析器。遇到不能可靠解释的结构，结果为 `unknown`，并报告来源行；`fmt --write` 会拒绝写回。先保留原结构，改用人工复核，不要把 `unknown` 当通过。
+
+| 结构 | 当前处理 | 写回约定 |
+|---|---|---|
+| 标题、段落、基础列表、引用块、简单 GFM 表格 | 参与正文 token 检查 | token 数变化失败；词序变化无法判断 |
+| 成对围栏代码（反引号或波浪线） | 按正文逐字比较原有代码块及重复次数 | 不比较围栏样式、语言标签和位置；`format` 拒绝新增代码块，`content` / `both` 可添加；未闭合围栏为 `unknown` |
+| 四空格缩进代码、复杂嵌套块 | 解析器不能稳定地区分代码与续行 | 有改动时为 `unknown`，保留原样 |
+| 行内 Markdown 链接、图片与 HTTP(S) autolinks | 比较目标地址及重复次数 | 删除或改写原目标为硬失败；content / both 可添加目标；裸 URL 包成链接可通过 |
+| 行内字面值、选项、相对路径、权限和技术标识符 | 按类型比较完整值与重复次数 | 更长字符串不能冒充旧值；通用缩写只要求至少保留一次 |
+| 数字与单位 | 允许数字和单位之间的空白变化 | format 改数值或单位为硬失败；content / both 给警告并返回 `unknown` |
+| 引用式链接、原始 HTML（含 `<details>`） | 不解释引用定义、显示和结构 | 有改动时为 `unknown`；唯一原 H2 被原样用作 `<summary>` 时允许标准折叠外壳 |
+| YAML frontmatter（首行 `---` 且有闭合行） | format 模式逐字保护 | format 改动失败；content / both 可改，但会给出元数据复核警告 |
+| HTML 注释、扩展 Markdown / MDX | 不在支持范围 | 有改动时为 `unknown`，保留原样 |
+
+`scope=format` 允许在已有句界拆段、复用原词列表化、调整标题标记、加行内代码或强调、生成目录、折叠原有标题、移动整块，以及修空格和标点。它不允许改词、删内容、改数字或链接目标。未改写且能唯一映射的完整块重排可以通过，同时给出指代复核提示；句内换序、顺序敏感列表变化或重复块映射歧义返回 `unknown`。拆句时不能拆开条件、否定和适用对象。
+
+`content` 与 `both` 可修改措辞和结构，但所有 scope 都保留原有代码块正文与重复次数、链接目标与重复次数，以及行内代码值、命令选项、常见相对路径、权限值和大小写敏感技术标识符。裸 URL 包成链接仍可通过；content / both 可以增加新代码块或链接，format 不可以。`format` 的 frontmatter 必须原样保留；`content` / `both` 改元数据时会报告新旧内容并要求复核。
+
+校验有三种结果：`pass` 表示已声明的机器检查通过且没有待复核警告；`fail` 表示发现硬约束变化；`unknown` 表示当前解析器不能可靠判断，或有警告尚待人工复核。CLI 对应退出码为 `0`、`3`、`4`。JSON 保留原有 `scope`、`hard_failures`、`warnings`、`ok` 字段，新增 `status` 与 `unknowns`；确认完整块重排时附带 `notes` 指代复核提示。`ok` 仅在 `status=pass` 时为 `true`，因此旧调用方不会把未知当成功。警告不会变成硬失败，但会阻止报告为 `pass`。
 
 ```bash
 python3 skill/scripts/adhd_md.py verify 原文.md 新文.md --scope=format
-# scope=format → 通过
+# scope=format → 通过 / 失败 / 无法判断
 ```
 
-`scope=content` 下检查不变量：代码块逐字、行内代码、URL、标识符、数字带单位，缺一即硬失败。
+选项、路径、权限和技术标识符按完整值及重复次数比较，不会把 `--timeoutExtra` 当成 `--timeout`；通用缩写（如 API、CLI、URL、HTTP、HTML、JSON、PDF、ID）只要求至少保留一次。数字与单位之间的空白可归一（`2 MB` 与 `2MB`），数值或单位变化在 `format` 下失败，在 `content` / `both` 下产生警告并返回 `unknown`。校验器仍不证明语义等价，也无法识别所有句内条件关系；`pass` 只说明已声明的机器检查通过。
+
+运行 `fmt 文件.md` 先查看格式化预览。`fmt --write` 在替换前运行 format 校验；硬失败或 `unknown` 都拒绝写回。它通过同目录临时文件原子替换，保留 UTF-8 字节内容、换行、POSIX mode 位和所有者 / 组；符号链接、硬链接会拒绝，系统 ACL、扩展属性和文件 flags 不保留。并发编辑或写入失败时原文件不变、临时文件清理。多文件逐个提交，失败可能出现部分成功，并逐文件报告。`--strip-emoji` 会跳过 format 校验，是显式有损选项，会单独标示，但仍使用原子写入流程。保留原文，并人工核对校验范围外的代码细节、句内语义和指代关系。
 
 篇幅太长就折叠或移到附录，不删。
 
@@ -185,6 +209,8 @@ python3 skill/scripts/adhd_md.py verify 原文.md 新文.md --scope=format
 bash scripts/install.sh --project
 ```
 
+卸载只删除能确认归属的安装资产。用户级宿主仅移除指向 canonical skill 的软链；项目级 canonical、副本和用户级 canonical 目录都需要安装器写入的所有权标记。旧版或不完整安装若没有标记会被保留并提示检查；`--project --uninstall` 不会处理用户级 Codex prompt。
+
 没有命令执行能力的环境（网页版 LLM）粘贴自包含单文件：`dist/adhd-md.standalone.md`。
 
 ## 目录结构
@@ -204,6 +230,7 @@ docs/
   eval.md                  验证结论
   host-matrix.md           六个宿主的实证结论
   adhd-research.md         产品与研究的调研快照
+CHANGELOG.md               未发布改动与调用方迁移说明
 scripts/install.sh        探测 + 安装
 ```
 
@@ -244,6 +271,8 @@ adhd_md.py extract SOURCE [-o OUTPUT] [--json]
 
 `read` 的 `FILE` 和 `extract` 的 `SOURCE` 均支持 UTF-8 Markdown / 文本、本地 HTML、PDF 和 HTTP(S) 网页或 PDF 链接。两个命令都支持 `--timeout 20`、`--ocr auto|never|always` 和 `--ocr-lang chi_sim+eng`。
 
+`--timeout` 限制网页请求整体时间，以及每次 PDF / OCR 外部工具调用时间；本地 HTML、Markdown 分段和阅读页渲染不受它控制。网页下载最多 20 MiB；本地文件、PDF 和标准输入最多 50 MiB，PDF 另限 500 页。超限会报错，不会截短输入。
+
 `extract` 默认输出 `<原名>.extracted.md`；网址输出由标题或来源命名，保存在当前目录。
 
 输入 `-` 可从标准输入读取，默认生成 `stdin.reader.html`。`--json` 不能与 `-o` 同用。
@@ -259,7 +288,7 @@ python3 skill/scripts/adhd_md.py audit --min-score 70 docs/*.md
 
 | 症状 | 原因与解法 |
 |---|---|
-| 分数很高但文档明显很烂 | `audit` 输出的是脚本分，把 37 条需模型判断的规则按满分计入。脚本分低说明一定有问题，脚本分高不说明没问题 |
+| 分数很高但文档明显很烂 | `audit` 输出的是脚本分。默认 standard + both 有 23 条规则需模型判断、7 条仅提示；未判断不代表通过 |
 | `verify --scope=format` 失败 | 改动越界了。`prose_tokens_added` 是新写了措辞，`prose_tokens_missing` 是删了词。回退，或改用 `scope=content` |
 | agent 没自动触发 | Codex 用 `/adhd-md`，其他宿主明确说「用 adhd-md skill」 |
 | PDF 提示缺少工具 | 安装 Poppler；扫描件还需 Tesseract 和对应语言包。只读取文字层时可用 `--ocr never`，未识别页仍会标出 |
@@ -276,13 +305,13 @@ npm run build    # 构建到 site/dist/，Pages workflow 部署的就是它
 
 站点文案在 `site/src/i18n/ui.ts`，中英两套。加第三种语言就是加一个字典对象 + 一个 `src/pages/<lang>/index.astro`。
 
-改 `og.html` 或 `icon-square.svg` 之后重跑 `bash scripts/build-og.sh`，位图产物写进 `site/public/`。
+改 `og.html` 或 `icon-square.svg` 之后重跑 `bash scripts/build-og.sh`，位图产物写进 `site/public/`。需要本机 Chrome/Chromium；脚本会从 PATH 和常见应用目录发现，也可以用 `OG_CHROME=/path/to/chrome` 或 `--chrome /path/to/chrome` 指定。模板请求 Google Fonts，离线时使用系统后备字体，细节可能因运行环境不同。
 
 ## 深入
 
 [陪读与离线阅读页](skill/references/reading.md) 介绍来源范围、分段讲解、跳过与续读书签。
 
-- [规则库](skill/references/rules.md)：78 条规则，带轴/档/阈值。去 AI 味的 M 组十四条也在里面，每条写明它是哪一种阅读成本
+- [规则库](skill/references/rules.md)：86 条定义（78 条正文规则 + 8 条反模式），带轴/档/阈值与实现状态。去 AI 味的 M 组十四条也在里面，每条写明它是哪一种阅读成本
 - [规则证据库](skill/references/evidence.md)：每条规则对应的 ADHD 机制、产品模式与文献出处
 - [调研与依据](docs/adhd-research.md)：市面 ADHD 友好产品扫描 + 相关研究综述 + 采纳/不采纳清单
 - [反模式](skill/references/antipatterns.md)：八种优化过头，附自检清单

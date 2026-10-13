@@ -2,8 +2,10 @@
 import hashlib
 import importlib.util
 import json
+import statistics
 import random
 import sys
+import time
 import unittest
 from html.parser import HTMLParser
 from pathlib import Path
@@ -113,6 +115,40 @@ class ReaderTest(unittest.TestCase):
         for span in (code, strong, link):
             data = self.build("Before. " + span + " After.", 12)
             self.assertTrue(any(span in chunk["source"] for chunk in data["chunks"]))
+
+    def test_adversarial_inline_paragraphs_stay_lossless_and_bounded(self):
+        adversarial = {
+            "unclosed parentheses": "[label](" + "a(" * 19_996,
+            "unclosed backtick": "`" + "word. " * 6_666,
+            "long unclosed link": "[label](" + "path/" * 7_998,
+        }
+        for name, source in adversarial.items():
+            with self.subTest(name=name):
+                started = time.process_time()
+                data = self.build(source, 900)
+                elapsed = time.process_time() - started
+                self.assertLess(elapsed, 1.0, f"{name} took {elapsed:.3f}s for 40 KB")
+
+        # A sentence boundary inside each short emphasis span used to rescan
+        # every prior span, making _paragraph_pieces quadratic in span count.
+        sizes = (10_000, 20_000, 40_000, 80_000)
+        samples = {size: [] for size in sizes}
+        for size in sizes:
+            self.build("*a*. " * (size // 5), 900)  # Warm regex caches and allocator paths.
+        for round_id in range(7):
+            order = list(sizes)
+            offset = round_id % len(order)
+            order = order[offset:] + order[:offset]
+            for size in order:
+                source = "*a*. " * (size // 5)
+                started = time.process_time()
+                self.build(source, 900)
+                samples[size].append(time.process_time() - started)
+        medians = {size: statistics.median(values) for size, values in samples.items()}
+        self.assertLess(medians[40_000], 1.0, f"40 KB median {medians[40_000]:.3f}s")
+        self.assertLessEqual(medians[20_000] / medians[10_000], 2.5, medians)
+        self.assertLessEqual(medians[40_000] / medians[20_000], 2.5, medians)
+        self.assertLessEqual(medians[80_000] / medians[40_000], 2.5, medians)
 
     def test_fences_remain_whole_even_with_inner_shorter_fences(self):
         block = "````md\n# not a title\n\n```js\nalert('x')\n```\n````\n"

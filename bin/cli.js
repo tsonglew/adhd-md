@@ -44,7 +44,7 @@ const USAGE = `adhd-md ${PKG.version} — ADHD 友好排版、分段陪读与离
 直接用工具层
   ${X} audit  文档.md                          审计并打分
   ${X} fmt    文档.md --write                  确定性格式修复
-  ${X} verify 原文.md 新文.md --scope=format   无损校验
+  ${X} verify 原文.md 新文.md --scope=format   校验并区分通过、失败、无法判断
   ${X} report 原文.md 新文.md                  改前改后对比
   ${X} init --type=readme                      生成文档骨架
   ${X} read 文档.md                           生成离线专注阅读页
@@ -140,7 +140,7 @@ function main() {
 
   // 光给个文件名也认，默认当安装还是审计容易猜错，这里明确提示
   if (fs.existsSync(first)) {
-    die(`要审计就写清楚：npx adhd-md audit ${first}\n要安装就直接 npx adhd-md`, 2);
+    die(`要审计就写清楚：${X} audit ${first}\n要安装就直接 ${X}`, 2);
   }
   die(`不认识的命令：${first}\n\n${USAGE}`, 2);
 }

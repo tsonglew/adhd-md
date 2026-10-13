@@ -140,3 +140,98 @@ H4 在 2026-08 调研后从 `deep` 提到 `standard`：时间预估是 ADHD 场�
 - Sweller 等 2019：DOI 10.1007/s10648-019-09465-5
 - W3C COGA：https://www.w3.org/TR/coga-usable/
 - Bionic Reading 三项研究：DOI 10.1016/j.actpsy.2024.104304、10.3390/jemr18050049、10.1177/21582440251376158
+
+<!-- generated:rule-evidence:start -->
+## 附录 · 规则实现与证据索引
+
+每条规则的状态、是否计分和所属机制说明均由 `rule-definitions.json` 生成；证据等级见本文件前文。
+
+| ID | 轴 | 最低档位 | 实现状态 | 评分 | 机制分组 |
+|---|---|---:|---|---|---|
+| S1 | F | light | 脚本检查 | 扣分 | S |
+| S2 | F | light | 脚本检查 | 扣分 | S |
+| S3 | F | standard | 脚本检查 | 扣分 | S |
+| S4 | C | standard | 人工/模型判断 | 不计分 | S |
+| S5 | F | standard | 人工/模型判断 | 不计分 | S |
+| S6 | F | deep | 人工/模型判断 | 不计分 | S |
+| S7 | F | deep | 仅提示 | 不计分 | S |
+| S8 | C | deep | 人工/模型判断 | 不计分 | S |
+| H1 | C | standard | 脚本检查 | 扣分 | H |
+| H2 | C | standard | 脚本检查 | 扣分 | H |
+| H3 | C | deep | 人工/模型判断 | 扣分 | H |
+| H4 | C | standard | 人工/模型判断 | 扣分 | H |
+| P1 | F | light | 脚本检查 | 扣分 | P/L/W |
+| P2 | F | standard | 人工/模型判断 | 不计分 | P/L/W |
+| P3 | F | light | 自动修复 | 不计分 | P/L/W |
+| P4 | F | light | 脚本检查 | 扣分 | P/L/W |
+| P5 | F | standard | 人工/模型判断 | 不计分 | P/L/W |
+| L1 | F | light | 脚本检查 | 扣分 | P/L/W |
+| L2 | F | standard | 人工/模型判断 | 不计分 | P/L/W |
+| L3 | F | standard | 脚本检查 | 扣分 | P/L/W |
+| L4 | C | standard | 人工/模型判断 | 不计分 | P/L/W |
+| L5 | F | standard | 脚本检查 | 扣分 | P/L/W |
+| L6 | F | standard | 仅提示 | 不计分 | P/L/W |
+| L7 | C | standard | 人工/模型判断 | 不计分 | P/L/W |
+| W1 | C | standard | 脚本检查 | 扣分 | P/L/W |
+| W2 | C | standard | 人工/模型判断 | 不计分 | P/L/W |
+| W3 | C | standard | 人工/模型判断 | 不计分 | P/L/W |
+| W4 | C | standard | 脚本检查 | 扣分 | P/L/W |
+| W5 | C | standard | 人工/模型判断 | 不计分 | P/L/W |
+| W6 | C | standard | 脚本检查 | 扣分 | P/L/W |
+| W7 | C | deep | 人工/模型判断 | 不计分 | P/L/W |
+| W8 | C | standard | 人工/模型判断 | 不计分 | P/L/W |
+| W9 | C | deep | 人工/模型判断 | 不计分 | P/L/W |
+| A1 | C | standard | 人工/模型判断 | 扣分 | A |
+| A2 | C | deep | 人工/模型判断 | 扣分 | A |
+| A3 | C | deep | 人工/模型判断 | 扣分 | A |
+| A4 | F | light | 脚本检查 | 扣分 | A |
+| A5 | C | deep | 人工/模型判断 | 不计分 | A |
+| A6 | C | deep | 人工/模型判断 | 不计分 | A |
+| A7 | C | standard | 人工/模型判断 | 扣分 | A |
+| A8 | C | standard | 人工/模型判断 | 扣分 | A |
+| N1 | F | standard | 脚本检查 | 扣分 | N |
+| N2 | C | standard | 脚本检查 | 扣分 | N |
+| N3 | F | light | 仅提示 | 不计分 | N |
+| N4 | F | standard | 人工/模型判断 | 不计分 | N |
+| N5 | F | standard | 脚本检查 | 扣分 | N |
+| N6 | C | standard | 脚本检查 | 扣分 | N |
+| N7 | C | standard | 人工/模型判断 | 扣分 | N |
+| T1 | F | light | 脚本检查 | 扣分 | T |
+| T2 | F | light | 脚本检查 | 扣分 | T |
+| T3 | F | standard | 人工/模型判断 | 不计分 | T |
+| T4 | F | light | 脚本检查 | 扣分 | T |
+| T5 | F | standard | 仅提示 | 不计分 | T |
+| T6 | F | light | 自动修复 | 不计分 | T |
+| T7 | F | light | 脚本检查 | 扣分 | T |
+| T8 | F | standard | 脚本检查 | 扣分 | T |
+| C1 | F | light | 脚本检查 | 扣分 | P/L/W |
+| C2 | F | light | 脚本检查 | 扣分 | P/L/W |
+| C3 | C | standard | 脚本检查 | 扣分 | P/L/W |
+| C4 | C | standard | 人工/模型判断 | 不计分 | P/L/W |
+| C5 | C | deep | 脚本检查 | 扣分 | P/L/W |
+| C6 | F | light | 仅提示 | 不计分 | P/L/W |
+| C7 | C | standard | 仅提示 | 不计分 | P/L/W |
+| C8 | F | light | 脚本检查 | 扣分 | P/L/W |
+| M1 | C | standard | 脚本检查 | 扣分 | M |
+| M2 | C | standard | 仅提示 | 不计分 | M |
+| M3 | C | standard | 脚本检查 | 扣分 | M |
+| M4 | C | standard | 脚本检查 | 扣分 | M |
+| M5 | F | standard | 脚本检查 | 扣分 | M |
+| M6 | C | standard | 脚本检查 | 扣分 | M |
+| M7 | C | standard | 脚本检查 | 扣分 | M |
+| M8 | C | standard | 脚本检查 | 扣分 | M |
+| M9 | C | standard | 脚本检查 | 扣分 | M |
+| M10 | C | standard | 仅提示 | 不计分 | M |
+| M11 | C | standard | 脚本检查 | 扣分 | M |
+| M12 | C | standard | 脚本检查 | 扣分 | M |
+| M13 | C | standard | 脚本检查 | 扣分 | M |
+| M14 | C | standard | 脚本检查 | 扣分 | M |
+| X1 | F | light | 脚本检查 | 扣分 | X |
+| X2 | F | light | 脚本检查 | 扣分 | X |
+| X3 | C | light | 人工/模型判断 | 扣分 | X |
+| X4 | F/C | light | verify 硬门禁 | 不计分 | X |
+| X5 | F | light | 脚本检查 | 扣分 | X |
+| X6 | F | light | 人工/模型判断 | 扣分 | X |
+| X7 | F | light | 人工/模型判断 | 扣分 | X |
+| X8 | F | light | 人工/模型判断 | 扣分 | X |
+<!-- generated:rule-evidence:end -->

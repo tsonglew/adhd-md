@@ -35,6 +35,18 @@ def _text_result(text: str, source_name: str) -> dict:
     return {"text": _validate_text(text), "source_name": source_name, "title": None}
 
 
+def read_stdin(stream, *, max_bytes: int = MAX_LOCAL_BYTES) -> str:
+    """Read one complete UTF-8 input, refusing oversized input without truncation."""
+    raw = stream.read(max_bytes + 1)
+    if isinstance(raw, bytes):
+        if len(raw) > max_bytes:
+            raise ValueError(f"标准输入超过 {max_bytes // (1024 * 1024)} MiB，未读取为部分文档；请拆分后重试。")
+        return raw.decode("utf-8")
+    if len(raw.encode("utf-8")) > max_bytes:
+        raise ValueError(f"标准输入超过 {max_bytes // (1024 * 1024)} MiB，未读取为部分文档；请拆分后重试。")
+    return raw
+
+
 def load_source(source: str, *, timeout: float = 20, ocr: str = "auto",
                 ocr_lang: str | None = None, stdin_text: str | None = None) -> dict:
     """Extract a source without modifying it or writing output artifacts."""
@@ -45,6 +57,8 @@ def load_source(source: str, *, timeout: float = 20, ocr: str = "auto",
     if source == "-":
         if stdin_text is None:
             raise ValueError("没有取得标准输入正文。")
+        if len(stdin_text.encode("utf-8")) > MAX_LOCAL_BYTES:
+            raise ValueError(f"标准输入超过 {MAX_LOCAL_BYTES // (1024 * 1024)} MiB，未读取为部分文档；请拆分后重试。")
         return _text_result(stdin_text, "stdin.md")
 
     if is_url(source):

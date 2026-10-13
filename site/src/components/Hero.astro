@@ -23,7 +23,7 @@ const { t } = Astro.props;
 
   <div class="cmd reveal" style="--d:300ms">
     <code id="install-cmd">npx github:tsonglew/adhd-md</code>
-    <button type="button" class="copy" data-copy="#install-cmd" aria-label={t.lang === "en" ? "Copy install command" : "复制安装命令"}>{t.lang === "en" ? "Copy" : "复制"}</button>
+    <button type="button" class="copy" data-copy="#install-cmd" aria-label={t.copy.installLabel}>{t.copy.label}</button>
   </div>
 
   <p class="hero-links reveal" style="--d:360ms">

@@ -17,7 +17,24 @@
 | Cursor | `~/.cursor/skills/<name>/SKILL.md` | `.cursor/skills/`（据 Grok 兼容表） | 已实测：4 个，软链 + 实体目录混合 |
 | opencode | `~/.config/opencode/skills/<name>/SKILL.md` | 未实测 | 已实测：3 个，全部软链到 `~/.agents/skills/` |
 
+## 2026-10-13 本机版本快照
+
+下表只记录本次机器上的可执行文件及其版本，不等于使用这些宿主运行过 skill。版本由各 CLI 的 `--version` 输出取得；Codex 与 Claude 的运行尝试未产生模型响应，其他宿主本轮未启动任务。
+
+| 宿主 | 本机可执行文件版本 | 本轮 skill 执行结果 |
+|---|---|---|
+| Claude Code | `2.1.295` | 未验证：启动被本机只读缓存 hook 阻止，0 turns |
+| Codex CLI | `0.162.0` | 未验证：只读状态目录阻止初始化，无模型响应 |
+| Grok Build | `1.0.46` | 未运行 |
+| Gemini CLI | `0.63.0` | 未运行 |
+| Cursor | `cursor-agent 2026.01.23-916f423`；`cursor 3.24.12` | 未运行 |
+| opencode | `1.18.35` | 未运行 |
+
+同一台 macOS `27.0.1` 主机上的辅助工具版本为 Python `3.14.5`、Node `24.14.0`、npm `11.19.0`、Bash `5.3.9`、Poppler `26.06.0`、Tesseract `5.5.0`；Tesseract 已安装 `chi_sim`。本机实际构建和集成测试只证明这些版本下的结果。CI 配置了 Python `3.9` / `3.14`、Node `18` CLI 与 Node `22.12.0` 官网矩阵；GitHub 托管运行通过前，不把配置的矩阵当成实测兼容范围。
+
 未实测项在 P5 安装脚本里按「目录存在则装」处理，不写死假设。
+
+安装器将宿主名称、CLI 候选名和用户 / 项目目录放在同一张表里维护。Cursor 用户级探测优先使用 `cursor-agent`，没有时回退到 `cursor`；两者都对应 `.cursor/skills/`。项目安装的可运行 canonical 副本固定放在仓库 `.agents/skills/adhd-md`，再复制到表中配置的项目级宿主目录。该 canonical 目录只供命令调用，宿主是否自动发现项目 `.agents/skills/` 不作假设。
 
 ## 关键发现
 

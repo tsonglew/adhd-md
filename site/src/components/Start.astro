@@ -16,18 +16,18 @@ const { t } = Astro.props;
           <p class="way">{t.start.wayNode}</p>
           <div class="cmd sm">
             <code id="c1">npx github:tsonglew/adhd-md</code>
-            <button type="button" class="copy" data-copy="#c1" aria-label={t.lang === "en" ? "Copy" : "复制"}>{t.lang === "en" ? "Copy" : "复制"}</button>
+            <button type="button" class="copy" data-copy="#c1" aria-label={t.copy.label}>{t.copy.label}</button>
           </div>
           <p class="way">{t.start.wayNoNode}</p>
           <div class="cmd sm">
             <code id="c1b">curl -fsSL https://tsonglew.github.io/adhd-md/install.sh | bash</code>
-            <button type="button" class="copy" data-copy="#c1b" aria-label={t.lang === "en" ? "Copy" : "复制"}>{t.lang === "en" ? "Copy" : "复制"}</button>
+            <button type="button" class="copy" data-copy="#c1b" aria-label={t.copy.label}>{t.copy.label}</button>
           </div>
           <p class="way">{t.start.waySource}</p>
           <div class="cmd sm">
             <code id="c1c">git clone https://github.com/tsonglew/adhd-md &amp;&amp; cd adhd-md
 bash scripts/install.sh</code>
-            <button type="button" class="copy" data-copy="#c1c" aria-label={t.lang === "en" ? "Copy" : "复制"}>{t.lang === "en" ? "Copy" : "复制"}</button>
+            <button type="button" class="copy" data-copy="#c1c" aria-label={t.copy.label}>{t.copy.label}</button>
           </div>
           <p class="note-sm" set:html={t.start.noteSmHtml} />
         </li>
@@ -35,7 +35,7 @@ bash scripts/install.sh</code>
           <p>{t.start.s2}</p>
           <div class="cmd sm">
             <code id="c2">npx github:tsonglew/adhd-md audit your-doc.md</code>
-            <button type="button" class="copy" data-copy="#c2" aria-label={t.lang === "en" ? "Copy" : "复制"}>{t.lang === "en" ? "Copy" : "复制"}</button>
+            <button type="button" class="copy" data-copy="#c2" aria-label={t.copy.label}>{t.copy.label}</button>
           </div>
         </li>
         <li>
@@ -70,7 +70,7 @@ bash scripts/install.sh</code>
           <h3>{t.start.ciH}</h3>
           <div class="cmd sm">
             <code id="c3">{t.start.ciCmd}</code>
-            <button type="button" class="copy" data-copy="#c3" aria-label={t.lang === "en" ? "Copy" : "复制"}>{t.lang === "en" ? "Copy" : "复制"}</button>
+            <button type="button" class="copy" data-copy="#c3" aria-label={t.copy.label}>{t.copy.label}</button>
           </div>
         </div>
         <div>

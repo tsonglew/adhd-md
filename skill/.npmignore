@@ -1,0 +1,3 @@
+# The package files allowlist includes skill/ recursively; exclude local caches.
+**/__pycache__/
+**/*.py[cod]

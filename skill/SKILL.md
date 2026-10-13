@@ -1,6 +1,6 @@
 ---
 name: adhd-md
-description: 把 Markdown 文档改造成 ADHD 友好、可扫读的版本，可选择只改格式、只改内容或两者兼改，并用脚本校验没有丢信息。也能自动提取网页、HTML、PDF 与扫描件的正文，保留来源，逐段陪读已有文档、解释重点、暂停续读，或生成离线专注阅读页。Use when the user asks to make a document ADHD-friendly, more skimmable, or easier to read; when they say 文档太长看不下去 / 排版太密 / 全是大段文字 / 帮我把这个文档改得好读一点 / 优化一下排版; or asks to audit, lint, or restructure Markdown for readability. Triggers include ADHD friendly, ADHD 友好, 注意力友好, 可扫读, skimmable, wall of text, 文字墙, 大段文字, 改排版, 重排文档, make this readable, 陪我读, 带我读, 读不进去, 从上次继续, focus reader, guided reading.
+description: 把 Markdown 文档改造成 ADHD 友好、可扫读的版本，可选择只改格式、只改内容或两者兼改，并用脚本检查已定义的信息不变量。也能自动提取网页、HTML、PDF 与扫描件的正文，保留来源，逐段陪读已有文档、解释重点、暂停续读，或生成离线专注阅读页。Use when the user asks to make a document ADHD-friendly, more skimmable, or easier to read; when they say 文档太长看不下去 / 排版太密 / 全是大段文字 / 帮我把这个文档改得好读一点 / 优化一下排版; or asks to audit, lint, or restructure Markdown for readability. Triggers include ADHD friendly, ADHD 友好, 注意力友好, 可扫读, skimmable, wall of text, 文字墙, 大段文字, 改排版, 重排文档, make this readable, 陪我读, 带我读, 读不进去, 从上次继续, focus reader, guided reading.
 ---
 
 # adhd-md
@@ -44,7 +44,7 @@ description: 把 Markdown 文档改造成 ADHD 友好、可扫读的版本，可
 
 | 值 | 边界 | 用户会怎么说 |
 |---|---|---|
-| `format` | 正文词序列逐字不变，只动标记、空白、块顺序 | 只改格式 / 只调样式 / 别动我的字 / 排版优化 |
+| `format` | 不改措辞；可移动整块。词序变化或不支持的语法会标为 `unknown` | 只改格式 / 只调样式 / 别动我的字 / 排版优化 |
 | `content` | 只改措辞与信息组织，不碰排版风格 | 只改内容 / 句子太长 / 帮我改写 |
 | `both`（默认） | 全都改 | 优化一下 / 改成 ADHD 友好 |
 
@@ -56,7 +56,7 @@ description: 把 Markdown 文档改造成 ADHD 友好、可扫读的版本，可
 
 | 值 | 适用 | 会做什么 |
 |---|---|---|
-| `light` | 规范、合同、API 文档，怕动 | 只做零风险项，不重排顺序 |
+| `light` | 规范、合同、API 文档，怕动 | 只做少量调整，不重排顺序；仍需检查差异 |
 | `standard`（默认） | README、教程、设计文档 | 拆段、列表化、改标题、写 TL;DR、给时间预估、块重排 |
 | `deep` | 会议记录、长文、堆积的笔记 | 全量重构骨架、渐进披露、生成 checklist |
 
@@ -83,15 +83,19 @@ python3 <skill>/scripts/adhd_md.py audit 文件.md --level 2
 
 拿到脚本分、逐条 findings（带 `文件:行`）、以及需要你判断的规则清单。
 
+审计报告同时显示规则覆盖。`--scope=format|content` 只过滤 findings 展示和覆盖统计；脚本分仍按全文所有适用轴计算。仅提示项不扣分，需模型判断项按未命中计入脚本分，但不表示通过。JSON 保留旧 `findings`（全轴）字段，并在 `schema_version=2` 增加按 scope 展示的 `shown_findings` 和覆盖统计；脚本分的 `score.band` 为 `null`，只有完整评分才给档位。
+
 **先读输出再动手。** 不要凭印象改 —— 脚本已经把能算准的都算了。
 
 ### 第 2 步 · 确定性格式修复
 
 ```bash
-python3 <skill>/scripts/adhd_md.py fmt --write 文件.md
+python3 <skill>/scripts/adhd_md.py fmt 文件.md
 ```
 
-零风险、不需要你判断：行尾空白、有序列表序号、块间空行、中英文间距、中文标点。
+自动处理项包括行尾空白、有序列表序号、块间空行、中英文间距和中文标点；具体输出仍要先预览并检查差异。
+
+先看预览，再决定是否写回。`fmt --write` 会先运行 `verify --scope=format`；硬失败或无法判断时拒绝写回。通过后用同目录临时文件校验并原子替换，保留换行、UTF-8 内容、POSIX mode 位及所有者 / 组；拒绝符号链接和硬链接。系统 ACL、扩展属性和文件 flags 不在保留范围内。写入失败或检测到并发编辑时保留原文件并清理临时文件。多文件按文件分别替换，失败会逐个报告，可能出现部分成功。`--strip-emoji` 会跳过 format 校验，是显式有损操作，会单独标示；仍走原子写入保护。
 
 `scope=content` 时跳过这一步。
 
@@ -116,11 +120,20 @@ python3 <skill>/scripts/adhd_md.py fmt --write 文件.md
 ```bash
 python3 <skill>/scripts/adhd_md.py verify 原文.md 新文.md --scope=format
 python3 <skill>/scripts/adhd_md.py report 原文.md 新文.md --scope=<scope>
+python3 <skill>/scripts/adhd_md.py report 原文.md 新文.md --scope=<scope> --json
 ```
 
-`scope=format` 时 verify 是**硬门禁**：token 序列必须完全一致。不通过就回退，不许放行。
+当前 `verify` 有三态：`pass` 表示声明的机器检查通过且没有待复核警告，`fail` 表示硬约束变化，`unknown` 表示解析器不能可靠判断或有警告待人工复核。CLI 退出码依次为 `0`、`3`、`4`。JSON 保留旧的 `scope`、`hard_failures`、`warnings`、`ok` 字段，并增加 `status`、`unknowns`；确认完整块重排时还会给出 `notes` 指代复核提示。`ok` 仅在 `status=pass` 时为真，旧调用方不会把未知当成成功。
 
-`scope=content` 或 `both` 时 verify 检查不变量：代码块、行内代码、URL、标识符、数字。任何硬失败都要修到通过。
+校验器只实现常见 Markdown 子集，不是完整 CommonMark / GFM 解析器。标题、段落、基础列表、引用块、简单表格和成对 fenced code 可检查；代码块正文逐字比较并检查重复次数，不比较围栏样式、语言标签和位置。行内链接、图片与 HTTP(S) URL 的目标及重复次数受保护。format 模式保护闭合 YAML frontmatter；content / both 允许修改，但会提示核对元数据。
+
+四空格缩进或复杂嵌套块、未闭合围栏、引用式链接、原始 HTML、HTML 注释及扩展 Markdown / MDX 有改动时会返回 `unknown` 和源行。唯一原 H2 标题被原样用作 `<summary>` 时，标准 `<details>` 外壳可识别；重复标题或其他 HTML 仍需人工审阅。目录与折叠的自动识别仍有限；不能用伪目录或折叠标签隐藏正文变化。
+
+`format` 允许复用原词拆段、列表化、改标记层级、添加强调 / 行内代码、由已有标题生成目录、折叠原文标题、移动整块、修空格和标点。它不允许改词、删内容、改数字或链接目标。未改写且能唯一映射的完整块重排可以通过，并在 CLI 提示检查悬空指代；句内换序、顺序敏感列表变化或重复块映射歧义返回 `unknown`。`pass` 不是语义等价证明；无法确认时不要写回。硬失败必须回退。
+
+三个 scope 都会按完整值和重复次数检查原有代码块正文、链接目标、行内代码值、命令选项、常见相对路径、权限值和大小写敏感技术标识符；不能用更长的新值包含旧值来绕过检查。`content` / `both` 可以添加新代码块和链接，但不能丢失或改写原值；`format` 还会拒绝新增代码块和链接目标。给原有裸标识符加反引号仍可通过，原行内值移入新代码块也会按原值复核。API、CLI、URL、HTTP、HTML、JSON、PDF、ID、UI、UX、CPU、GPU 等通用缩写至少保留一次，不要求保留每次重复出现。
+
+数字与单位之间的空白可归一，例如 `2 MB` 与 `2MB` 等价；数值或单位本身改变时，`format` 硬失败，`content` / `both` 给出带原值、新值和行号的警告，结果为 `unknown`。单位缩写与全称不互相折算。frontmatter 在 `format` 下逐字保护；在 `content` / `both` 下允许修改，但会报告新旧内容并阻止 `pass`。`pass` 只表示已声明检查通过。硬失败必须修复；`unknown` 不能写成通过，需保留原文并人工复核。
 
 原地改时先留一份原文到临时文件，否则没法 verify：
 
@@ -134,7 +147,7 @@ cp 文件.md /tmp/adhd-orig.md   # 改之前
 
 1. 用了什么 scope 与 level
 2. 脚本分 before → after，逐维度 delta
-3. verify 结论（通过 / 失败及原因）
+3. verify 结论（通过 / 失败 / 无法判断，以及原因）
 4. **你改了什么、以及故意没改什么**
 
 反模式扣分（X 组）after 必须为 0。不为 0 说明你是靠过度格式化换分数，回退重来。
@@ -159,7 +172,7 @@ cp 文件.md /tmp/adhd-orig.md   # 改之前
 
 ### scope=both
 
-先 content 再 format，最后统一 verify。默认档。
+先 content 再 format，然后运行现有检查并人工复核排版、词序和语义。`verify --scope=both` 的 `pass` 只覆盖已声明的不变量；句内语义、指代与机器未支持的语法仍需人工复核。默认档。
 
 ## 没有 shell 的宿主怎么办
 
@@ -191,7 +204,7 @@ cp 文件.md /tmp/adhd-orig.md   # 改之前
 | 首屏结论力 | 40 | 100 |
 | …… | | |
 
-**verify(both)** 通过 —— 代码块、URL、标识符、数字全部保全
+**verify(both)** 通过 —— 报告列出的检查已运行；说明检查范围及尚未覆盖的内容，不把通过写成完整保全证明
 
 **改了什么**
 - 把最后一段的结论整块搬到开头（format）
@@ -221,7 +234,7 @@ cp 文件.md /tmp/adhd-orig.md   # 改之前
 
 | 错误 | 后果 |
 |---|---|
-| 把脚本分说成最终分 | 37 条需模型判断的规则按满分计入，虚高。必须说明这是脚本分 |
+| 把脚本分说成最终分 | 默认 standard + both 有 23 条规则需模型判断、7 条仅提示；未判断不代表通过，必须说明这是脚本分 |
 | `scope=format` 却改了词 | verify 硬失败。回退 |
 | 以「精简」为名删内容 | 违反铁律。折叠或移附录，不删 |
 | 改写时写出「不是 A 而是 B」 | M1 翻案腔。直接从正面下判断 |
