@@ -1,0 +1,26 @@
+[
+  {
+    "command": "/bin/zsh -lc 'cat .agents/skills/adhd-md/SKILL.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'cat input.md .agents/skills/adhd-md/references/rules.md .agents/skills/adhd-md/references/antipatterns.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 2 --scope=content'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"cat > output.md <<'EOF'\n# Recover stale dashboard search results\n\nUse this runbook for the dashboard search index only. It excludes billing exports and direct database queries. Recovery takes five steps; close the incident only after the updated value appears.\n\n## Confirm all recovery prerequisites\n\n- The record changed more than 5 minutes ago, but the dashboard still shows its previous value.\n- The primary database contains the record.\n- No index maintenance is in progress.\n\nIf the primary database does not contain the record, use the write-failure runbook instead.\n\n## Recover only the affected workspace\n\n1. Record the workspace ID, record ID, and last update time.\n2. Save the indexer queue depth metric value.\n3. If the queue is nonzero, wait 3 minutes. Then refresh the dashboard once.\n4. If the value is still stale, requeue only the affected workspace.\n5. Before closing the incident, confirm that the dashboard shows the updated value.\n\nDo not rebuild the global index during business hours. Requeueing does not modify the primary database.\nEOF\npython3 .agents/skills/adhd-md/scripts/adhd_md.py audit output.md --level 2 --scope=content\npython3 .agents/skills/adhd-md/scripts/adhd_md.py report input.md output.md --scope=content\"",
+    "exit_code": 1
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py report input.md output.md --scope=content --json'",
+    "exit_code": 1
+  },
+  {
+    "command": "/bin/zsh -lc \"python3 - <<'PY'\nfrom pathlib import Path\np=Path('output.md')\ns=p.read_text().replace('Use this runbook for the dashboard search index only. It excludes billing exports and direct database queries. Recovery takes five steps; close the incident only after the updated value appears.', 'Scope: this runbook covers the dashboard search index. It does not cover billing exports or direct database queries.')\ns=s.replace('## Recover only the affected workspace','## Recover only the affected workspace in five steps')\np.write_text(s)\nPY\npython3 .agents/skills/adhd-md/scripts/adhd_md.py audit output.md --level 2 --scope=content\npython3 .agents/skills/adhd-md/scripts/adhd_md.py report input.md output.md --scope=content\"",
+    "exit_code": 0
+  }
+]

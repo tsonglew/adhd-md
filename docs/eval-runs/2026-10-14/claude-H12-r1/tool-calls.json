@@ -1,0 +1,354 @@
+[
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H12-r1/workspace/.agents/skills/adhd-md/SKILL.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H12-r1/workspace/input.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "find /private/tmp/adhd-eval-20261014/claude-H12-r1/workspace -type f | head -50; echo \"---\"; ls -la /private/tmp/adhd-eval-20261014/claude-H12-r1/workspace",
+      "description": "List workspace files"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "ls -la /private/tmp/adhd-eval-20261014/claude-H12-r1/workspace/.agents/skills/adhd-md/ /private/tmp/adhd-eval-20261014/claude-H12-r1/workspace/.agents/skills/adhd-md/scripts/ /private/tmp/adhd-eval-20261014/claude-H12-r1/workspace/.agents/skills/adhd-md/references/ 2>&1",
+      "description": "List skill directory contents"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H12-r1/workspace/prompt.txt"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H12-r1/workspace/.agents/skills/adhd-md/references/rules.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 2 ; echo \"EXIT=$?\"",
+      "description": "Run audit on input.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H12-r1/workspace/.agents/skills/adhd-md/references/antipatterns.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 /private/tmp/adhd-eval-20261014/claude-H12-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py audit /private/tmp/adhd-eval-20261014/claude-H12-r1/workspace/input.md --level 2",
+      "description": "Run adhd-md audit on input.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py --help",
+      "description": "Show adhd_md.py help"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit --help; python3 .agents/skills/adhd-md/scripts/adhd_md.py verify --help",
+      "description": "Show audit and verify subcommand help"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 3 --scope=format",
+      "description": "Run audit with deep level and format scope"
+    }
+  },
+  {
+    "tool": "Grep",
+    "input": {
+      "-n": true,
+      "head_limit": 40,
+      "output_mode": "content",
+      "path": "/private/tmp/adhd-eval-20261014/claude-H12-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "pattern": "T2d|bold_density|加粗密度"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H12-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "limit": 90,
+      "offset": 920
+    }
+  },
+  {
+    "tool": "Grep",
+    "input": {
+      "-n": true,
+      "output_mode": "content",
+      "path": "/private/tmp/adhd-eval-20261014/claude-H12-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "pattern": "prose_all|def prose_of|def prose_all_raw"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H12-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "limit": 60,
+      "offset": 500
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H12-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "limit": 10,
+      "offset": 1010
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "mkdir -p /tmp/adhd-h12 && cat > /tmp/adhd-h12/probe.py <<'PY'\nimport importlib.util, re, sys\nspec = importlib.util.spec_from_file_location(\"adhd\", sys.argv[1])\nm = importlib.util.module_from_spec(spec)\nspec.loader.exec_module(m)\ndoc = m.parse_document(open(sys.argv[2], encoding=\"utf-8\").read())\nblocks = m.parse_blocks(doc) if hasattr(m, \"parse_blocks\") else None\nprint(\"block kind names:\", [b.kind for b in blocks])\nraw = m.prose_all_raw(blocks)\nprose_all = \"\\n\".join(m.prose_of(b) for b in blocks if b.kind != \"heading\")\nprint(\"RAW:\\n\", repr(raw))\nprint(\"PROSE:\\n\", repr(prose_all))\nbold = [(x.group(1), len(x.group(1))) for x in re.finditer(r\"\\*\\*([^*]+)\\*\\*\", raw)]\nprint(\"BOLD MATCHES:\", bold)\nprint(\"bold_chars\", sum(b[1] for b in bold))\nprint(\"total_chars\", len(re.sub(r\"\\s\", \"\", prose_all)))\nPY\npython3 -I /tmp/adhd-h12/probe.py /private/tmp/adhd-eval-20261014/claude-H12-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py /private/tmp/adhd-eval-20261014/claude-H12-r1/workspace/input.md",
+      "description": "Probe bold-density computation internals"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "ls -la /tmp/adhd-h12/; python3 -I /tmp/adhd-h12/probe.py /private/tmp/adhd-eval-20261014/claude-H12-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py /private/tmp/adhd-eval-20261014/claude-H12-r1/workspace/input.md 2>&1 | head -40",
+      "description": "Rerun probe script and show output"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I /tmp/adhd-h12/probe.py /private/tmp/adhd-eval-20261014/claude-H12-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py /private/tmp/adhd-eval-20261014/claude-H12-r1/workspace/input.md",
+      "description": "Rerun probe script"
+    }
+  },
+  {
+    "tool": "Write",
+    "input": {
+      "file_path": "/tmp/adhd-h12/probe.py",
+      "content": "import importlib.util, re, sys\n\nspec = importlib.util.spec_from_file_location(\"adhd\", sys.argv[1])\nm = importlib.util.module_from_spec(spec)\nspec.loader.exec_module(m)\n\ndoc = m.parse_document(open(sys.argv[2], encoding=\"utf-8\").read())\nblocks = m.parse_blocks(doc)\nprint(\"block kinds:\", [b.kind for b in blocks])\nraw = m.prose_all_raw(blocks)\nprose_all = \"\\n\".join(m.prose_of(b) for b in blocks if b.kind != \"heading\")\nprint(\"RAW:\", repr(raw))\nprint()\nprint(\"PROSE:\", repr(prose_all))\nbold = [(x.group(1), len(x.group(1))) for x in re.finditer(r\"\\*\\*([^*]+)\\*\\*\", raw)]\nprint()\nprint(\"BOLD MATCHES:\")\nfor g, n in bold:\n    print(\"  \", n, repr(g[:80]))\nprint(\"bold_chars\", sum(b[1] for b in bold))\nprint(\"total_chars\", len(re.sub(r\"\\s\", \"\", prose_all)))\n"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I /tmp/adhd-h12/probe.py /private/tmp/adhd-eval-20261014/claude-H12-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py /private/tmp/adhd-eval-20261014/claude-H12-r1/workspace/input.md",
+      "description": "Run bold-density probe"
+    }
+  },
+  {
+    "tool": "Edit",
+    "input": {
+      "replace_all": false,
+      "file_path": "/tmp/adhd-h12/probe.py",
+      "old_string": "m = importlib.util.module_from_spec(spec)\nspec.loader.exec_module(m)",
+      "new_string": "m = importlib.util.module_from_spec(spec)\nsys.modules[\"adhd\"] = m\nspec.loader.exec_module(m)"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I /tmp/adhd-h12/probe.py /private/tmp/adhd-eval-20261014/claude-H12-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py /private/tmp/adhd-eval-20261014/claude-H12-r1/workspace/input.md",
+      "description": "Run bold-density probe"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c \"\nimport importlib.util,sys\nspec=importlib.util.spec_from_file_location('adhd',sys.argv[1]); m=importlib.util.module_from_spec(spec); sys.modules['adhd']=m; spec.loader.exec_module(m)\nprint([n for n in dir(m) if 'pars' in n.lower() or 'block' in n.lower() or 'Document' in n][:40])\n\" /private/tmp/adhd-eval-20261014/claude-H12-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "description": "List parser-related names in script"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c \"\nimport importlib.util,sys,inspect\nspec=importlib.util.spec_from_file_location('adhd',sys.argv[1]); m=importlib.util.module_from_spec(spec); sys.modules['adhd']=m; spec.loader.exec_module(m)\nprint(inspect.signature(m.parse_blocks))\nprint(inspect.getsource(m.parse_blocks)[:1500])\n\" /private/tmp/adhd-eval-20261014/claude-H12-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "description": "Inspect parse_blocks signature and source"
+    }
+  },
+  {
+    "tool": "Edit",
+    "input": {
+      "replace_all": false,
+      "file_path": "/tmp/adhd-h12/probe.py",
+      "old_string": "doc = m.parse_document(open(sys.argv[2], encoding=\"utf-8\").read())\nblocks = m.parse_blocks(doc)",
+      "new_string": "text = open(sys.argv[2], encoding=\"utf-8\").read()\nblocks = m.parse_blocks(text.splitlines())"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I /tmp/adhd-h12/probe.py /private/tmp/adhd-eval-20261014/claude-H12-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py /private/tmp/adhd-eval-20261014/claude-H12-r1/workspace/input.md",
+      "description": "Run bold-density probe"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py fmt input.md",
+      "description": "Preview deterministic format fixes"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H12-r1/workspace/.agents/skills/adhd-md/references/doc-types.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H12-r1/workspace/.agents/skills/adhd-md/references/rubric.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H12-r1/workspace/.agents/skills/adhd-md/references/evidence.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H12-r1/workspace/.agents/skills/adhd-md/references/examples/README.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H12-r1/workspace/.agents/skills/adhd-md/references/examples/04-en-reference.after.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "cp -p input.md output.md",
+      "description": "Copy input.md to output.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "cp input.md output.md",
+      "description": "Copy input.md to output.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit output.md --level 3 --scope=format",
+      "description": "Audit output.md at deep/format"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=format",
+      "description": "Verify format-scope invariants between input and output"
+    }
+  },
+  {
+    "tool": "Write",
+    "input": {
+      "file_path": "/tmp/adhd-h12/jsonshape.py",
+      "content": "import json, sys\n\ndata = json.load(open(sys.argv[1], encoding=\"utf-8\"))\nprint(\"TOP KEYS:\", list(data.keys()))\nfor k, v in data.items():\n    if isinstance(v, (str, int, float)) or v is None:\n        print(f\"  {k} = {v}\")\n    elif isinstance(v, dict):\n        print(f\"  {k} = dict keys {list(v.keys())}\")\n    elif isinstance(v, list):\n        print(f\"  {k} = list len {len(v)}\")\n"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit output.md --level 3 --scope=format --json > /tmp/adhd-h12/audit-after.json",
+      "description": "Dump audit JSON for output.md"
+    }
+  },
+  {
+    "tool": "Write",
+    "input": {
+      "file_path": "/tmp/adhd-h12/auditprobe.py",
+      "content": "import json, subprocess, sys\n\nscript = sys.argv[1]\nargs = sys.argv[2:]\nr = subprocess.run([sys.executable, script] + args, capture_output=True, text=True)\nprint(\"exit:\", r.returncode)\ndata = json.loads(r.stdout)\nprint(\"top keys:\", list(data.keys()))\nfor k, v in data.items():\n    if isinstance(v, dict):\n        print(f\"{k}: dict keys={list(v.keys())}\")\n        for k2, v2 in v.items():\n            if not isinstance(v2, (dict, list)):\n                print(f\"   {k2} = {v2}\")\n            else:\n                print(f\"   {k2} = {type(v2).__name__} {v2 if isinstance(v2, list) and len(v2) < 60 else ''}\")\n    elif isinstance(v, list):\n        print(f\"{k}: list len={len(v)}\")\n        if len(v) < 60:\n            for item in v:\n                print(\"   -\", item)\n    else:\n        print(f\"{k} = {v}\")\n"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I /tmp/adhd-h12/auditprobe.py /private/tmp/adhd-eval-20261014/claude-H12-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py audit /private/tmp/adhd-eval-20261014/claude-H12-r1/workspace/output.md --level 3 --scope=format --json",
+      "description": "Inspect audit JSON structure and coverage"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c \"\nimport json,subprocess,sys\nr=subprocess.run([sys.executable,sys.argv[1]]+sys.argv[2:],capture_output=True,text=True)\nd=json.loads(r.stdout)\nprint('exit',r.returncode)\nprint(json.dumps(d['coverage']['rule_ids'],ensure_ascii=False))\nprint('x_hits',d['score']['x_hits'])\nprint('dims',json.dumps(d['score']['dims'],ensure_ascii=False))\nprint('x_deduct',d['score']['x_deduct'])\n\" /private/tmp/adhd-eval-20261014/claude-H12-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py audit /private/tmp/adhd-eval-20261014/claude-H12-r1/workspace/output.md --level 3 --scope=format --json",
+      "description": "Print rule_ids coverage and dimension scores"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c \"\nimport json,subprocess,sys\nr=subprocess.run([sys.executable,sys.argv[1]]+sys.argv[2:],capture_output=True,text=True)\nprint('EXIT',r.returncode); print(r.stdout); print(r.stderr)\n\" /private/tmp/adhd-eval-20261014/claude-H12-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py verify /private/tmp/adhd-eval-20261014/claude-H12-r1/workspace/input.md /private/tmp/adhd-eval-20261014/claude-H12-r1/workspace/output.md --scope=format --json",
+      "description": "Run verify with JSON and capture exit code"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "cmp input.md output.md",
+      "description": "Check byte-identity of input and output"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c \"\nimport subprocess,sys\nr=subprocess.run([sys.executable,sys.argv[1]]+sys.argv[2:],capture_output=True,text=True)\nprint('EXIT',r.returncode); print(r.stdout); print(r.stderr)\n\" /private/tmp/adhd-eval-20261014/claude-H12-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py report /private/tmp/adhd-eval-20261014/claude-H12-r1/workspace/input.md /private/tmp/adhd-eval-20261014/claude-H12-r1/workspace/output.md --scope=format",
+      "description": "Run report comparing input and output"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py report --help",
+      "description": "Check report subcommand options"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c \"\nimport subprocess,sys\nr=subprocess.run([sys.executable,sys.argv[1]]+sys.argv[2:],capture_output=True,text=True)\nprint('EXIT',r.returncode); print(r.stdout); print(r.stderr)\n\" /private/tmp/adhd-eval-20261014/claude-H12-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py report /private/tmp/adhd-eval-20261014/claude-H12-r1/workspace/input.md /private/tmp/adhd-eval-20261014/claude-H12-r1/workspace/output.md --scope=format --level 3 --json",
+      "description": "Run report at deep level with JSON"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c \"\nimport subprocess,sys\nS=sys.argv[1]; W=sys.argv[2]\nfor label,args in [\n  ('audit input (deep/format)', ['audit', W+'/input.md','--level','3','--scope=format']),\n  ('audit output (deep/format)', ['audit', W+'/output.md','--level','3','--scope=format']),\n  ('fmt input (preview)', ['fmt', W+'/input.md']),\n]:\n    r=subprocess.run([sys.executable,S]+args,capture_output=True,text=True)\n    print(label,'-> EXIT',r.returncode)\n    print('   stdout:',(r.stdout.strip().splitlines() or [''])[0])\n    if r.stderr.strip(): print('   stderr:', r.stderr.strip())\n\" /private/tmp/adhd-eval-20261014/claude-H12-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py /private/tmp/adhd-eval-20261014/claude-H12-r1/workspace",
+      "description": "Capture exit codes for audit and fmt"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "ls -l input.md output.md",
+      "description": "List input and output files with sizes"
+    }
+  }
+]

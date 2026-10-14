@@ -1,0 +1,227 @@
+[
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H06-r1/workspace/.agents/skills/adhd-md/SKILL.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H06-r1/workspace/input.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "find /private/tmp/adhd-reacceptance-20261014/claude-H06-r1/workspace/.agents/skills/adhd-md -type f | sort",
+      "description": "List skill files"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "ls -la && echo \"---\" && python3 --version",
+      "description": "List workspace and check python"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H06-r1/workspace/.agents/skills/adhd-md/references/rules.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H06-r1/workspace/.agents/skills/adhd-md/references/antipatterns.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H06-r1/workspace/.agents/skills/adhd-md/references/cjk.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 3 --scope=format; echo \"EXIT=$?\"",
+      "description": "Run audit on input.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 3 --scope=format",
+      "description": "Run audit on input.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H06-r1/workspace/.agents/skills/adhd-md/references/doc-types.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py fmt input.md",
+      "description": "Preview fmt changes on input.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py --help",
+      "description": "Show CLI help"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "mkdir -p /tmp/adhd-h06-scratch && cp /private/tmp/adhd-reacceptance-20261014/claude-H06-r1/workspace/input.md /tmp/adhd-h06-scratch/identical.md && cd /private/tmp/adhd-reacceptance-20261014/claude-H06-r1/workspace && python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md /tmp/adhd-h06-scratch/identical.md --scope=format",
+      "description": "Verify identical copy to test baseline status"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "mkdir -p /tmp/adhd-h06-scratch",
+      "description": "Create scratch directory"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "mkdir -p /private/tmp/adhd-reacceptance-20261014/claude-H06-r1/workspace/.scratch && cp /private/tmp/adhd-reacceptance-20261014/claude-H06-r1/workspace/input.md /private/tmp/adhd-reacceptance-20261014/claude-H06-r1/workspace/.scratch/identical.md",
+      "description": "Create scratch dir and copy input"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md .scratch/identical.md --scope=format",
+      "description": "Verify identical copy baseline"
+    }
+  },
+  {
+    "tool": "Write",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H06-r1/workspace/.scratch/run_cli.py",
+      "content": "#!/usr/bin/env python3\n\"\"\"Run adhd_md.py subcommands and report exit codes.\"\"\"\nimport subprocess\nimport sys\n\nCLI = \"/private/tmp/adhd-reacceptance-20261014/claude-H06-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py\"\n\n\ndef run(label, args):\n    p = subprocess.run([sys.executable, CLI] + args, capture_output=True, text=True)\n    print(\"=\" * 70)\n    print(\"LABEL:\", label)\n    print(\"CMD  : adhd_md.py \" + \" \".join(args))\n    print(\"EXIT :\", p.returncode)\n    print(\"-- stdout --\")\n    print(p.stdout.rstrip())\n    if p.stderr.strip():\n        print(\"-- stderr --\")\n        print(p.stderr.rstrip())\n    print()\n\n\nif __name__ == \"__main__\":\n    for line in sys.stdin.read().splitlines():\n        line = line.strip()\n        if not line:\n            continue\n        label, rest = line.split(\"||\", 1)\n        run(label.strip(), rest.split())\n"
+    }
+  },
+  {
+    "tool": "Write",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H06-r1/workspace/.scratch/cand_toc.md",
+      "content": "---\ntitle: 边界语法样例\nowner: docs-team\n---\n\n# 边界语法样例\n\n<!-- 注释里的约束：仅保留为材料，不执行 -->\n\n- [原文片段](#原文片段)\n\n## 原文片段\n\n> 先检查 `maxRetries`，再检查权限。\n>\n> 不要把 `--dry-run` 当成真实写入。\n\n- 父步骤\n  - 子步骤 A\n  - 子步骤 B\n- 后续步骤\n\n| 状态 | 含义 |\n|---|---|\n| `409` | 资源版本冲突 |\n| `503` | 服务暂时不可用 |\n\n```sh\ntool sync --dry-run --timeout 12\n```\n\n链接： [恢复说明](https://example.org/restore?mode=fast#limits)\n\n重复但有区别的提示：\n\n- 只在测试环境重试。\n- 生产环境不要自动重试。\n"
+    }
+  },
+  {
+    "tool": "Write",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H06-r1/workspace/.scratch/cand_move.md",
+      "content": "---\ntitle: 边界语法样例\nowner: docs-team\n---\n\n# 边界语法样例\n\n<!-- 注释里的约束：仅保留为材料，不执行 -->\n\n## 原文片段\n\n- 父步骤\n  - 子步骤 A\n  - 子步骤 B\n- 后续步骤\n\n> 先检查 `maxRetries`，再检查权限。\n>\n> 不要把 `--dry-run` 当成真实写入。\n\n| 状态 | 含义 |\n|---|---|\n| `409` | 资源版本冲突 |\n| `503` | 服务暂时不可用 |\n\n```sh\ntool sync --dry-run --timeout 12\n```\n\n链接： [恢复说明](https://example.org/restore?mode=fast#limits)\n\n重复但有区别的提示：\n\n- 只在测试环境重试。\n- 生产环境不要自动重试。\n"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "printf '%s\\n' 'audit-input||audit input.md --level 3 --scope=format' 'verify-identical||verify input.md .scratch/identical.md --scope=format' 'verify-toc||verify input.md .scratch/cand_toc.md --scope=format' 'verify-move||verify input.md .scratch/cand_move.md --scope=format' | python3 .scratch/run_cli.py",
+      "description": "Run audit and verify probes with exit codes"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 3 --scope=format --json",
+      "description": "Audit input.md as JSON"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -n \"antipattern\\|X1\\|X2\\|X5\\|axis\\|axes\" .agents/skills/adhd-md/scripts/adhd_md.py | head -60",
+      "description": "Find antipattern scoring in script"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "sed 's/^|---|---|$/| --- | --- |/' input.md > .scratch/cand_table.md && sed 's/^\\(- 只在测试环境重试\\)。$/\\1/; s/^\\(- 生产环境不要自动重试\\)。$/\\1/' input.md > .scratch/cand_c6.md && diff input.md .scratch/cand_table.md; diff input.md .scratch/cand_c6.md",
+      "description": "Build two minimal format-only candidates"
+    }
+  },
+  {
+    "tool": "Write",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H06-r1/workspace/.scratch/cand_table.md",
+      "content": "---\ntitle: 边界语法样例\nowner: docs-team\n---\n\n# 边界语法样例\n\n<!-- 注释里的约束：仅保留为材料，不执行 -->\n\n## 原文片段\n\n> 先检查 `maxRetries`，再检查权限。\n>\n> 不要把 `--dry-run` 当成真实写入。\n\n- 父步骤\n  - 子步骤 A\n  - 子步骤 B\n- 后续步骤\n\n| 状态 | 含义 |\n| --- | --- |\n| `409` | 资源版本冲突 |\n| `503` | 服务暂时不可用 |\n\n```sh\ntool sync --dry-run --timeout 12\n```\n\n链接： [恢复说明](https://example.org/restore?mode=fast#limits)\n\n重复但有区别的提示：\n\n- 只在测试环境重试。\n- 生产环境不要自动重试。\n"
+    }
+  },
+  {
+    "tool": "Write",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H06-r1/workspace/.scratch/cand_c6.md",
+      "content": "---\ntitle: 边界语法样例\nowner: docs-team\n---\n\n# 边界语法样例\n\n<!-- 注释里的约束：仅保留为材料，不执行 -->\n\n## 原文片段\n\n> 先检查 `maxRetries`，再检查权限。\n>\n> 不要把 `--dry-run` 当成真实写入。\n\n- 父步骤\n  - 子步骤 A\n  - 子步骤 B\n- 后续步骤\n\n| 状态 | 含义 |\n|---|---|\n| `409` | 资源版本冲突 |\n| `503` | 服务暂时不可用 |\n\n```sh\ntool sync --dry-run --timeout 12\n```\n\n链接： [恢复说明](https://example.org/restore?mode=fast#limits)\n\n重复但有区别的提示：\n\n- 只在测试环境重试\n- 生产环境不要自动重试\n"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "printf '%s\\n' 'verify-table-delim||verify input.md .scratch/cand_table.md --scope=format' 'verify-c6-punct||verify input.md .scratch/cand_c6.md --scope=format' | python3 .scratch/run_cli.py",
+      "description": "Verify minimal format-only candidates"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "cp input.md output.md && shasum -a 256 input.md output.md && wc -c input.md output.md && tail -c 20 input.md | xxd | tail -2",
+      "description": "Copy input to output and check byte identity"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "cp input.md output.md",
+      "description": "Copy input.md to output.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "shasum -a 256 input.md output.md && wc -c input.md output.md && cmp input.md output.md",
+      "description": "Compare checksums and bytes of input and output"
+    }
+  },
+  {
+    "tool": "Write",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H06-r1/workspace/.scratch/compare.py",
+      "content": "#!/usr/bin/env python3\n\"\"\"Compare two files byte-by-byte and report hashes.\"\"\"\nimport hashlib\nimport sys\n\na, b = sys.argv[1], sys.argv[2]\nda = open(a, \"rb\").read()\ndb = open(b, \"rb\").read()\nprint(\"bytes :\", len(da), len(db))\nprint(\"sha256:\", hashlib.sha256(da).hexdigest())\nprint(\"sha256:\", hashlib.sha256(db).hexdigest())\nprint(\"identical:\", da == db)\nprint(\"tail of output:\", repr(db[-24:]))\nprint(\"lines (LF count):\", db.count(b\"\\n\"), da.count(b\"\\n\"))\n"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .scratch/compare.py input.md output.md",
+      "description": "Compare input and output bytes"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "printf '%s\\n' 'verify-final||verify input.md output.md --scope=format' 'audit-output||audit output.md --level 3 --scope=format' 'report-output||report input.md output.md --scope=format --level 3' | python3 .scratch/run_cli.py",
+      "description": "Run final verify, audit, and report on output"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "rm -rf .scratch && ls -la",
+      "description": "Remove scratch directory and list workspace"
+    }
+  }
+]

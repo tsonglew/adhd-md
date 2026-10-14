@@ -1,0 +1,62 @@
+[
+  {
+    "command": "/bin/zsh -lc \"pwd && rg --files -g 'AGENTS.md' -g 'input.md' -g '*SKILL.md' -g '*adhd*' -g '\"'!node_modules'\"' -g '\"'!vendor'\"' . .agents .codex\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'cat .agents/skills/adhd-md/SKILL.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'cat .agents/skills/adhd-md/references/rules.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'cat AGENTS.md && cat input.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'cat .agents/skills/adhd-md/references/antipatterns.md && cat .agents/skills/adhd-md/references/cjk.md && cat .agents/skills/adhd-md/references/evidence.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'git status --porcelain && python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 2 --scope=content'",
+    "exit_code": 128
+  },
+  {
+    "command": "/bin/zsh -lc 'cat .agents/skills/adhd-md/references/antipatterns.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'rg -n \"judge|H1|summary|number|numeric|def report|def verify\" .agents/skills/adhd-md/scripts/adhd_md.py'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 2 --scope=content'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'diff -u input.md output.md'",
+    "exit_code": 1
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py report input.md output.md --scope=content --level 2 --json'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py audit output.md --level 2 --scope=content'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=content && python3 .agents/skills/adhd-md/scripts/adhd_md.py report input.md output.md --scope=content --level 2'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"python3 - <<'PY'\nfrom pathlib import Path\nimport subprocess\nimport json\nscript = '.agents/skills/adhd-md/scripts/adhd_md.py'\ncommands = [\n    ('audit-input.txt', ['audit', 'input.md', '--level', '2', '--scope=content']),\n    ('audit-output.txt', ['audit', 'output.md', '--level', '2', '--scope=content']),\n    ('report.txt', ['report', 'input.md', 'output.md', '--scope=content', '--level', '2']),\n    ('report.json', ['report', 'input.md', 'output.md', '--scope=content', '--level', '2', '--json']),\n]\nfor filename, args in commands:\n    result = subprocess.run(['python3', script, *args], text=True, capture_output=True)\n    Path(filename).write_text(result.stdout, encoding='utf-8')\n    print(f'{filename}: exit {result.returncode}')\n    if result.returncode:\n        print(result.stderr)\nreport = json.loads(Path('report.json').read_text())\nprint(json.dumps({'verify': report['verify'], 'before': report['before']['score']['total'], 'after': report['after']['score']['total'], 'x_before': report['before']['score']['x_deduct'], 'x_after': report['after']['score']['x_deduct'], 'm_hits_before': sum(f.get('count', 1) for f in report['before']['findings'] if f['rule'].startswith('M')), 'm_hits_after': sum(f.get('count', 1) for f in report['after']['findings'] if f['rule'].startswith('M'))}, ensure_ascii=False))\nPY\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"python3 - <<'PY'\nfrom pathlib import Path\nimport re\nimport json\n\ndef shape(path):\n    result = []\n    for line in Path(path).read_text().splitlines():\n        match = re.match(r'\"'^(#{1,6} |'\"\\\\d+\\\\. |- )', line)\n        result.append(match.group(0) if match else ('blank' if not line else 'paragraph'))\n    return result\n\nassert shape('input.md') == shape('output.md'), 'Block/marker layout changed'\nreport = json.loads(Path('report.json').read_text())\nassert report['verify']['status'] == 'pass'\nassert report['after']['score']['x_deduct'] == 0\njudge_rows = set(re.findall(r'\"'^'\"\\\\| ([A-Z]\\\\d+) \\\\|', Path('report.md').read_text(), re.M))\nassert set(report['after']['score']['unscored']).issubset(judge_rows)\nprint('原有行级块类型、标题层级和列表标记一致；报告覆盖全部 23 个 judge 项。')\nprint(Path('output.md').read_text())\nPY\"",
+    "exit_code": 0
+  }
+]

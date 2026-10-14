@@ -1,0 +1,16 @@
+{
+  "reviewer": "coordinator inspecting source/output against frozen constraints; not evaluated model self-report",
+  "human_review": "not performed",
+  "information_preserved": true,
+  "scope_preserved": true,
+  "unsupported_facts_found": false,
+  "evidence": [
+    "Scope remains console CSV only, excluding API and >100,000 rows; boundary is not changed to <100,000.",
+    "All three preconditions and the permission-error alternate path/no-resubmit constraint preserved.",
+    "IDs/time, refresh once, cancel then wait for cancelled, same CSV columns/filters and submit once retained in order.",
+    "New-task >2-minute escalation with task ID, original-data prohibition, maintenance worker restriction and downloaded-CSV exception retained.",
+    "H4 gives countable extent; N7 labels all five steps; A7 missing-source and A8 scope limits explicitly recorded."
+  ],
+  "judge_review": "Title wording allowed and revised; limitations explicitly recorded.",
+  "result": "pass under declared constraint and reporting criteria"
+}

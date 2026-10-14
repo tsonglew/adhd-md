@@ -1,0 +1,70 @@
+[
+  {
+    "command": "/bin/zsh -lc 'cat .agents/skills/adhd-md/SKILL.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"pwd; rg --files -g 'AGENTS.md' -g 'input.md' -g 'SKILL.md' -g '*audit*' -g '*verify*' -g '*adhd*' -g '\"'!node_modules'\"' -g '\"'!vendor'\"' . .agents .codex\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'cat .agents/skills/adhd-md/references/rules.md .agents/skills/adhd-md/references/antipatterns.md .agents/skills/adhd-md/references/evidence.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'cat AGENTS.md input.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'git status --porcelain'",
+    "exit_code": 128
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 3 --scope=format'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py fmt input.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'cat .agents/skills/adhd-md/references/antipatterns.md .agents/skills/adhd-md/references/doc-types.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py verify --help'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 3 --scope=format --json'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"python3 - <<'PY'\nfrom pathlib import Path\nimport hashlib\nsource = Path('input.md').read_bytes()\ntarget = Path('output.md')\nif target.exists():\n    raise SystemExit('output.md already exists; refusing to replace without inspection')\ntarget.write_bytes(source)\nprint(f'Copied {len(source)} bytes to output.md; input untouched.')\nprint(f'SHA-256: {hashlib.sha256(source).hexdigest()}')\nPY\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py report input.md output.md --scope=format --level=3 --json'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py audit output.md --level 3 --scope=format'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py report input.md output.md --scope=format --level=3'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=format'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"python3 - <<'PY'\nfrom pathlib import Path\nimport hashlib\noriginal = Path('input.md').read_bytes()\noutput = Path('output.md').read_bytes()\nexpected = 'ed563572dd10b7cff97f699ed209cd8b2d80c09fc4ad863a8cb81df56cc315a8'\nassert hashlib.sha256(original).hexdigest() == expected, 'input changed'\nassert output == original, 'output differs'\nprint('Input unchanged; output byte-identical: 631 bytes.')\nfor number, line in enumerate(output.decode('utf-8').splitlines(), 1):\n    print(f'{number:2}: {line}')\nPY\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"python3 - <<'PY'\nfrom pathlib import Path\nimport hashlib\noriginal = Path('input.md').read_bytes()\noutput = Path('output.md').read_bytes()\nassert original == output\nassert hashlib.sha256(original).hexdigest() == 'ed563572dd10b7cff97f699ed209cd8b2d80c09fc4ad863a8cb81df56cc315a8'\nreport = Path('report.md').read_text()\nrules = 'S4 S5 S6 S8 H3 H4 P2 P5 L2 L4 L7 W2 W3 W5 W7 W8 W9 A1 A2 A3 A5 A6 A7 A8 N4 N7 T3 C4 X3 X6 X7 X8'.split()\nassert all(f'| {rule} |' in report for rule in rules)\nprint('Confirmed output.md preserves all 631 original bytes; report.md contains all 32 manual rule reviews.')\nPY\"",
+    "exit_code": 0
+  }
+]

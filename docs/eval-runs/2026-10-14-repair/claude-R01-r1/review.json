@@ -1,0 +1,11 @@
+{
+  "reviewer": "coordinating agent; not independent human",
+  "human_review": "pending",
+  "facts_and_guards": "preserved: manual/session scope, archived exclusion, guarded wait/reload order, accepted != completed",
+  "invented_ui_results": false,
+  "layout_style": "heading level, numbered-list form, emphasis and folds preserved",
+  "paragraph_count_changed": true,
+  "scope_note": "Claude split the introductory prose into two prose paragraphs; no new list/bold/heading style. Exact block-count preservation was not requested.",
+  "A8_reporting": "incorrectly reported met after sentence split; instruction clarified and R01-r2 requested",
+  "machine_verify": "pass"
+}

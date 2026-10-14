@@ -1,0 +1,310 @@
+[
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H12-r3/workspace/.agents/skills/adhd-md/SKILL.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H12-r3/workspace/input.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "find /private/tmp/adhd-reacceptance-20261014/claude-H12-r3/workspace/.agents/skills/adhd-md -type f | head -50; echo \"---\"; ls -la /private/tmp/adhd-reacceptance-20261014/claude-H12-r3/workspace",
+      "description": "List skill files and workspace"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H12-r3/workspace/prompt.txt"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H12-r3/workspace/.agents/skills/adhd-md/references/rules.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H12-r3/workspace/.agents/skills/adhd-md/references/antipatterns.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H12-r3/workspace/.agents/skills/adhd-md/references/doc-types.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 3 --scope=format; echo \"EXIT=$?\"",
+      "description": "Run audit on input.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 3 --scope=format",
+      "description": "Run audit on input.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 3 --scope=format --json",
+      "description": "Run audit with JSON output"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py --help; echo \"=== audit help ===\"; python3 .agents/skills/adhd-md/scripts/adhd_md.py audit --help",
+      "description": "Show CLI help"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -n \"T2d\\|bold\\|加粗\" .agents/skills/adhd-md/scripts/adhd_md.py | head -60",
+      "description": "Find bold density logic in script"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H12-r3/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "limit": 100,
+      "offset": 930
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H12-r3/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "limit": 40,
+      "offset": 1029
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -n \"_mask_ranges\\|def strip_inline\\|def units\\|def prose_of\" -A 12 .agents/skills/adhd-md/scripts/adhd_md.py | head -70",
+      "description": "Inspect masking helper functions"
+    }
+  },
+  {
+    "tool": "Write",
+    "input": {
+      "file_path": "/tmp/adhd-h12-probe/bold.py",
+      "content": "import sys, importlib.util, pathlib\n\nSKILL = pathlib.Path(\"/private/tmp/adhd-reacceptance-20261014/claude-H12-r3/workspace/.agents/skills/adhd-md/scripts/adhd_md.py\")\nspec = importlib.util.spec_from_file_location(\"adhd_md\", SKILL)\nm = importlib.util.module_from_spec(spec)\nspec.loader.exec_module(m)\n\nfor p in sys.argv[1:]:\n    doc = m.parse_document(pathlib.Path(p).read_text())\n    tot_b = tot_t = 0\n    print(\"===\", p)\n    for b in doc.blocks:\n        bc, tc, cnt = m.bold_metrics(b)\n        tot_b += bc\n        tot_t += tc\n        if tc:\n            print(f\"  {b.kind:8s} line{b.start:3d} bold={bc:3d} total={tc:4d} ratio={bc/max(1,tc):6.1%} count={cnt}\")\n    print(f\"  TOTAL bold={tot_b} total={tot_t} ratio={tot_b/max(1,tot_t):.2%}\")\n"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "cd /tmp/adhd-h12-probe && python3 -I bold.py /private/tmp/adhd-reacceptance-20261014/claude-H12-r3/workspace/input.md",
+      "description": "Compute per-block bold density"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I /tmp/adhd-h12-probe/bold.py /private/tmp/adhd-reacceptance-20261014/claude-H12-r3/workspace/input.md",
+      "description": "Compute per-block bold density"
+    }
+  },
+  {
+    "tool": "Edit",
+    "input": {
+      "replace_all": false,
+      "file_path": "/tmp/adhd-h12-probe/bold.py",
+      "old_string": "m = importlib.util.module_from_spec(spec)\nspec.loader.exec_module(m)",
+      "new_string": "m = importlib.util.module_from_spec(spec)\nsys.modules[\"adhd_md\"] = m\nspec.loader.exec_module(m)"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I /tmp/adhd-h12-probe/bold.py /private/tmp/adhd-reacceptance-20261014/claude-H12-r3/workspace/input.md",
+      "description": "Compute per-block bold density"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -n \"^def \\|^class \" .agents/skills/adhd-md/scripts/adhd_md.py | head -60",
+      "description": "List top-level definitions"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H12-r3/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "limit": 120,
+      "offset": 249
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H12-r3/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "limit": 20,
+      "offset": 589
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "cd /tmp/adhd-h12-probe 2>/dev/null; python3 -I - <<'PY'\nimport sys, importlib.util, pathlib\nSKILL = pathlib.Path(\"/private/tmp/adhd-reacceptance-20261014/claude-H12-r3/workspace/.agents/skills/adhd-md/scripts/adhd_md.py\")\nspec = importlib.util.spec_from_file_location(\"adhd_md\", SKILL)\nm = importlib.util.module_from_spec(spec); sys.modules[\"adhd_md\"]=m; spec.loader.exec_module(m)\nfor p in [\"/private/tmp/adhd-reacceptance-20261014/claude-H12-r3/workspace/input.md\"]:\n    doc = m.Doc(pathlib.Path(p).read_text())\n    tb=tt=0\n    print(\"===\",p)\n    for b in doc.blocks:\n        bc,tc,cnt = m.bold_metrics(b)\n        tb+=bc; tt+=tc\n        print(f\"  {b.kind:9s} L{b.start:3d} bold={bc:3d} total={tc:4d} count={cnt} ratio={bc/max(1,tc):6.1%}  {b.text[:60]!r}\")\n    print(f\"  TOTAL bold={tb} total={tt} ratio={tb/max(1,tt):.4%}\")\nPY",
+      "description": "Compute per-block bold density via module import"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I - <<'PY'\nimport sys, importlib.util, pathlib\nSKILL = pathlib.Path(\"/private/tmp/adhd-reacceptance-20261014/claude-H12-r3/workspace/.agents/skills/adhd-md/scripts/adhd_md.py\")\nspec = importlib.util.spec_from_file_location(\"adhd_md\", SKILL)\nm = importlib.util.module_from_spec(spec); sys.modules[\"adhd_md\"]=m; spec.loader.exec_module(m)\np = \"/private/tmp/adhd-reacceptance-20261014/claude-H12-r3/workspace/input.md\"\ndoc = m.Doc(pathlib.Path(p).read_text())\ntb=tt=0\nprint(\"===\",p)\nfor b in doc.blocks:\n    bc,tc,cnt = m.bold_metrics(b)\n    tb+=bc; tt+=tc\n    print(f\"  {b.kind:9s} L{b.start:3d} bold={bc:3d} total={tc:4d} count={cnt} ratio={bc/max(1,tc):6.1%}  {b.text[:60]!r}\")\nprint(f\"  TOTAL bold={tb} total={tt} ratio={tb/max(1,tt):.4%}\")\nPY",
+      "description": "Compute per-block bold density via module import"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md input.md --scope=format --json",
+      "description": "Verify identical file as baseline probe"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py fmt input.md | diff input.md - ",
+      "description": "Preview deterministic fmt changes"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "mkdir -p /tmp/adhd-h12-probe/cand && python3 -I - <<'PY'\nimport pathlib\nsrc = pathlib.Path(\"/private/tmp/adhd-reacceptance-20261014/claude-H12-r3/workspace/input.md\").read_text()\nout = pathlib.Path(\"/tmp/adhd-h12-probe/cand\")\n# A: identical copy\n(out/\"A.md\").write_text(src)\n# B: drop bold on step term only\n(out/\"B.md\").write_text(src.replace(\"1. **Preview** the plan.\", \"1. Preview the plan.\"))\n# C: drop bold in final paragraph only\n(out/\"C.md\").write_text(src.replace(\"retain the **first copy**. Retain the **second copy** too.\",\n                                    \"retain the first copy. Retain the second copy too.\"))\n# D: split final paragraph at the sentence boundary\n(out/\"D.md\").write_text(src.replace(\"Repeated terms: retain the **first copy**. Retain the **second copy** too.\",\n                                    \"Repeated terms: retain the **first copy**.\\n\\nRetain the **second copy** too.\"))\n# E: list-ify the two parallel sentences (reuse original words)\n(out/\"E.md\").write_text(src.replace(\n    \"Repeated terms: retain the **first copy**. Retain the **second copy** too.\",\n    \"Repeated terms: retain the **first copy**\\n- Retain the **second copy** too.\"))\nprint(\"written\")\nPY",
+      "description": "Create candidate variants for probing"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "mkdir -p .scratch && python3 -I - <<'PY'\nimport pathlib\nsrc = pathlib.Path(\"input.md\").read_text()\nout = pathlib.Path(\".scratch\")\n(out/\"A.md\").write_text(src)\n(out/\"B.md\").write_text(src.replace(\"1. **Preview** the plan.\", \"1. Preview the plan.\"))\n(out/\"C.md\").write_text(src.replace(\"retain the **first copy**. Retain the **second copy** too.\",\n                                    \"retain the first copy. Retain the second copy too.\"))\n(out/\"D.md\").write_text(src.replace(\"Repeated terms: retain the **first copy**. Retain the **second copy** too.\",\n                                    \"Repeated terms: retain the **first copy**.\\n\\nRetain the **second copy** too.\"))\n(out/\"E.md\").write_text(src.replace(\n    \"Repeated terms: retain the **first copy**. Retain the **second copy** too.\",\n    \"Repeated terms: retain the **first copy**\\n- Retain the **second copy** too.\"))\nprint(\"written ok\")\nPY",
+      "description": "Create candidate variants in workspace scratch dir"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "for f in A B C D E; do printf '=== %s\\n' \"$f\"; python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md .scratch/$f.md --scope=format; printf 'exit=%s\\n' \"$?\"; done",
+      "description": "Verify each candidate against input"
+    }
+  },
+  {
+    "tool": "Write",
+    "input": {
+      "file_path": "/tmp/adhd-h12-probe/verify_all.sh",
+      "content": "#!/bin/sh\n# Probe: how does verify --scope=format treat each candidate?\nWS=/private/tmp/adhd-reacceptance-20261014/claude-H12-r3/workspace\nS=\"$WS/.agents/skills/adhd-md/scripts/adhd_md.py\"\nfor f in A B C D E; do\n  printf '=== %s\\n' \"$f\"\n  python3 \"$S\" verify \"$WS/input.md\" \"$WS/.scratch/$f.md\" --scope=format\n  printf 'exit=%s\\n' \"$?\"\ndone\n"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "sh /tmp/adhd-h12-probe/verify_all.sh",
+      "description": "Run verify probe across candidates"
+    }
+  },
+  {
+    "tool": "Write",
+    "input": {
+      "file_path": "/tmp/adhd-h12-probe/probe.py",
+      "content": "import json\nimport pathlib\nimport subprocess\nimport sys\n\nWS = pathlib.Path(\"/private/tmp/adhd-reacceptance-20261014/claude-H12-r3/workspace\")\nSCRIPT = WS / \".agents/skills/adhd-md/scripts/adhd_md.py\"\nINPUT = WS / \"input.md\"\n\ntargets = sys.argv[1:]\nfor name in targets:\n    target = pathlib.Path(name)\n    if not target.is_absolute():\n        target = WS / \".scratch\" / name\n    proc = subprocess.run(\n        [sys.executable, str(SCRIPT), \"verify\", str(INPUT), str(target),\n         \"--scope=format\", \"--json\"],\n        capture_output=True, text=True,\n    )\n    print(f\"=== {target.name}  exit={proc.returncode}\")\n    try:\n        data = json.loads(proc.stdout)\n    except Exception:\n        print(proc.stdout, proc.stderr)\n        continue\n    print(\"   status:\", data.get(\"status\"), \"| ok:\", data.get(\"ok\"),\n          \"| identical:\", data.get(\"identical\"))\n    for key in (\"hard_failures\", \"warnings\", \"unknowns\", \"notes\"):\n        val = data.get(key)\n        if val:\n            print(f\"   {key}: {json.dumps(val, ensure_ascii=False)}\")\n"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I /tmp/adhd-h12-probe/probe.py A.md B.md C.md D.md E.md",
+      "description": "Probe verify status for each candidate"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I - <<'PY'\nimport pathlib\nws = pathlib.Path(\"/private/tmp/adhd-reacceptance-20261014/claude-H12-r3/workspace\")\nsrc = (ws/\"input.md\").read_text()\no = ws/\".scratch\"\n# F: delete a condition word (\"only\")\n(o/\"F.md\").write_text(src.replace(\"Apply the plan only after approval.\", \"Apply the plan after approval.\"))\n# H: change a number/unit value\n(o/\"H.md\").write_text(src.replace(\"| Timeout | `15 s` |\", \"| Timeout | `30 s` |\"))\n# I: drop the frontmatter\n(o/\"I.md\").write_text(src.split(\"---\\n\",2)[2].lstrip(\"\\n\"))\n# J: change the link target\n(o/\"J.md\").write_text(src.replace(\"https://example.org/rollback?region=west#step-2\", \"https://example.org/rollback\"))\n# K: move the quote block to the end (block reorder)\nlines = src.split(\"\\n\")\nquote = lines[9:12]\nrest = lines[:9] + lines[12:]\n(o/\"K.md\").write_text(\"\\n\".join(rest[:len(rest)-1] + [\"\"] + quote + [\"\"]).rstrip(\"\\n\") + \"\\n\")\nprint(\"ok\")\nPY",
+      "description": "Create negative-control candidates"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I /tmp/adhd-h12-probe/probe.py F.md H.md I.md J.md K.md",
+      "description": "Probe verify on negative controls"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c \"import shutil; shutil.copyfile('input.md','output.md'); print('copied')\"",
+      "description": "Write output.md as an exact copy of input.md"
+    }
+  },
+  {
+    "tool": "Write",
+    "input": {
+      "file_path": "/tmp/adhd-h12-probe/final_check.py",
+      "content": "import json\nimport pathlib\nimport subprocess\nimport sys\n\nWS = pathlib.Path(\"/private/tmp/adhd-reacceptance-20261014/claude-H12-r3/workspace\")\nSCRIPT = WS / \".agents/skills/adhd-md/scripts/adhd_md.py\"\n\n\ndef run(label, args):\n    proc = subprocess.run([sys.executable, str(SCRIPT)] + args,\n                          capture_output=True, text=True)\n    print(f\"########## {label}\")\n    print(f\"$ adhd_md.py {' '.join(args)}\")\n    print(proc.stdout, end=\"\")\n    if proc.stderr.strip():\n        print(\"[stderr]\", proc.stderr, end=\"\")\n    print(f\">>> EXIT STATUS = {proc.returncode}\")\n    print()\n    return proc\n\n\nrun(\"AUDIT output.md (after)\", [\"audit\", \"output.md\", \"--level\", \"3\", \"--scope=format\"])\nrun(\"VERIFY input.md -> output.md\", [\"verify\", \"input.md\", \"output.md\", \"--scope=format\"])\nrun(\"VERIFY (json)\", [\"verify\", \"input.md\", \"output.md\", \"--scope=format\", \"--json\"])\nrun(\"REPORT\", [\"report\", \"input.md\", \"output.md\", \"--scope=format\", \"--level\", \"3\"])\n"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I /tmp/adhd-h12-probe/final_check.py",
+      "description": "Run final audit, verify and report with exit codes"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "shasum -a 256 input.md output.md",
+      "description": "Compare checksums of input and output"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "ls -la .scratch",
+      "description": "List scratch contents before removal"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c \"\nimport hashlib,pathlib\nfor n in ['input.md','output.md']:\n    b=pathlib.Path(n).read_bytes()\n    print(n, hashlib.sha256(b).hexdigest(), len(b), 'bytes')\n\"",
+      "description": "Compare SHA-256 of input and output"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "rm -rf .scratch",
+      "description": "Remove scratch candidate directory"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "ls -la",
+      "description": "Confirm final workspace state"
+    }
+  }
+]

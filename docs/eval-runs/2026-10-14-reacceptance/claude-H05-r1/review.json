@@ -1,0 +1,12 @@
+{
+  "reviewer": "coordinator inspected source/output and frozen constraints; independent harness supplies machine checks",
+  "human_review": "not performed",
+  "constraint_key": "中位数 1.8 秒 / 目标低于 2 秒；失败率 1.2% 到 0.7%；观察 7 天；连续 30 分钟高于 1.5% 才暂停 10% 灰度；单次告警不回滚",
+  "information_preserved": true,
+  "verify": "pass",
+  "x_deduct": 0,
+  "diff_review": "Only four H2 markers changed to bold labels retaining exact text; metrics, targets, duration/threshold rollback guard, owners and task checkboxes unchanged. X2 cleared without padding.",
+  "judge_rule_ids_missing": [],
+  "runtime_complete": true,
+  "result": "pass"
+}

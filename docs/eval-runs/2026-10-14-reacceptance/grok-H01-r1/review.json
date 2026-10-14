@@ -1,0 +1,7 @@
+{
+  "reviewer": "coordinator inspected runtime logs and tool trace",
+  "human_review": "not performed",
+  "result": "unverified: no output",
+  "reason": "Read user-level ~/.grok/skills/adhd-md rather than confirming frozen local snapshot; terminal discovery request cancelled. MCP initialization also logged HTTP 502. Exit 0 but no output.",
+  "not_counted_as_skill_success": true
+}

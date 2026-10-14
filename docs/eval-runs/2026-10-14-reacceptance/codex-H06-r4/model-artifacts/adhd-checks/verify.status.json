@@ -1,0 +1,13 @@
+{
+  "command": [
+    "python3",
+    ".agents/skills/adhd-md/scripts/adhd_md.py",
+    "verify",
+    "input.md",
+    "output.md",
+    "--scope=format",
+    "--json"
+  ],
+  "exit_code": 0,
+  "stderr": ""
+}

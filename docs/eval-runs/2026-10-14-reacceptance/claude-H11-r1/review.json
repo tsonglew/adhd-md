@@ -1,0 +1,9 @@
+{
+  "information_preserved": true,
+  "scope_preserved": true,
+  "strict_character_preservation": true,
+  "diff_review": "Only H2 markers converted to original-text bold labels. All metrics, strict targets, three-day gate, 0.5% condition, assigned tasks and >1% for 10 consecutive minutes rollback guard retained; X2 cleared without filler.",
+  "result": "pass",
+  "reviewer": "coordinator inspected source/output, full diff and key rule judgments against preannotated constraints",
+  "human_review": "not performed"
+}

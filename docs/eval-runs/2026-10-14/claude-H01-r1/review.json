@@ -1,0 +1,17 @@
+{
+  "reviewer": "current coordinating language model using frozen answer key and source; not a human reviewer",
+  "human_review": "pending",
+  "independent_machine_checks": "verify/audit/report rerun by harness, not copied from evaluated model claims",
+  "constraint_key": "静默时段 `21:30–08:00`、系统时区、仅当前设备、通知不收回、日历邀请和安全告警仍显示、校时后重新保存、企业策略只读",
+  "constraints": "Quiet hours, OS timezone, notifications/sync, calendar/security exceptions, clock resave and policy readonly retained. Original manual-setting/current-device qualifier is replaced by a general instruction to reset after changing devices/accounts.",
+  "scope": "fail: added a new bullet summary and bold styling in content-only mode",
+  "issues": [
+    "Scope overreach: original plain paragraph becomes a new bullet summary; adds bold time value.",
+    "Unsupported UI expectations: predicts switch and time displays not stated in the source.",
+    "Manual-setting qualifier is no longer explicit."
+  ],
+  "new_facts": "unsupported UI expectations; coordinator review fail",
+  "result": "constraints reviewed; rule issues recorded; not a human signoff",
+  "verify_and_zero_x_gate": true,
+  "note": "This machine gate excludes semantic, scope, level and unjudged-rule checks; it is not overall acceptance."
+}

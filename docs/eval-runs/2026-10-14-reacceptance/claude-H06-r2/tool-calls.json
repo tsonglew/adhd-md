@@ -1,0 +1,184 @@
+[
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H06-r2/workspace/.agents/skills/adhd-md/SKILL.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H06-r2/workspace/input.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "ls -la && echo \"---SKILL DIR---\" && find .agents/skills/adhd-md -type f | sort",
+      "description": "List workspace and skill files"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 --version && echo \"---\" && git status 2>&1 | head -3",
+      "description": "Check python version and git status"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H06-r2/workspace/.agents/skills/adhd-md/references/rules.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H06-r2/workspace/.agents/skills/adhd-md/references/antipatterns.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H06-r2/workspace/.agents/skills/adhd-md/references/cjk.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "head -40 .agents/skills/adhd-md/scripts/adhd_md.py && echo \"=== IMPORTS ===\" && grep -n \"^import\\|^from\\|sys.path\" .agents/skills/adhd-md/scripts/adhd_md.py | head -30 && echo \"=== WC ===\" && wc -l .agents/skills/adhd-md/scripts/adhd_md.py",
+      "description": "Inspect script header and imports"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 3 --scope=format; echo \"EXIT=$?\"",
+      "description": "Run audit on input.md at level 3 scope format"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I .agents/skills/adhd-md/scripts/adhd_md.py --help 2>&1 | head -40",
+      "description": "Show script help"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 3 --scope=format",
+      "description": "Run audit on input.md at level 3 scope format"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I .agents/skills/adhd-md/scripts/adhd_md.py fmt input.md",
+      "description": "Preview deterministic format fixes"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "cat -A input.md | sed -n '1,40p'",
+      "description": "Show raw bytes with line endings"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "cat -e input.md; echo \"=== FILE INFO ===\"; wc -c input.md; file input.md; tail -c 20 input.md | od -c | tail -3",
+      "description": "Inspect line endings and trailing bytes"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I .agents/skills/adhd-md/scripts/adhd_md.py verify input.md input.md --scope=format",
+      "description": "Baseline verify input against itself"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 3 --scope=format --json",
+      "description": "Get JSON audit detail"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H06-r2/workspace/.agents/skills/adhd-md/references/doc-types.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "cp input.md output.md && shasum -a 256 input.md output.md && wc -c input.md output.md",
+      "description": "Copy input to output and compare checksums"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "cp input.md output.md",
+      "description": "Copy input.md to output.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "shasum -a 256 input.md output.md",
+      "description": "Compare checksums of input and output"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c \"import hashlib,pathlib; a=pathlib.Path('input.md').read_bytes(); b=pathlib.Path('output.md').read_bytes(); print('input  sha256', hashlib.sha256(a).hexdigest(), len(a), 'bytes'); print('output sha256', hashlib.sha256(b).hexdigest(), len(b), 'bytes'); print('IDENTICAL' if a==b else 'DIFFERENT')\"",
+      "description": "Compare input and output bytes via python"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=format; printf 'VERIFY_EXIT=%s\\n' \"$?\"",
+      "description": "Run verify with exit status"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I .agents/skills/adhd-md/scripts/adhd_md.py audit output.md --level 3 --scope=format; printf 'AUDIT_EXIT=%s\\n' \"$?\"",
+      "description": "Run audit on output with exit status"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c \"\nimport subprocess, sys\nS='.agents/skills/adhd-md/scripts/adhd_md.py'\nfor args in (['audit','input.md','--level','3','--scope=format'],):\n    r=subprocess.run([sys.executable,'-I',S]+args, capture_output=True, text=True)\n    print('CMD', ' '.join(args)); print(r.stdout); print(r.stderr); print('EXIT=', r.returncode)\n\"",
+      "description": "Run audit and print exit code"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c \"\nimport subprocess, sys\nS='.agents/skills/adhd-md/scripts/adhd_md.py'\nfor args in (['verify','input.md','output.md','--scope=format'], ['audit','output.md','--level','3','--scope=format']):\n    r=subprocess.run([sys.executable,'-I',S]+args, capture_output=True, text=True)\n    print('CMD', ' '.join(args)); print(r.stdout); print(r.stderr); print('EXIT=', r.returncode); print('-'*40)\n\"",
+      "description": "Run verify and output audit with exit codes"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c \"\nimport subprocess, sys\nS='.agents/skills/adhd-md/scripts/adhd_md.py'\nfor args in (['report','input.md','output.md','--scope=format','--level=3'], ['report','input.md','output.md','--scope=format','--level=3','--json']):\n    r=subprocess.run([sys.executable,'-I',S]+args, capture_output=True, text=True)\n    print('CMD', ' '.join(args)); print(r.stdout); print(r.stderr); print('EXIT=', r.returncode); print('-'*40)\n\"",
+      "description": "Run before/after report in text and JSON"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H06-r2/workspace/.agents/skills/adhd-md/references/rubric.md"
+    }
+  }
+]

@@ -1,0 +1,70 @@
+[
+  {
+    "command": "/bin/zsh -lc 'cat .agents/skills/adhd-md/SKILL.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"pwd && rg --files -g 'AGENTS.md' -g 'input.md' -g 'SKILL.md' -g '*audit*' -g '*verify*' -g '*rule*' .agents/skills/adhd-md .codex/skills/adhd-md .\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'cat .agents/skills/adhd-md/references/antipatterns.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'cat .agents/skills/adhd-md/references/rules.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'cat input.md && cat AGENTS.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 2 --scope=format'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"git status --short && rg -n 'X2|anti_penalty|antipattern|headings|bold_ratio|fragment' .agents/skills/adhd-md/scripts/adhd_md.py\"",
+    "exit_code": 128
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py fmt input.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py report --help && python3 .agents/skills/adhd-md/scripts/adhd_md.py audit --help && python3 .agents/skills/adhd-md/scripts/adhd_md.py verify --help'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"python3 - <<'PY'\nfrom pathlib import Path\nimport hashlib\np = Path('input.md')\nraw = p.read_bytes()\nsrc = raw.decode('utf-8')\nout = src\nfor label in ('Outcome', 'Decisions', 'Actions', 'Rollback trigger'):\n    out = out.replace('## ' + label + '\\\\n', '**' + label + '**\\\\n')\nold = 'The new search index reached 100% of workspaces. Median query time is 210 ms against a target below 250 ms. The 95th percentile is 680 ms, above the 600 ms target.'\nnew = '- The new search index reached 100% of workspaces.\\\\n- Median query time is 210 ms against a target below 250 ms.\\\\n- The 95th percentile is 680 ms, above the 600 ms target.'\nassert out.count(old) == 1\nout = out.replace(old, new)\nold = 'return to the previous index version. A single slow query is not a rollback trigger.'\nnew = 'return to the previous index version.\\\\n\\\\nA single slow query is not a rollback trigger.'\nassert out.count(old) == 1\nout = out.replace(old, new)\nPath('output.md').write_text(out, encoding='utf-8')\nassert p.read_bytes() == raw\nprint('Input SHA-256:', hashlib.sha256(raw).hexdigest())\nprint('Wrote output.md; input bytes unchanged.')\nPY\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'diff -u input.md output.md; nl -ba output.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py audit output.md --level 2 --scope=format'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=format'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py report input.md output.md --scope=format --level=2'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py report input.md output.md --scope=format --level=2 --json > output.report.json'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"python3 - <<'PY'\nimport json\nfrom pathlib import Path\nx = json.loads(Path('output.report.json').read_text())\nprint(json.dumps(x, indent=2, ensure_ascii=False))\nPY\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"python3 - <<'PY'\nfrom pathlib import Path\nimport hashlib\nsrc = Path('input.md').read_bytes()\nout = Path('output.md').read_text(encoding='utf-8')\nrestored = out\nfor label in ('Outcome', 'Decisions', 'Actions', 'Rollback trigger'):\n    restored = restored.replace('**' + label + '**\\\\n', '## ' + label + '\\\\n')\nmetrics = (\n    'The new search index reached 100% of workspaces.',\n    'Median query time is 210 ms against a target below 250 ms.',\n    'The 95th percentile is 680 ms, above the 600 ms target.',\n)\nrestored = restored.replace('\\\\n'.join('- ' + s for s in metrics), ' '.join(metrics))\nrestored = restored.replace('return to the previous index version.\\\\n\\\\nA single slow query', 'return to the previous index version. A single slow query')\nassert restored.encode('utf-8') == src, 'Non-format difference detected'\nassert hashlib.sha256(src).hexdigest() == '77dd7a37c78da1630d15de0a28c02505b012d236ce79bb0431ddfc8bbcdfd2cc', 'Input changed'\nprint('Exact source reconstruction: PASS; input SHA-256 unchanged.')\nPY\"",
+    "exit_code": 0
+  }
+]

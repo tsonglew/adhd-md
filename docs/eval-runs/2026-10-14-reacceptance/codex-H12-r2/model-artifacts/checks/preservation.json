@@ -1,0 +1,28 @@
+{
+  "status": "pass",
+  "input_unchanged": true,
+  "original_bytes_preserved_in_order": true,
+  "only_change": "Two inserted LF blank lines",
+  "insertions": [
+    {
+      "kind": "insert_blank_line",
+      "before_input_line": 15,
+      "output_lines": [
+        15,
+        15
+      ],
+      "count": 1
+    },
+    {
+      "kind": "insert_blank_line",
+      "before_input_line": 17,
+      "output_lines": [
+        18,
+        18
+      ],
+      "count": 1
+    }
+  ],
+  "input_sha256": "ed563572dd10b7cff97f699ed209cd8b2d80c09fc4ad863a8cb81df56cc315a8",
+  "output_sha256": "5211e7fd67651e376f8a3d5a3933d6709607b4f28d64204bc5898451453915db"
+}

@@ -1,0 +1,12 @@
+{
+  "reviewer": "coordinator inspected source/output and frozen constraints; independent harness supplies machine checks",
+  "human_review": "not performed",
+  "constraint_key": "frontmatter、引用层级、列表次序、409 / 503 表格、代码 `tool sync --dry-run --timeout 12`、链接 query 和 fragment、两条环境不同的重试规则",
+  "information_preserved": true,
+  "verify": "pass",
+  "x_deduct": 0,
+  "diff_review": "Original input copied byte-for-byte; comments, frontmatter, quote/list order, both environmental conditions and all protected literals preserved.",
+  "judge_rule_ids_missing": [],
+  "runtime_complete": true,
+  "result": "pass"
+}

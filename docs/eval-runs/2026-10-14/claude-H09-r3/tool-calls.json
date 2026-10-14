@@ -1,0 +1,210 @@
+[
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H09-r3/workspace/.agents/skills/adhd-md/SKILL.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H09-r3/workspace/input.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "ls -la /private/tmp/adhd-eval-20261014/claude-H09-r3/workspace/ && echo \"---SKILL DIR---\" && ls -R /private/tmp/adhd-eval-20261014/claude-H09-r3/workspace/.agents/skills/adhd-md/",
+      "description": "List workspace and skill directory"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "cat /private/tmp/adhd-eval-20261014/claude-H09-r3/workspace/prompt.txt; echo \"=== AGENTS.md ===\"; cat /private/tmp/adhd-eval-20261014/claude-H09-r3/workspace/AGENTS.md",
+      "description": "Show prompt and AGENTS.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H09-r3/workspace/.agents/skills/adhd-md/references/rules.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H09-r3/workspace/.agents/skills/adhd-md/references/antipatterns.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H09-r3/workspace/.agents/skills/adhd-md/references/doc-types.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py --help 2>&1 | head -60",
+      "description": "Show adhd_md.py help"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "cd /private/tmp/adhd-eval-20261014/claude-H09-r3/workspace/.agents/skills/adhd-md/references/examples && echo \"=== 04 before ===\" && cat 04-en-reference.before.md && echo \"=== 04 after ===\" && cat 04-en-reference.after.md && echo \"=== README ===\" && cat README.md",
+      "description": "Show en-reference example pair"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 /private/tmp/adhd-eval-20261014/claude-H09-r3/workspace/.agents/skills/adhd-md/scripts/adhd_md.py audit --help; echo \"=== verify help ===\"; python3 /private/tmp/adhd-eval-20261014/claude-H09-r3/workspace/.agents/skills/adhd-md/scripts/adhd_md.py verify --help; echo \"=== fmt help ===\"; python3 /private/tmp/adhd-eval-20261014/claude-H09-r3/workspace/.agents/skills/adhd-md/scripts/adhd_md.py fmt --help",
+      "description": "Show audit/verify/fmt subcommand help"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "cd /private/tmp/adhd-eval-20261014/claude-H09-r3/workspace && python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --scope=format --level 3; echo \"EXIT=$?\"",
+      "description": "Audit input.md at scope=format level=3"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "cd /private/tmp/adhd-eval-20261014/claude-H09-r3/workspace && python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --scope=format --level 3",
+      "description": "Audit input.md at scope=format level=3"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 - <<'PY'\np='input.md'\nb=open(p,'rb').read()\nprint('bytes',len(b))\nprint('endswith single nl:', b.endswith(b'\\n') and not b.endswith(b'\\n\\n'))\nprint('has CR:', b'\\r' in b)\nprint('has tab:', b'\\t' in b)\nfor i,l in enumerate(b.decode().split('\\n'),1):\n    if l!=l.rstrip():\n        print('trailing ws line',i,repr(l[-6:]))\nprint('---- line lengths ----')\nfor i,l in enumerate(b.decode().split('\\n'),1):\n    print(i, len(l), repr(l[:40]))\nPY",
+      "description": "Inspect raw bytes of input.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py fmt input.md",
+      "description": "Preview deterministic format fixes"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -n \"X2\\|fragment\" .agents/skills/adhd-md/scripts/adhd_md.py | head -40",
+      "description": "Find X2 fragmentation logic in script"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py report input.md input.md --scope=format 2>&1 | head -50",
+      "description": "Check report output format"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H09-r3/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "limit": 50,
+      "offset": 960
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py report --help",
+      "description": "Show report subcommand help"
+    }
+  },
+  {
+    "tool": "Write",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H09-r3/workspace/output.md",
+      "content": "# Queue configuration\n\n| Setting | Default | Valid range | Behavior |\n|---|---:|---:|---|\n| `visibilitySeconds` | 45 | 5–600 | Time before an unacknowledged job is visible again |\n| `maxAttempts` | 3 | 1–8 | Includes the first delivery attempt |\n| `backoffMs` | 400 | 100–5000 | Base delay between retry attempts |\n| `deadLetterAfter` | 8 | 1–20 | Failed jobs moved to the dead-letter queue |\n\n`maxAttempts` counts the initial delivery. A value of `1` disables retries.\n\nAuthentication errors (`401` and `403`) are never retried, even when `maxAttempts` is greater than one.\n\n```yaml\nqueue:\n  maxAttempts: 4\n  backoffMs: 800\n```\n\nConfiguration changes take effect after the worker restarts.\n\n- `visibilitySeconds` is measured in seconds\n- `backoffMs` is measured in milliseconds\n"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=format; echo \"--- verify exit: $?\"",
+      "description": "Run verify scope=format on output"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=format",
+      "description": "Run verify scope=format on output"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 - <<'PY'\nimport subprocess, json, sys\nA=\".agents/skills/adhd-md/scripts/adhd_md.py\"\ndef run(args):\n    p=subprocess.run([sys.executable,A]+args,capture_output=True,text=True)\n    print(\"CMD:\", \" \".join([\"adhd_md.py\"]+args))\n    print(\"EXIT:\", p.returncode)\n    print(p.stdout)\n    if p.stderr.strip(): print(\"STDERR:\", p.stderr)\n    print(\"=\"*60)\nrun([\"verify\",\"input.md\",\"output.md\",\"--scope=format\",\"--json\"])\nrun([\"audit\",\"output.md\",\"--scope=format\",\"--level\",\"3\"])\nPY",
+      "description": "Run verify JSON and audit on output, printing exit codes"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I - <<'PY'\nimport re, collections, unicodedata, subprocess, sys\na=open(\"input.md\",encoding=\"utf-8\").read()\nb=open(\"output.md\",encoding=\"utf-8\").read()\ndef toks(s):\n    return re.findall(r\"[A-Za-z0-9_`*.]+|[^\\sA-Za-z0-9_`*.]\", s)\nca,cb=collections.Counter(toks(a)),collections.Counter(toks(b))\nprint(\"tokens removed:\", {k:v for k,v in (ca-cb).items()})\nprint(\"tokens added  :\", {k:v for k,v in (cb-ca).items()})\ndef words(s):\n    return re.findall(r\"\\S+\", s)\nwa,wb=words(a),words(b)\nprint(\"whitespace-token removed:\", collections.Counter(wa)-collections.Counter(wb))\nprint(\"whitespace-token added  :\", collections.Counter(wb)-collections.Counter(wa))\nprint(\"char multiset equal:\", collections.Counter(a)==collections.Counter(b))\nprint(\"len a,b:\", len(a), len(b))\nPY",
+      "description": "Compare token and character multisets of input vs output"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "diff -u input.md output.md",
+      "description": "Show unified diff input vs output"
+    }
+  },
+  {
+    "tool": "Edit",
+    "input": {
+      "replace_all": false,
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H09-r3/workspace/output.md",
+      "old_string": "- `visibilitySeconds` is measured in seconds\n- `backoffMs` is measured in milliseconds",
+      "new_string": "- `visibilitySeconds` is measured in seconds.\n- `backoffMs` is measured in milliseconds."
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I - <<'PY'\nimport re, collections\na=open(\"input.md\",encoding=\"utf-8\").read()\nb=open(\"output.md\",encoding=\"utf-8\").read()\nt=lambda s: re.findall(r\"[A-Za-z0-9_`*.]+|[^\\sA-Za-z0-9_`*.]\", s)\nca,cb=collections.Counter(t(a)),collections.Counter(t(b))\nprint(\"tokens removed:\", dict(ca-cb))\nprint(\"tokens added  :\", dict(cb-ca))\nw=lambda s: re.findall(r\"\\S+\", s)\nprint(\"word removed:\", dict(collections.Counter(w(a))-collections.Counter(w(b))))\nprint(\"word added  :\", dict(collections.Counter(w(b))-collections.Counter(w(a))))\n# protected values\nprot=re.compile(r\"`[^`]+`|\\b\\d[\\d.,–-]*\\b|\\b[A-Za-z_][A-Za-z0-9_]*(?:Seconds|Ms|Attempts|After)\\b\")\nprint(\"protected multiset equal:\", collections.Counter(prot.findall(a))==collections.Counter(prot.findall(b)))\nPY",
+      "description": "Recheck token preservation after edit"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I - <<'PY'\nimport re, collections\na=open(\"input.md\",encoding=\"utf-8\").read()\nb=open(\"output.md\",encoding=\"utf-8\").read()\nprot=re.compile(r\"`[^`]+`|\\b\\d[\\d.,–-]*\\b|\\b[A-Za-z_][A-Za-z0-9_]*(?:Seconds|Ms|Attempts|After)\\b\")\nca,cb=collections.Counter(prot.findall(a)),collections.Counter(prot.findall(b))\nprint(\"only in input :\", dict(ca-cb))\nprint(\"only in output:\", dict(cb-ca))\nPY",
+      "description": "Diff protected-value multisets"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I - <<'PY'\nimport re, collections\ndef vals(path):\n    s=open(path,encoding=\"utf-8\").read()\n    spans=re.findall(r\"`([^`\\n]+)`\", s)                       # inline code values\n    nums=re.findall(r\"\\b\\d[\\d.,]*(?:–\\d[\\d.,]*)?\\b\", s)        # numbers & ranges\n    units=re.findall(r\"\\b(?:seconds|milliseconds|ms)\\b\", s)    # units\n    idents=re.findall(r\"\\b(?:visibilitySeconds|maxAttempts|backoffMs|deadLetterAfter|queue|yaml)\\b\", s)\n    fences=re.findall(r\"^```(\\w*)$\", s, re.M)\n    blocks=re.findall(r\"```[a-z]*\\n(.*?)```\", s, re.S)\n    return dict(spans=spans,nums=nums,units=units,idents=idents,fences=fences,blocks=blocks)\nA,B=vals(\"input.md\"),vals(\"output.md\")\nfor k in A:\n    same = collections.Counter(map(str,A[k]))==collections.Counter(map(str,B[k]))\n    print(f\"{k:7} identical: {same}\")\n    if not same:\n        print(\"   input :\",A[k]); print(\"   output:\",B[k])\nprint(\"code block bodies byte-identical:\", [x==y for x,y in zip(A['blocks'],B['blocks'])])\nPY",
+      "description": "Verify protected values are identical"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I - <<'PY'\nimport subprocess, sys\nA=\".agents/skills/adhd-md/scripts/adhd_md.py\"\ndef run(args):\n    p=subprocess.run([sys.executable,A]+args,capture_output=True,text=True)\n    print(\"### adhd_md.py\", \" \".join(args))\n    print(\"EXIT:\", p.returncode)\n    print(p.stdout.rstrip())\n    if p.stderr.strip(): print(\"STDERR:\", p.stderr.rstrip())\n    print()\nrun([\"fmt\",\"output.md\",\"--check\"])\nrun([\"verify\",\"input.md\",\"output.md\",\"--scope=format\"])\nrun([\"report\",\"input.md\",\"output.md\",\"--scope=format\",\"--level\",\"3\"])\nrun([\"audit\",\"input.md\",\"--scope=format\",\"--level\",\"3\",\"--json\"])\nrun([\"audit\",\"output.md\",\"--scope=format\",\"--level\",\"3\",\"--json\"])\nPY",
+      "description": "Run fmt check, verify, report, and both audits with exit codes"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I - <<'PY'\nimport re\na=open(\"input.md\",encoding=\"utf-8\").read()\nb=open(\"output.md\",encoding=\"utf-8\").read()\nwa=re.findall(r\"[A-Za-z0-9_]+\", a)\nwb=re.findall(r\"[A-Za-z0-9_]+\", b)\nprint(\"word sequence identical (order + content):\", wa==wb, \"| n =\", len(wa))\nprint(\"source lines:\", len(a.splitlines()), \"-> output lines:\", len(b.splitlines()))\nimport subprocess\nprint(subprocess.run([\"diff\",\"-u\",\"input.md\",\"output.md\"],capture_output=True,text=True).stdout)\nPY",
+      "description": "Confirm word sequence unchanged and show final diff"
+    }
+  }
+]

@@ -1,0 +1,21 @@
+--- input.md
++++ output.md
+@@ -7,7 +7,9 @@
+ | `backoffMs` | 400 | 100–5000 | Base delay between retry attempts |
+ | `deadLetterAfter` | 8 | 1–20 | Failed jobs moved to the dead-letter queue |
+ 
+-`maxAttempts` counts the initial delivery. A value of `1` disables retries. Authentication errors (`401` and `403`) are never retried, even when `maxAttempts` is greater than one.
++`maxAttempts` counts the initial delivery. A value of `1` disables retries.
++
++Authentication errors (`401` and `403`) are never retried, even when `maxAttempts` is greater than one.
+ 
+ ```yaml
+ queue:
+@@ -15,4 +17,6 @@
+   backoffMs: 800
+ ```
+ 
+-Configuration changes take effect after the worker restarts. `visibilitySeconds` is measured in seconds; `backoffMs` is measured in milliseconds.
++Configuration changes take effect after the worker restarts.
++
++`visibilitySeconds` is measured in seconds; `backoffMs` is measured in milliseconds.

@@ -1,0 +1,70 @@
+[
+  {
+    "command": "/bin/zsh -lc 'cat .agents/skills/adhd-md/SKILL.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"pwd && rg --files -g 'AGENTS.md' -g 'input.md' -g 'output.md' -g 'SKILL.md' -g '*audit*' -g '*verify*' -g '*format*' .agents/skills/adhd-md .codex/skills/adhd-md .\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'cat AGENTS.md input.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'cat .agents/skills/adhd-md/references/rules.md .agents/skills/adhd-md/references/antipatterns.md .agents/skills/adhd-md/references/cjk.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'git status --porcelain && rg --files .agents/skills/adhd-md'",
+    "exit_code": 128
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 3 --scope=format'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"cat .agents/skills/adhd-md/references/doc-types.md .agents/skills/adhd-md/references/rubric.md && rg -n 'unsupported|unknown|comment|unchanged|same|antipattern' .agents/skills/adhd-md/scripts/adhd_md.py\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 3 --scope=format --json'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py fmt input.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"sed -n '1990,2035p' .agents/skills/adhd-md/scripts/adhd_md.py && sed -n '2585,2695p' .agents/skills/adhd-md/scripts/adhd_md.py && nl -ba input.md\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"python3 - <<'PY'\nfrom pathlib import Path\nimport hashlib\nsource = Path('input.md').read_bytes()\nPath('output.md').write_bytes(source)\nPath('adhd-checks').mkdir(exist_ok=True)\nprint('output.md 已按原始字节复制。')\nprint('input.md SHA-256:', hashlib.sha256(source).hexdigest())\nprint('byte_identical:', Path('input.md').read_bytes() == Path('output.md').read_bytes())\nPY\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"python3 - <<'PY'\nfrom pathlib import Path\nimport subprocess, json\nargs = ['python3', '.agents/skills/adhd-md/scripts/adhd_md.py'] + [\\\"report\\\",\\\"input.md\\\",\\\"output.md\\\",\\\"--scope=format\\\",\\\"--level\\\",\\\"3\\\"]\np = subprocess.run(args, text=True, capture_output=True)\nPath('adhd-checks/report.txt').write_text(p.stdout, encoding='utf-8')\nPath('adhd-checks/report.status.json').write_text(json.dumps({'command': args, 'exit_code': p.returncode, 'stderr': p.stderr}, ensure_ascii=False, indent=2)+'\\\\n', encoding='utf-8')\nprint(json.dumps({'check':'report', 'exit_code':p.returncode, 'stderr':p.stderr}, ensure_ascii=False))\nprint(p.stdout)\nPY\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"python3 - <<'PY'\nfrom pathlib import Path\nimport subprocess, json\nargs = ['python3', '.agents/skills/adhd-md/scripts/adhd_md.py'] + [\\\"audit\\\",\\\"input.md\\\",\\\"--level\\\",\\\"3\\\",\\\"--scope=format\\\",\\\"--json\\\"]\np = subprocess.run(args, text=True, capture_output=True)\nPath('adhd-checks/audit-before.json').write_text(p.stdout, encoding='utf-8')\nPath('adhd-checks/audit-before.status.json').write_text(json.dumps({'command': args, 'exit_code': p.returncode, 'stderr': p.stderr}, ensure_ascii=False, indent=2)+'\\\\n', encoding='utf-8')\nprint(json.dumps({'check':'audit-before', 'exit_code':p.returncode, 'stderr':p.stderr}, ensure_ascii=False))\ndata = json.loads(p.stdout)\nprint(json.dumps({'score':data['score'], 'coverage':data['coverage'], 'shown_findings':data['shown_findings']}, ensure_ascii=False))\nPY\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"python3 - <<'PY'\nfrom pathlib import Path\nimport subprocess, json\nargs = ['python3', '.agents/skills/adhd-md/scripts/adhd_md.py'] + [\\\"verify\\\",\\\"input.md\\\",\\\"output.md\\\",\\\"--scope=format\\\",\\\"--json\\\"]\np = subprocess.run(args, text=True, capture_output=True)\nPath('adhd-checks/verify.json').write_text(p.stdout, encoding='utf-8')\nPath('adhd-checks/verify.status.json').write_text(json.dumps({'command': args, 'exit_code': p.returncode, 'stderr': p.stderr}, ensure_ascii=False, indent=2)+'\\\\n', encoding='utf-8')\nprint(json.dumps({'check':'verify', 'exit_code':p.returncode, 'stderr':p.stderr}, ensure_ascii=False))\nprint(p.stdout)\nPY\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"python3 - <<'PY'\nfrom pathlib import Path\nimport subprocess, json\nargs = ['python3', '.agents/skills/adhd-md/scripts/adhd_md.py'] + [\\\"audit\\\",\\\"output.md\\\",\\\"--level\\\",\\\"3\\\",\\\"--scope=format\\\",\\\"--json\\\"]\np = subprocess.run(args, text=True, capture_output=True)\nPath('adhd-checks/audit-after.json').write_text(p.stdout, encoding='utf-8')\nPath('adhd-checks/audit-after.status.json').write_text(json.dumps({'command': args, 'exit_code': p.returncode, 'stderr': p.stderr}, ensure_ascii=False, indent=2)+'\\\\n', encoding='utf-8')\nprint(json.dumps({'check':'audit-after', 'exit_code':p.returncode, 'stderr':p.stderr}, ensure_ascii=False))\ndata = json.loads(p.stdout)\nprint(json.dumps({'score':data['score'], 'coverage':data['coverage'], 'shown_findings':data['shown_findings']}, ensure_ascii=False))\nPY\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"python3 - <<'PY'\nfrom pathlib import Path\nimport subprocess, json\nargs = ['python3', '.agents/skills/adhd-md/scripts/adhd_md.py', 'report', 'input.md', 'output.md', '--scope=format', '--level', '3', '--json']\np = subprocess.run(args, text=True, capture_output=True)\nPath('adhd-checks/report.json').write_text(p.stdout, encoding='utf-8')\nPath('adhd-checks/report-json.status.json').write_text(json.dumps({'command': args, 'exit_code': p.returncode, 'stderr': p.stderr}, ensure_ascii=False, indent=2) + '\\\\n', encoding='utf-8')\nprint(json.dumps({'check': 'report-json', 'exit_code': p.returncode, 'stderr': p.stderr}, ensure_ascii=False))\nPY\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"python3 - <<'PY'\nfrom pathlib import Path\nimport hashlib, json\noriginal = Path('input.md').read_bytes()\noutput = Path('output.md').read_bytes()\nexpected = '0e55b3fd3fcc1bcd4c9c39222b76670410508702e2b04438ad1a70a6070b7cdf'\nassert original == output\nassert hashlib.sha256(original).hexdigest() == expected\nreport = Path('adhd-report.md').read_text()\naudit = json.loads(Path('adhd-checks/audit-after.json').read_text())\nmissing = [rule for rule in audit['score']['unscored'] if f'| {rule} |' not in report]\nassert not missing, missing\nfor path in sorted(Path('adhd-checks').glob('*.status.json')):\n    data = json.loads(path.read_text())\n    assert data['exit_code'] == 0, data\nprint('input.md 未改变；output.md 逐字节相同；32 条脚本未判定规则均已记录人工复核；5 份持久化命令状态均为 0。')\nprint('报告：adhd-report.md；校验证据：adhd-checks/')\nPY\"",
+    "exit_code": 0
+  }
+]

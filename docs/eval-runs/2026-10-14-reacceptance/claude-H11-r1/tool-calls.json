@@ -1,0 +1,381 @@
+[
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H11-r1/workspace/.agents/skills/adhd-md/SKILL.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H11-r1/workspace/input.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "ls -la /private/tmp/adhd-reacceptance-20261014/claude-H11-r1/workspace/ && echo \"---SKILL DIR---\" && ls -R /private/tmp/adhd-reacceptance-20261014/claude-H11-r1/workspace/.agents/skills/adhd-md/",
+      "description": "List workspace and skill directory"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H11-r1/workspace/.agents/skills/adhd-md/references/rules.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H11-r1/workspace/.agents/skills/adhd-md/references/antipatterns.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H11-r1/workspace/prompt.txt"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 2 --scope=format; echo \"EXIT=$?\"",
+      "description": "Run audit on input.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 /private/tmp/adhd-reacceptance-20261014/claude-H11-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py audit /private/tmp/adhd-reacceptance-20261014/claude-H11-r1/workspace/input.md --level 2 --scope=format",
+      "description": "Run adhd-md audit on input.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "wc -l /private/tmp/adhd-reacceptance-20261014/claude-H11-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py /private/tmp/adhd-reacceptance-20261014/claude-H11-r1/workspace/.agents/skills/adhd-md/references/rule-definitions.json",
+      "description": "Check script sizes"
+    }
+  },
+  {
+    "tool": "Grep",
+    "input": {
+      "-n": true,
+      "output_mode": "content",
+      "path": "/private/tmp/adhd-reacceptance-20261014/claude-H11-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "pattern": "首屏结论力|X2|fragment|标题密"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H11-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "limit": 180,
+      "offset": 900
+    }
+  },
+  {
+    "tool": "Grep",
+    "input": {
+      "-n": true,
+      "head_limit": 80,
+      "output_mode": "content",
+      "path": "/private/tmp/adhd-reacceptance-20261014/claude-H11-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "pattern": "DEF_WEIGHTS|首屏|dimension|dim_"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H11-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "limit": 130,
+      "offset": 1096
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c \"\nimport json\nd = json.load(open('/private/tmp/adhd-reacceptance-20261014/claude-H11-r1/workspace/.agents/skills/adhd-md/references/rule-definitions.json'))\nprint(list(d.keys()))\nprint(json.dumps(d.get('dimensions'), ensure_ascii=False, indent=1))\nsc = d.get('score_components') or d.get('components')\nprint(json.dumps(sc, ensure_ascii=False, indent=1)[:4000])\n\"",
+      "description": "Inspect rule definitions scoring"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H11-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "limit": 120,
+      "offset": 30
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c \"\nimport json\nd = json.load(open('/private/tmp/adhd-reacceptance-20261014/claude-H11-r1/workspace/.agents/skills/adhd-md/references/rule-definitions.json'))\nfor r in d['rules']:\n    if r['id'] in ('H1','H2','H3','H4','S5','S3','X2','N3','L3','A1','A7','A8','N7','T2','P1','L2','N1'):\n        print(json.dumps(r, ensure_ascii=False))\nprint('---limits---')\nprint(json.dumps(d['thresholds']['limits'], ensure_ascii=False, indent=1))\nprint('---lang---')\nprint(json.dumps(d['thresholds']['language'], ensure_ascii=False, indent=1))\nprint('cap', d['global_score_cap'])\n\"",
+      "description": "Inspect specific rule definitions"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H11-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "limit": 130,
+      "offset": 600
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H11-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "limit": 120,
+      "offset": 1600
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H11-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "limit": 230,
+      "offset": 2050
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H11-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "limit": 160,
+      "offset": 240
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H11-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "limit": 200,
+      "offset": 400
+    }
+  },
+  {
+    "tool": "Grep",
+    "input": {
+      "-n": true,
+      "output_mode": "content",
+      "path": "/private/tmp/adhd-reacceptance-20261014/claude-H11-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "pattern": "^TLDR_RE|^BG_OPENER|^PUNCT_FOLD|^STEP_HINT|^ORDER_HINT|^HEADING_RE|^FENCE_OPEN|^URL_RE|^BAD_LINK_TEXT",
+      "-A": 6
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 /private/tmp/adhd-reacceptance-20261014/claude-H11-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py fmt /private/tmp/adhd-reacceptance-20261014/claude-H11-r1/workspace/input.md | cat -A | head -60",
+      "description": "Preview deterministic fmt changes"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 /private/tmp/adhd-reacceptance-20261014/claude-H11-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py fmt /private/tmp/adhd-reacceptance-20261014/claude-H11-r1/workspace/input.md",
+      "description": "Preview deterministic fmt output"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H11-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "limit": 80,
+      "offset": 1447
+    }
+  },
+  {
+    "tool": "Grep",
+    "input": {
+      "-A": 25,
+      "-n": true,
+      "output_mode": "content",
+      "path": "/private/tmp/adhd-reacceptance-20261014/claude-H11-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "pattern": "def _tokenize|def normalize_number_unit_spacing"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "mkdir -p /tmp/h11-scratch && python3 -I - <<'PY'\nfrom pathlib import Path\nsrc = Path('/private/tmp/adhd-reacceptance-20261014/claude-H11-r1/workspace/input.md').read_text(encoding='utf-8')\n\n# Candidate A: convert the four H2 sub-headings into bold labels, keep unique H1\na = src.replace('## Outcome', '**Outcome**').replace('## Decisions', '**Decisions**') \\\n       .replace('## Actions', '**Actions**').replace('## Rollback trigger', '**Rollback trigger**')\nPath('/tmp/h11-scratch/candA.md').write_text(a, encoding='utf-8')\n\n# Candidate B: same but plain (non-bold) labels\nb = src.replace('## Outcome', 'Outcome').replace('## Decisions', 'Decisions') \\\n       .replace('## Actions', 'Actions').replace('## Rollback trigger', 'Rollback trigger')\nPath('/tmp/h11-scratch/candB.md').write_text(b, encoding='utf-8')\nprint(a)\nPY",
+      "description": "Create two format-only candidates"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I - <<'PY'\nfrom pathlib import Path\nws = Path('/private/tmp/adhd-reacceptance-20261014/claude-H11-r1/workspace')\nscratch = ws / '.scratch'\nscratch.mkdir(exist_ok=True)\nsrc = (ws / 'input.md').read_text(encoding='utf-8')\n\na = src.replace('## Outcome', '**Outcome**').replace('## Decisions', '**Decisions**') \\\n       .replace('## Actions', '**Actions**').replace('## Rollback trigger', '**Rollback trigger**')\n(scratch / 'candA.md').write_text(a, encoding='utf-8')\n\nb = src.replace('## Outcome', 'Outcome').replace('## Decisions', 'Decisions') \\\n       .replace('## Actions', 'Actions').replace('## Rollback trigger', 'Rollback trigger')\n(scratch / 'candB.md').write_text(b, encoding='utf-8')\nprint(a)\nPY",
+      "description": "Create candidate files in workspace scratch dir"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "for f in .scratch/candA.md .scratch/candB.md; do echo \"=== $f ===\"; python3 .agents/skills/adhd-md/scripts/adhd_md.py audit \"$f\" --level 2 --scope=format; done",
+      "description": "Audit both candidates"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 /private/tmp/adhd-reacceptance-20261014/claude-H11-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py audit /private/tmp/adhd-reacceptance-20261014/claude-H11-r1/workspace/.scratch/candA.md --level 2 --scope=format",
+      "description": "Audit candidate A (bold labels)"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 /private/tmp/adhd-reacceptance-20261014/claude-H11-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py audit /private/tmp/adhd-reacceptance-20261014/claude-H11-r1/workspace/.scratch/candB.md --level 2 --scope=format",
+      "description": "Audit candidate B (plain labels)"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md .scratch/candA.md --scope=format --json; echo \"EXIT_A=$?\"",
+      "description": "Verify candidate A"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md .scratch/candA.md --scope=format --json",
+      "description": "Verify candidate A with JSON output"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md .scratch/candB.md --scope=format",
+      "description": "Verify candidate B"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c \"\nimport sys\nsys.path.insert(0, '.agents/skills/adhd-md/scripts')\nimport adhd_md as m\nfor name, path in [('input','input.md'), ('candA','.scratch/candA.md'), ('candB','.scratch/candB.md')]:\n    text = open(path, encoding='utf-8').read()\n    doc = m.Doc(text)\n    blocks = doc.body_blocks()\n    stats = [m.bold_metrics(b) for b in blocks]\n    bc = sum(s[0] for s in stats); tc = max(1, sum(s[1] for s in stats))\n    heads = [b for b in blocks if b.kind == 'heading']\n    print(f'{name}: lines={len(doc.lines)} headings={len(headings)} bold={bc} visible={tc} ratio={bc/tc:.2%} x2_ratio={len(doc.lines)/max(1,len(headings)):.2f}')\n\"",
+      "description": "Compute bold density and heading ratios"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c \"\nimport sys\nsys.path.insert(0, '.agents/skills/adhd-md/scripts')\nimport adhd_md as m\nfor name, path in [('input','input.md'), ('candA','.scratch/candA.md'), ('candB','.scratch/candB.md')]:\n    text = open(path, encoding='utf-8').read()\n    doc = m.Doc(text)\n    blocks = doc.body_blocks()\n    stats = [m.bold_metrics(b) for b in blocks]\n    bc = sum(s[0] for s in stats); tc = max(1, sum(s[1] for s in stats))\n    heads = [b for b in blocks if b.kind == 'heading']\n    print(f'{name}: lines={len(doc.lines)} headings={len(heads)} bold={bc} visible={tc} ratio={bc/tc:.2%} lines_per_heading={len(doc.lines)/max(1,len(heads)):.2f}')\n\"",
+      "description": "Compute bold density and heading ratios"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c \"\nimport json\nd = json.load(open('.agents/skills/adhd-md/references/rule-definitions.json'))\njudge = [r for r in d['rules'] if r['status']=='judge']\nfor r in judge:\n    print(f\\\"{r['id']:4} axis={r['axis']:5} min_level={r['min_level']} scoring={bool(r.get('scoring'))} :: {r['name']}\\\")\n\" && echo \"--- diff input vs candA ---\" && diff <(cat input.md) <(cat .scratch/candA.md)",
+      "description": "List judge rules and diff candidate vs input"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c \"\nimport json\nd = json.load(open('.agents/skills/adhd-md/references/rule-definitions.json'))\njudge = [r for r in d['rules'] if r['status']=='judge']\nfor r in judge:\n    print(f\\\"{r['id']:4} axis={r['axis']:5} min_level={r['min_level']} scoring={bool(r.get('scoring'))} :: {r['name']}\\\")\n\"",
+      "description": "List judge rules with axes"
+    }
+  },
+  {
+    "tool": "Grep",
+    "input": {
+      "-B": 10,
+      "-n": true,
+      "output_mode": "content",
+      "path": "/private/tmp/adhd-reacceptance-20261014/claude-H11-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "pattern": "需模型判断"
+    }
+  },
+  {
+    "tool": "Grep",
+    "input": {
+      "-C": 6,
+      "-n": true,
+      "output_mode": "content",
+      "path": "/private/tmp/adhd-reacceptance-20261014/claude-H11-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "pattern": "sc = score\\(|def cmd_audit|score\\(findings"
+    }
+  },
+  {
+    "tool": "Write",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H11-r1/workspace/output.md",
+      "content": "# Search rollout review · 2026-09-22\n\n**Outcome**\n\nThe new search index reached 100% of workspaces. Median query time is 210 ms against a target below 250 ms. The 95th percentile is 680 ms, above the 600 ms target.\n\n**Decisions**\n\n- Keep the rollout at 100% while the error rate stays below 0.5%.\n- Do not enable fuzzy matching until the 95th percentile is below 600 ms for three consecutive days.\n- Recheck mobile query time separately; desktop data does not cover it.\n\n**Actions**\n\n- [ ] Alex: add mobile latency to the dashboard by Friday.\n- [ ] Search team: report three daily percentile values next week.\n\n**Rollback trigger**\n\nIf the error rate exceeds 1% for 10 consecutive minutes, return to the previous index version. A single slow query is not a rollback trigger.\n"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=format",
+      "description": "Verify output.md against input.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=format --json && python3 -c \"import sys; print('verify_exit=0')\"",
+      "description": "Capture verify JSON and exit status"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit output.md --level 2 --scope=format",
+      "description": "Audit final output.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -n \"worst\" .agents/skills/adhd-md/scripts/adhd_md.py | head -20 && grep -n \"return 3\\|return 4\\|sys.exit\\|exit_code\" .agents/skills/adhd-md/scripts/adhd_md.py | head -30",
+      "description": "Find audit exit code logic"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H11-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "limit": 40,
+      "offset": 2528
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 2 --scope=format --json > .scratch/audit_input.json && python3 .agents/skills/adhd-md/scripts/adhd_md.py audit output.md --level 2 --scope=format --json > .scratch/audit_output.json && python3 -c \"print('both audit runs exited 0')\"",
+      "description": "Capture audit JSON for both files"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c \"\nimport json\ni = json.load(open('.scratch/audit_input.json')); o = json.load(open('.scratch/audit_output.json'))\nprint('input  score:', i['score']['total'], 'x_deduct:', i['score']['x_deduct'], 'x_hits:', i['score']['x_hits'])\nprint('output score:', o['score']['total'], 'x_deduct:', o['score']['x_deduct'], 'x_hits:', o['score']['x_hits'])\nprint('input dims:', {k: v['score'] for k,v in i['score']['dims'].items()})\nprint('output dims:', {k: v['score'] for k,v in o['score']['dims'].items()})\nprint('input shown findings:', [(f['rule'], f['line'], f['advisory']) for f in i['shown_findings']])\nprint('output shown findings:', [(f['rule'], f['line'], f['advisory']) for f in o['shown_findings']])\nprint('unscored input:', i['score']['unscored'])\nprint('coverage input:', i['coverage'])\n\"",
+      "description": "Compare audit JSON before and after"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py report input.md output.md --scope=format --level=2",
+      "description": "Run the skill report command"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c \"\nimport re\nold = open('input.md', encoding='utf-8').read().split('\\n')\nnew = open('output.md', encoding='utf-8').read().split('\\n')\nprint('line counts:', len(old), len(new))\ndiff = [(i+1, o, n) for i,(o,n) in enumerate(zip(old,new)) if o != n]\nprint('changed lines:', len(diff))\nfor i,o,n in diff: print(f'  L{i}: {o!r} -> {n!r}')\nnum = lambda t: sorted(re.findall(r'\\d+(?:[.,]\\d+)*', t))\nprint('numbers old:', num('\\n'.join(old)))\nprint('numbers new:', num('\\n'.join(new)))\nprint('numbers equal:', num('\\n'.join(old)) == num('\\n'.join(new)))\nwords = lambda t: sorted(re.findall(r'[A-Za-z][A-Za-z\\'-]*', t))\nprint('word multiset equal:', words('\\n'.join(old)) == words('\\n'.join(new)))\nprint('trailing newline both:', open('input.md','rb').read().endswith(b'\\n'), open('output.md','rb').read().endswith(b'\\n'))\nprint('input untouched (mtime/bytes):', len(open('input.md','rb').read()), 'bytes')\n\"",
+      "description": "Line-level and numeric integrity comparison"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "rm -rf .scratch && ls -la",
+      "description": "Remove scratch dir and list workspace"
+    }
+  }
+]

@@ -77,8 +77,10 @@ git -C <文档所在仓库> status --porcelain <文件>
 
 ### 第 1 步 · 审计
 
+先固定本次 `scope` 与 `level`，包括用户随文件提供的上下文。将 `light / standard / deep` 映射为 `1 / 2 / 3`；所有 audit 与 report 都显式传同一个档位和 scope，不能沿用示例中的默认档位。下例是 standard，其他档位替换数字。
+
 ```bash
-python3 <skill>/scripts/adhd_md.py audit 文件.md --level 2
+python3 <skill>/scripts/adhd_md.py audit 文件.md --level 2 --scope=<scope>
 ```
 
 拿到脚本分、逐条 findings（带 `文件:行`）、以及需要你判断的规则清单。
@@ -107,6 +109,16 @@ python3 <skill>/scripts/adhd_md.py fmt 文件.md
 
 顺序：**先 content 再 format**。措辞定了，排版决策才稳。
 
+先执行以下边界检查，再优化分数：
+
+1. 列出原文的事实、条件、例外、否定、适用对象及数值边界；改完逐项找到对应句。尤其区分「手动设置只对当前设备有效」与泛指所有设置、「超过上限」与「达到上限」。
+2. 新句只能重述原文或给出可从文档直接数出的篇幅。不得补产品行为、界面状态、因果关系、用途或未提供的成功输出。A7 缺少来源时在报告中标为未满足，不猜测结果。
+3. 拆条件动作时，原条件必须仍控制每个子动作，且保留先后关系。例：「如果队列非零，等 3 分钟后刷新一次」可拆成「如果队列非零，等 3 分钟」「在该非零分支等待结束后，刷新一次」；不能把刷新变成无条件步骤。
+4. `scope=content` 保留现有块类型、标题层级、列表形态、强调标记和折叠结构。标题文字属于措辞，可以改写；不能把保留层级误读为禁止改标题文字。摘要用现有段落风格；复合步骤可以在原列表项内分句，不能为了 A8 擅自新增列表项。H4 / N7 可用普通文字表达。项内分句后若一个编号下仍有多个动作，A8 仍为「不满足（scope 限制）」，不能报满足。
+5. 用户要求逐字或保留标点时，优先于默认 format 的标点归一规则。跳过会改字符的 fmt 修复，逐项审阅 diff；机器 pass 不豁免更严格的要求。
+
+保留原文与候选分开，完成校验才交付。HTML 注释等造成 `unknown` 时撤回候选修改，保留或逐字复制原文作为输出；可另附待审 diff，但不能把待审候选标为完成版。不要删除注释来规避门禁。
+
 改之前必读：
 
 - `references/rules.md` —— 规则全表，含阈值
@@ -119,8 +131,8 @@ python3 <skill>/scripts/adhd_md.py fmt 文件.md
 
 ```bash
 python3 <skill>/scripts/adhd_md.py verify 原文.md 新文.md --scope=format
-python3 <skill>/scripts/adhd_md.py report 原文.md 新文.md --scope=<scope>
-python3 <skill>/scripts/adhd_md.py report 原文.md 新文.md --scope=<scope> --json
+python3 <skill>/scripts/adhd_md.py report 原文.md 新文.md --scope=<scope> --level=<1|2|3>
+python3 <skill>/scripts/adhd_md.py report 原文.md 新文.md --scope=<scope> --level=<1|2|3> --json
 ```
 
 当前 `verify` 有三态：`pass` 表示声明的机器检查通过且没有待复核警告，`fail` 表示硬约束变化，`unknown` 表示解析器不能可靠判断或有警告待人工复核。CLI 退出码依次为 `0`、`3`、`4`。JSON 保留旧的 `scope`、`hard_failures`、`warnings`、`ok` 字段，并增加 `status`、`unknowns`；确认完整块重排时还会给出 `notes` 指代复核提示。`ok` 仅在 `status=pass` 时为真，旧调用方不会把未知当成成功。
@@ -150,7 +162,9 @@ cp 文件.md /tmp/adhd-orig.md   # 改之前
 3. verify 结论（通过 / 失败 / 无法判断，以及原因）
 4. **你改了什么、以及故意没改什么**
 
-反模式扣分（X 组）after 必须为 0。不为 0 说明你是靠过度格式化换分数，回退重来。
+反模式扣分（X 组）after 必须为 0 才能宣称达标。非零先修复或回退自己的改动；若源文已有问题且受 scope 或字符约束无法安全消除，保留原文并明确「未达标」，列出剩余命中，不得编造内容或填空行凑分。短会议记录可将非必要的小标题转为保留原字的普通标签，保留唯一 H1，再检查 X2 与加粗密度；content 范围不允许此类格式变更。
+
+逐条记录 audit 返回的 judge 规则为「满足 / 不满足 / 不适用 / 无法判断」，附原文或输出位置及理由。至少具体复核 H4、A7、A8、N7 和 X 组；未逐项判断就不得声称规则全部通过。scope 冲突、缺来源和结构限制必须写入理由。报告可链接单独的判断表，脚本 100 分不能替代这张表。
 
 **AI 味（M 组）命中数只许下降，不许上升。** 你改写内容时最容易顺手写出「不是 A 而是 B」「值得注意的是」，等于用一套问题换掉另一套。改完对比 `audit` 的活人感维度。
 

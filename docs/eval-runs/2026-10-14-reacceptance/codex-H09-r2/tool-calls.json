@@ -1,0 +1,66 @@
+[
+  {
+    "command": "/bin/zsh -lc 'cat .agents/skills/adhd-md/SKILL.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"pwd && rg --files -g 'AGENTS.md' -g 'input.md' -g 'output.md' -g '*adhd*' -g '*audit*' -g '*verify*'\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'cat input.md && cat AGENTS.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'cat .agents/skills/adhd-md/references/rules.md && cat .agents/skills/adhd-md/references/antipatterns.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'git status --porcelain && python3 .agents/skills/adhd-md/scripts/adhd_md.py fmt input.md'",
+    "exit_code": 128
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 3 --scope=format'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'cat .agents/skills/adhd-md/references/doc-types.md && cat .agents/skills/adhd-md/references/evidence.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py fmt input.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py audit --help && python3 .agents/skills/adhd-md/scripts/adhd_md.py report --help'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"python3 - <<'PY'\nfrom pathlib import Path\nimport hashlib\np = Path('input.md')\nsource = p.read_bytes()\ns = source.decode('utf-8')\nold_notes = '\"'`maxAttempts` counts the initial delivery. A value of `1` disables retries. Authentication errors (`401` and `403`) are never retried, even when `maxAttempts` is greater than one.'\"'\nnew_notes = '- ' + old_notes.replace('. A value', '.\\\\n- A value').replace('. Authentication errors', '.\\\\n- Authentication errors').replace('never retried', '**never retried**')\nold_tail = 'Configuration changes take effect after the worker restarts. \"'`visibilitySeconds` is measured in seconds; `backoffMs` is measured in milliseconds.'\"'\nnew_tail = '- ' + old_tail.replace('. \"'`visibilitySeconds`'\"', '.\\\\n- \"'`visibilitySeconds`'\"').replace('after the worker restarts', '**after the worker restarts**')\nassert s.count(old_notes) == s.count(old_tail) == 1\nout = s.replace(old_notes, new_notes).replace(old_tail, new_tail)\nrestored = out.replace(new_notes, old_notes).replace(new_tail, old_tail)\nassert restored.encode('utf-8') == source\n# Every original character, including spaces and punctuation, remains in order.\ncursor = 0\nfor c in out:\n    if cursor < len(s) and c == s[cursor]:\n        cursor += 1\nassert cursor == len(s)\nPath('output.md').write_bytes(out.encode('utf-8'))\nassert p.read_bytes() == source\nprint('Input SHA-256:', hashlib.sha256(source).hexdigest())\nprint('Insertion-only preservation: PASS; all original characters remain in order.')\nprint('Input unchanged: PASS')\nPY\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'diff -u input.md output.md'",
+    "exit_code": 1
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py audit output.md --level 3 --scope=format'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=format'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py report input.md output.md --scope=format --level=3 --json'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py report input.md output.md --scope=format --level=3'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"python3 - <<'PY'\nfrom pathlib import Path\nimport hashlib, json\nsource = Path('input.md').read_bytes()\nassert hashlib.sha256(source).hexdigest() == '6374a44faee4d2ec26c2305e45130548a8730bb7adefbb0a4e110372097ca71e'\nreport = json.loads(Path('validation.json').read_text())\nrows = Path('review.md').read_text().splitlines()\nfor rule in report['after']['score']['unscored']:\n    assert any(row.startswith('| ' + rule + ' |') for row in rows), rule\nprint('Input unchanged; all 32 script-unjudged rules documented; validation JSON readable.')\nPY\"",
+    "exit_code": 0
+  }
+]

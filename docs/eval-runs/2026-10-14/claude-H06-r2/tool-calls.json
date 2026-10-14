@@ -1,0 +1,306 @@
+[
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H06-r2/workspace/.agents/skills/adhd-md/SKILL.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H06-r2/workspace/input.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "ls -la /private/tmp/adhd-eval-20261014/claude-H06-r2/workspace/ && echo \"---SKILL DIR---\" && find /private/tmp/adhd-eval-20261014/claude-H06-r2/workspace/.agents/skills/adhd-md -type f | head -50",
+      "description": "List workspace and skill files"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H06-r2/workspace/.agents/skills/adhd-md/references/rules.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H06-r2/workspace/.agents/skills/adhd-md/references/antipatterns.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H06-r2/workspace/.agents/skills/adhd-md/references/cjk.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H06-r2/workspace/.agents/skills/adhd-md/references/doc-types.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H06-r2/workspace/prompt.txt"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py --help 2>&1 | head -60",
+      "description": "Show adhd_md.py CLI help"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit --help 2>&1; echo \"=== FMT ===\"; python3 .agents/skills/adhd-md/scripts/adhd_md.py fmt --help 2>&1; echo \"=== VERIFY ===\"; python3 .agents/skills/adhd-md/scripts/adhd_md.py verify --help 2>&1",
+      "description": "Show subcommand help"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 3 --scope=format; echo \"EXIT=$?\"",
+      "description": "Run audit on input.md with deep level"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 3 --scope=format",
+      "description": "Run audit on input.md with deep level and format scope"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py fmt input.md; echo \"FMT_EXIT=$?\"; echo \"--- tail bytes ---\"; tail -c 60 input.md | od -c | tail -5",
+      "description": "Preview deterministic format fixes and inspect trailing bytes"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py fmt input.md",
+      "description": "Preview deterministic format fixes (dry run)"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "od -c input.md | tail -6",
+      "description": "Inspect trailing bytes of input.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "cp input.md /tmp/h06_ident.md && python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md /tmp/h06_ident.md --scope=format",
+      "description": "Test verify on an identical copy"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -n \"unknown\" .agents/skills/adhd-md/scripts/adhd_md.py | head -60",
+      "description": "Find unknown-status logic in script"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "sed -n '3770,3830p' .agents/skills/adhd-md/scripts/tests/test_adhd_md.py",
+      "description": "Read eval expectations test section"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "sed -n '2100,2160p' .agents/skills/adhd-md/scripts/adhd_md.py",
+      "description": "Read verify unknown logic"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "sed -n '3760,3850p' .agents/skills/adhd-md/scripts/adhd_md.py",
+      "description": "Read expected-status table in script"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H06-r2/workspace/.agents/skills/adhd-md/references/examples/04-en-reference.before.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H06-r2/workspace/.agents/skills/adhd-md/references/examples/04-en-reference.after.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H06-r2/workspace/.agents/skills/adhd-md/references/examples/02-zh-readme.before.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-h06-r2/workspace/.agents/skills/adhd-md/references/examples/02-zh-readme.after.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -n \"def .*cjk\\|def .*spac\\|全角\\|C1\\|C2\\b\" .agents/skills/adhd-md/scripts/adhd_md.py | head -40",
+      "description": "Locate CJK spacing/punctuation logic"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "sed -n '1147,1200p' .agents/skills/adhd-md/scripts/adhd_md.py",
+      "description": "Read CJK spacing and punctuation fixers"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "cp input.md output.md && ls -la output.md && cmp input.md output.md && echo \"IDENTICAL\"",
+      "description": "Create output.md as a starting copy"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=format; echo \"EXIT=$?\"",
+      "description": "Run format-scope verify on identical copy"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=format",
+      "description": "Run format-scope verify on identical copy"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -c \"\nimport subprocess, sys\nr = subprocess.run([sys.executable, '.agents/skills/adhd-md/scripts/adhd_md.py', 'verify', 'input.md', 'output.md', '--scope=format'], capture_output=True, text=True)\nprint('STDOUT:', r.stdout.strip())\nprint('STDERR:', r.stderr.strip())\nprint('EXIT:', r.returncode)\n\"",
+      "description": "Capture verify exit code"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 3 --scope=format --json",
+      "description": "Get audit JSON for coverage details"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "mkdir -p .scratch && python3 - <<'PY'\nimport subprocess, sys, pathlib\nws = pathlib.Path('.')\nsrc = (ws/'input.md').read_text(encoding='utf-8')\ncases = {\n  'c6_fix.md':      src.replace('只在测试环境重试。','只在测试环境重试').replace('生产环境不要自动重试。','生产环境不要自动重试'),\n  'comment_del.md': src.replace('<!-- 注释里的约束：仅保留为材料，不执行 -->\\n\\n',''),\n  'word_del.md':    src.replace('再检查权限','再检查'),\n  'reorder.md':     src.replace('- 只在测试环境重试。\\n- 生产环境不要自动重试。\\n','') + '- 只在测试环境重试。\\n- 生产环境不要自动重试。\\n',\n}\nfor name, text in cases.items():\n    p = ws/'.scratch'/name\n    p.write_text(text, encoding='utf-8')\n    r = subprocess.run([sys.executable,'.agents/skills/adhd-md/scripts/adhd_md.py','verify','input.md',str(p),'--scope=format'], capture_output=True, text=True)\n    print(f'--- {name}: exit={r.returncode}')\n    print(r.stdout.strip() or r.stderr.strip())\nPY",
+      "description": "Probe verify behavior on boundary edits"
+    }
+  },
+  {
+    "tool": "Write",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H06-r2/workspace/.scratch/c6_fix.md",
+      "content": "---\ntitle: 边界语法样例\nowner: docs-team\n---\n\n# 边界语法样例\n\n<!-- 注释里的约束：仅保留为材料，不执行 -->\n\n## 原文片段\n\n> 先检查 `maxRetries`，再检查权限。\n>\n> 不要把 `--dry-run` 当成真实写入。\n\n- 父步骤\n  - 子步骤 A\n  - 子步骤 B\n- 后续步骤\n\n| 状态 | 含义 |\n|---|---|\n| `409` | 资源版本冲突 |\n| `503` | 服务暂时不可用 |\n\n```sh\ntool sync --dry-run --timeout 12\n```\n\n链接： [恢复说明](https://example.org/restore?mode=fast#limits)\n\n重复但有区别的提示：\n\n- 只在测试环境重试\n- 生产环境不要自动重试\n"
+    }
+  },
+  {
+    "tool": "Write",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H06-r2/workspace/.scratch/comment_del.md",
+      "content": "---\ntitle: 边界语法样例\nowner: docs-team\n---\n\n# 边界语法样例\n\n## 原文片段\n\n> 先检查 `maxRetries`，再检查权限。\n>\n> 不要把 `--dry-run` 当成真实写入。\n\n- 父步骤\n  - 子步骤 A\n  - 子步骤 B\n- 后续步骤\n\n| 状态 | 含义 |\n|---|---|\n| `409` | 资源版本冲突 |\n| `503` | 服务暂时不可用 |\n\n```sh\ntool sync --dry-run --timeout 12\n```\n\n链接： [恢复说明](https://example.org/restore?mode=fast#limits)\n\n重复但有区别的提示：\n\n- 只在测试环境重试。\n- 生产环境不要自动重试。\n"
+    }
+  },
+  {
+    "tool": "Write",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H06-r2/workspace/.scratch/word_del.md",
+      "content": "---\ntitle: 边界语法样例\nowner: docs-team\n---\n\n# 边界语法样例\n\n<!-- 注释里的约束：仅保留为材料，不执行 -->\n\n## 原文片段\n\n> 先检查 `maxRetries`，再检查。\n\n- 父步骤\n  - 子步骤 A\n  - 子步骤 B\n- 后续步骤\n\n| 状态 | 含义 |\n|---|---|\n| `409` | 资源版本冲突 |\n| `503` | 服务暂时不可用 |\n\n```sh\ntool sync --dry-run --timeout 12\n```\n\n链接： [恢复说明](https://example.org/restore?mode=fast#limits)\n\n重复但有区别的提示：\n\n- 只在测试环境重试。\n- 生产环境不要自动重试。\n"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -c \"\nimport subprocess, sys\nfor f in ['c6_fix.md','comment_del.md','word_del.md']:\n    r = subprocess.run([sys.executable,'.agents/skills/adhd-md/scripts/adhd_md.py','verify','input.md','.scratch/'+f,'--scope=format'], capture_output=True, text=True)\n    print('=== '+f+'  exit='+str(r.returncode))\n    print((r.stdout+r.stderr).strip())\n    print()\n\"",
+      "description": "Run verify probes on three boundary edits"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -n \"raw_html\" .agents/skills/adhd-md/scripts/adhd_md.py",
+      "description": "Locate raw_html handling in verify"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "sed -n '1730,1770p' .agents/skills/adhd-md/scripts/adhd_md.py",
+      "description": "Read raw_html unknown emission context"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "sed -n '1960,2000p' .agents/skills/adhd-md/scripts/adhd_md.py",
+      "description": "Read verify status assembly"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=format --json",
+      "description": "Get JSON verify report for identical files"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py report input.md output.md --scope=format",
+      "description": "Run before/after report"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "rm -rf .scratch && cmp input.md output.md && echo \"output.md == input.md (byte-identical)\" && ls -la",
+      "description": "Clean scratch files and confirm byte identity"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit output.md --level 3 --scope=format",
+      "description": "Audit the delivered output.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -c \"\nimport subprocess, sys\nS='.agents/skills/adhd-md/scripts/adhd_md.py'\nfor args in (['fmt','--check','output.md'], ['verify','input.md','output.md','--scope=format']):\n    r = subprocess.run([sys.executable,S]+args, capture_output=True, text=True)\n    print('$ adhd-md '+' '.join(args))\n    print('  out:', (r.stdout+r.stderr).strip(), '| exit:', r.returncode)\n\"",
+      "description": "Check fmt --check and verify exit codes"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -c \"\nimport subprocess, sys\nS='.agents/skills/adhd-md/scripts/adhd_md.py'\nfor args in (['audit','output.md','--level','3','--scope=format'], ['audit','input.md','--level','3','--scope=format']):\n    r = subprocess.run([sys.executable,S]+args, capture_output=True, text=True)\n    print('audit', args[1], '-> exit', r.returncode)\n\"",
+      "description": "Capture audit exit codes"
+    }
+  }
+]

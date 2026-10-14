@@ -1,0 +1,10 @@
+--- input.md
++++ output.md
+@@ -14,6 +14,7 @@
+ 1. **Preview** the plan.
+    - Confirm `--check-only` is present.
+    - Confirm the target is `staging`.
++
+ 2. Apply the plan only after approval.
+ 
+ | Field | Value |

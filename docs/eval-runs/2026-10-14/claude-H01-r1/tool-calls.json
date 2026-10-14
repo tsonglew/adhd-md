@@ -1,0 +1,306 @@
+[
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H01-r1/workspace/.agents/skills/adhd-md/SKILL.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H01-r1/workspace/input.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "ls -la /private/tmp/adhd-eval-20261014/claude-H01-r1/workspace/ && echo \"---SKILL DIR---\" && find /private/tmp/adhd-eval-20261014/claude-H01-r1/workspace/.agents -type f | head -50",
+      "description": "List workspace and skill files"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H01-r1/workspace/.agents/skills/adhd-md/references/rules.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H01-r1/workspace/.agents/skills/adhd-md/references/antipatterns.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H01-r1/workspace/.agents/skills/adhd-md/references/cjk.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "echo \"=== prompt.txt ===\" && cat prompt.txt && echo \"=== git check ===\" && git status --porcelain 2>&1 | head -5; echo \"exit=$?\"",
+      "description": "Read prompt.txt and check git status"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py --help 2>&1 | head -60",
+      "description": "Show adhd_md.py CLI help"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H01-r1/workspace/prompt.txt"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "git status --porcelain",
+      "description": "Check git status"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit --help 2>&1; echo \"=== REPORT ===\"; python3 .agents/skills/adhd-md/scripts/adhd_md.py report --help 2>&1; echo \"=== VERIFY ===\"; python3 .agents/skills/adhd-md/scripts/adhd_md.py verify --help 2>&1",
+      "description": "Show audit/report/verify subcommand help"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "cp input.md /tmp/adhd-H01-orig.md && python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 2 --scope=content 2>&1",
+      "description": "Run baseline audit at level 2, scope=content"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 2 --scope=content 2>&1",
+      "description": "Run baseline audit at level 2, scope=content"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "for f in .agents/skills/adhd-md/references/examples/02-zh-readme.before.md .agents/skills/adhd-md/references/examples/02-zh-readme.after.md; do echo \"########## $f\"; cat \"$f\"; done",
+      "description": "Show zh README example before/after"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H01-r1/workspace/.agents/skills/adhd-md/references/doc-types.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H01-r1/workspace/.agents/skills/adhd-md/references/examples/02-zh-readme.before.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H01-r1/workspace/.agents/skills/adhd-md/references/examples/02-zh-readme.after.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -n \"首屏结论力\\|def .*h1\\|tldr\\|TLDR\\|TL;DR\" .agents/skills/adhd-md/scripts/adhd_md.py | head -40",
+      "description": "Find TL;DR / first-screen scoring logic in script"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -c \"\nimport json\nd=json.load(open('.agents/skills/adhd-md/references/rule-definitions.json'))\nprint(type(d), list(d)[:20] if isinstance(d,dict) else len(d))\n\"",
+      "description": "Inspect rule-definitions.json structure"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H01-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "limit": 80,
+      "offset": 630
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -c \"\nimport json\nd=json.load(open('.agents/skills/adhd-md/references/rule-definitions.json'))\nprint('THRESHOLDS'); print(json.dumps(d['thresholds'],ensure_ascii=False,indent=1))\nprint('GLOBAL'); print(json.dumps(d['global_score_cap'],ensure_ascii=False))\n\"",
+      "description": "Print thresholds from rule definitions"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -n \"H4\\|RULE_LIMITS = \\|max_summary\\|max_lines\" .agents/skills/adhd-md/scripts/adhd_md.py | head -30",
+      "description": "Check H4 handling and rule limits"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -n \"NUM_RE\\|def _collect_numbers\\|数值\\|单位\\|def verify\\|inline_code\\|def check_\" .agents/skills/adhd-md/scripts/adhd_md.py | head -40",
+      "description": "Locate verify invariant logic"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H01-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "limit": 60,
+      "offset": 1795
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H01-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "limit": 90,
+      "offset": 2030
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H01-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "limit": 180,
+      "offset": 2119
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c \"\nimport sys, json\nsys.path.insert(0,'.agents/skills/adhd-md/scripts')\nimport adhd_md as A\nt=open('input.md',encoding='utf-8').read()\ninv=A.extract_invariants(t)\nfor k,v in inv.items():\n    print('==',k)\n    print(json.dumps(v,ensure_ascii=False))\n\"",
+      "description": "Dump protected invariants of input.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H01-r1/workspace/.agents/skills/adhd-md/references/examples/01-zh-notes.after.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H01-r1/workspace/.agents/skills/adhd-md/references/examples/README.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H01-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "limit": 75,
+      "offset": 960
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -n \"M6\\|M7\\|M8\\|M4\\|M3\\|M11\\|M12\\|M14\\|W6_RE\\|W4_RE\\|C7_RE\\|FILLER\\|COLON\" .agents/skills/adhd-md/scripts/adhd_md.py | head -40",
+      "description": "Find M-group and W4/C7 regex definitions"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H01-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "limit": 120,
+      "offset": 91
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H01-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "limit": 70,
+      "offset": 760
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -n \"C7\\|虚词壳\" .agents/skills/adhd-md/scripts/adhd_md.py | head -20",
+      "description": "Find C7 hollow-word check"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H01-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "limit": 30,
+      "offset": 838
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 2 --json 2>&1 | python3 -c \"\nimport json,sys\nd=json.load(sys.stdin)\nprint('score', d.get('score'))\nprint('findings:')\nfor f in d.get('findings',[]):\n    print(' ', f.get('rule'), f.get('line'), f.get('advisory'), f.get('message'))\nprint('keys', list(d))\n\"",
+      "description": "Full audit JSON of input (all axes)"
+    }
+  },
+  {
+    "tool": "Write",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H01-r1/workspace/output.md",
+      "content": "# 安静时段提醒器\n\n安静时段提醒器会在工作区达到配置的静默时段后暂停提示。它不会删除通知，也不会暂停后台同步。\n\n约 1 分钟读完，共 4 步。\n\n- 静默时段内不弹横幅，通知保留，后台同步不停。\n- 默认静默时段是 **21:30–08:00**，时区取自操作系统。\n- 日历邀请和安全告警照常显示。\n\n## 4 步开启安静时段\n\n1. 第 1 步，共 4 步：打开「设置 → 通知 → 安静时段」。\n   预期：能看到安静时段的开关。\n2. 第 2 步，共 4 步：启用开关。\n   预期：开关显示为开启。\n3. 第 3 步，共 4 步：选择开始、结束时间。\n   预期：起止时间显示为你选的时段。\n4. 第 4 步，共 4 步：发送一条测试提醒。\n   预期：当前设备不弹出横幅。\n\n换设备或换账号后，需要重新设置安静时段。\n\n## 4 条例外与限制\n\n- 已经显示的通知不会被收回。\n- 日历邀请和安全告警仍会显示。\n- 如果系统时间不同步，提醒恢复时间可能偏差；先校正系统时钟，再重新保存设置。\n- 企业策略可以强制关闭此功能。策略生效时，开关为只读状态。\n"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "echo \"===== AUDIT output.md (scope=content, level 2) =====\"; python3 .agents/skills/adhd-md/scripts/adhd_md.py audit output.md --level 2 --scope=content 2>&1; echo; echo \"===== AUDIT output.md (all axes, JSON) =====\"; python3 .agents/skills/adhd-md/scripts/adhd_md.py audit output.md --level 2 --json 2>&1 | python3 -c \"\nimport json,sys\nd=json.load(sys.stdin)\ns=d['score']\nprint('total', s['total'], 'x_deduct', s['x_deduct'], 'x_hits', s['x_hits'])\nfor k,v in s['dims'].items(): print('  ', v['label'], v['score'])\nprint('findings:')\nfor f in d['findings']: print('  ', f['rule'], f['line'], 'advisory=' + str(f.get('advisory')))\n\"",
+      "description": "Audit the rewritten output"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "echo \"===== VERIFY --scope=content =====\"; python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=content 2>&1; echo \"exit=$?\"; echo; echo \"===== VERIFY --scope=content --json =====\"; python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=content --json 2>&1 | python3 -m json.tool",
+      "description": "Verify invariants between input and output"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=content 2>&1; echo \"exit=$?\"",
+      "description": "Verify content-scope invariants"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=content 2>&1",
+      "description": "Verify content-scope invariants"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=content --json 2>&1 | python3 -m json.tool",
+      "description": "Verify JSON detail"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py report input.md output.md --scope=content --level 2 2>&1",
+      "description": "Before/after report at scope=content"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H01-r1/workspace/output.md"
+    }
+  }
+]

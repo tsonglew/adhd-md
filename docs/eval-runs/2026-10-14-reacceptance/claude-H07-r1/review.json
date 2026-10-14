@@ -1,0 +1,24 @@
+{
+  "reviewer": "coordinator inspected source/output and model report against preannotated constraints",
+  "human_review": "not performed",
+  "information_preserved": true,
+  "scope_preserved": true,
+  "unsupported_facts_found": true,
+  "issues": [
+    {
+      "type": "unsupported UI guarantee",
+      "source": "Source states archive retention of 14 days and failed-before-upload exclusion; it does not specify whether the UI list displays expired/failed metadata.",
+      "output": "Exports that failed before upload, or that are older than 14 days, do not appear in the list.",
+      "model_claim": "Calls this a source-based check, no new facts.",
+      "assessment": "Converts data retention/exclusion into an unprovided UI visibility guarantee, repeating the original class of failure."
+    },
+    {
+      "type": "false N7 pass / scope misinterpretation",
+      "output": "Four numbered steps have no Step X of N labels. Only the heading says in 4 steps.",
+      "model_claim": "N7 met because the heading gives total and the items have numbers; content forbids per-step headings.",
+      "assessment": "Rule explicitly requires per-step progress for >=4 steps and permits plain-text labels within content scope. Header total alone is insufficient."
+    }
+  ],
+  "evidence": "Original 14-day/owner/exclusion, recycle-bin/source-record distinction, ZIP/date/row check, customer-data storage, 2 GB/30-minute/guest/empty-workspace constraints otherwise retained. H4 reading-time estimate is explicitly approximate; not used to establish acceptance.",
+  "result": "fail despite verify pass and X=0"
+}

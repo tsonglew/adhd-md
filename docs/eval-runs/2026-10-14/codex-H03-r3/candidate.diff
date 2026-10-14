@@ -1,0 +1,21 @@
+--- input.md
++++ output.md
+@@ -7,7 +7,9 @@
+ | `retryCount` | 2 | 0–4 | 只对 HTTP `503` 重试 |
+ | `retryDelayMs` | 250 | 50–2000 | 每次重试前等待的毫秒数 |
+ 
+-`retryCount=0` 时不重试。HTTP `429` 使用响应中的 `Retry-After`，不读取 `retryDelayMs`。参数缺失时使用默认值；未知参数会被忽略并写入启动日志。
++- `retryCount=0` 时不重试。
++- HTTP `429` 使用响应中的 `Retry-After`，不读取 `retryDelayMs`。
++- 参数缺失时使用默认值；未知参数会被忽略并写入启动日志。
+ 
+ 示例：
+ 
+@@ -15,4 +17,6 @@
+ {"ttlSeconds": 45, "maxEntries": 800, "retryCount": 1}
+ ```
+ 
+-`ttlSeconds` 与 `retryDelayMs` 的单位不同，不能互换。更改参数后重启服务才会生效。
++`ttlSeconds` 与 `retryDelayMs` 的单位不同，不能互换。
++
++更改参数后**重启服务**才会生效。

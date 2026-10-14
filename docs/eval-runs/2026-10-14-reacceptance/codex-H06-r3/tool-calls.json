@@ -1,0 +1,70 @@
+[
+  {
+    "command": "/bin/zsh -lc \"pwd && rg --files -g 'AGENTS.md' -g 'input.md' -g 'SKILL.md' -g '*audit*' -g '*verify*' .agents .codex . 2>/dev/null\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'cat .agents/skills/adhd-md/SKILL.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'cat .agents/skills/adhd-md/references/rules.md .agents/skills/adhd-md/references/antipatterns.md .agents/skills/adhd-md/references/cjk.md .agents/skills/adhd-md/references/doc-types.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'cat AGENTS.md && cat -n input.md && git status --porcelain -- input.md output.md'",
+    "exit_code": 128
+  },
+  {
+    "command": "/bin/zsh -lc 'rg --files .agents/skills/adhd-md && python3 .agents/skills/adhd-md/scripts/adhd_md.py --help'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 3 --scope=format'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'cat .agents/skills/adhd-md/references/antipatterns.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py fmt input.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"rg -n 'unknown|unchanged|before == after|original ==|antipattern|penalt|def verify|def cmd_report|def cmd_audit' .agents/skills/adhd-md/scripts/adhd_md.py && python3 .agents/skills/adhd-md/scripts/adhd_md.py report --help && python3 .agents/skills/adhd-md/scripts/adhd_md.py audit --help\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"sed -n '2000,2045p' .agents/skills/adhd-md/scripts/adhd_md.py && sed -n '2510,2538p' .agents/skills/adhd-md/scripts/adhd_md.py && sed -n '2617,2700p' .agents/skills/adhd-md/scripts/adhd_md.py && python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 3 --scope=format --json\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"python3 - <<'PY'\nfrom pathlib import Path\nimport hashlib, json, subprocess, tempfile\nsource = Path('input.md').read_bytes()\noriginal = source.decode('utf-8')\ncandidate = original.replace('- 只在测试环境重试。', '- **只**在测试环境重试。').replace('- 生产环境不要自动重试。', '- 生产环境**不要**自动重试。')\nassert candidate \"'!= original\nresults = Path('\"'audit-results')\nresults.mkdir(exist_ok=True)\nwith tempfile.TemporaryDirectory(prefix='adhd-h06-') as tmp:\n    candidate_path = Path(tmp) / 'candidate.md'\n    candidate_path.write_bytes(candidate.encode('utf-8'))\n    args = ['python3', '.agents/skills/adhd-md/scripts/adhd_md.py', 'verify', 'input.md', str(candidate_path), '--scope=format', '--json']\n    proc = subprocess.run(args, capture_output=True, text=True)\n    payload = json.loads(proc.stdout)\n    (results / 'verify-candidate.json').write_text(json.dumps({'command': args, 'exit_code': proc.returncode, 'result': payload, 'disposition': 'discarded; candidate not delivered', 'changes': ['只 → **只**', '不要 → **不要**']}, ensure_ascii=False, indent=2) + '\\\\n')\n    print(json.dumps({'candidate_verify_exit': proc.returncode, 'candidate_verify': payload}, ensure_ascii=False, indent=2))\nassert Path('input.md').read_bytes() == source\nPath('output.md').write_bytes(source)\nprint(json.dumps({'output': 'output.md', 'byte_identical': Path('output.md').read_bytes() == source, 'input_sha256': hashlib.sha256(source).hexdigest(), 'action': 'discarded formatting candidate; copied original exactly'}, ensure_ascii=False))\nPY\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"python3 - <<'PY'\nfrom concurrent.futures import ThreadPoolExecutor\nfrom pathlib import Path\nimport json, subprocess\nroot = Path('audit-results')\nbase = ['python3', '.agents/skills/adhd-md/scripts/adhd_md.py']\njobs = [\n    ('audit-before.txt', ['audit', 'input.md', '--level', '3', '--scope=format']),\n    ('audit-before.json', ['audit', 'input.md', '--level', '3', '--scope=format', '--json']),\n    ('audit-after.txt', ['audit', 'output.md', '--level', '3', '--scope=format']),\n    ('audit-after.json', ['audit', 'output.md', '--level', '3', '--scope=format', '--json']),\n    ('verify-output.json', ['verify', 'input.md', 'output.md', '--scope=format', '--json']),\n    ('report.txt', ['report', 'input.md', 'output.md', '--scope=format', '--level', '3']),\n    ('report.json', ['report', 'input.md', 'output.md', '--scope=format', '--level', '3', '--json']),\n]\ndef run(job):\n    name, args = job\n    proc = subprocess.run(base + args, capture_output=True, text=True)\n    (root / name).write_text(proc.stdout)\n    return {'artifact': str(root / name), 'command': base + args, 'exit_code': proc.returncode, 'stderr': proc.stderr}\nwith ThreadPoolExecutor(max_workers=4) as pool:\n    states = list(pool.map(run, jobs))\n(root / 'exit-status.json').write_text(json.dumps(states, ensure_ascii=False, indent=2) + '\\\\n')\nfor state in states:\n    print(json.dumps(state, ensure_ascii=False))\nprint((root / 'report.txt').read_text())\nprint((root / 'verify-output.json').read_text())\nPY\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'cat .agents/skills/adhd-md/references/evidence.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"sed -n '240,400p' .agents/skills/adhd-md/references/rules.md\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"rg -n -A 45 -B 5 '反模式|X3|judge|模型|未判定' .agents/skills/adhd-md/references/rubric.md\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"rg -n -A 60 -B 10 'x_deduct =' .agents/skills/adhd-md/scripts/adhd_md.py && rg -n -A 28 -B 5 '\\\"id\\\": \\\"X3\\\"' .agents/skills/adhd-md/references/rule-definitions.json\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"python3 - <<'PY'\nfrom pathlib import Path\nimport hashlib, json, re\nbefore = Path('input.md').read_bytes()\nafter = Path('output.md').read_bytes()\naudit = json.loads(Path('audit-results/audit-after.json').read_text())\nreport = Path('report.md').read_text()\njudged = set(re.findall(r'\"'^'\"\\\\| ([A-Z]\\\\d+) \\\\| (?:满足|不满足|不适用|无法判断) \\\\|', report, re.M))\nmissing = set(audit['score']['unscored']) - judged\nassert before == after\nassert not missing, missing\nassert hashlib.sha256(before).hexdigest() == '0e55b3fd3fcc1bcd4c9c39222b76670410508702e2b04438ad1a70a6070b7cdf'\nfinal = json.loads(Path('audit-results/verify-output.json').read_text())\ncandidate = json.loads(Path('audit-results/verify-candidate.json').read_text())\nassert final['status'] == 'pass' and final['identical'] is True\nassert candidate['exit_code'] == 4 and candidate['result']['status'] == 'unknown'\nprint(json.dumps({'input_unchanged': True, 'output_byte_identical': True, 'judge_rules_documented': len(judged), 'missing_judge_rules': sorted(missing), 'candidate_status': 'unknown; discarded', 'output_status': 'pass; identical', 'output_bytes': len(after)}, ensure_ascii=False))\nPY\"",
+    "exit_code": 0
+  }
+]

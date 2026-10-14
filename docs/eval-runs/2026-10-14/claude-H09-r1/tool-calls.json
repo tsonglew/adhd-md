@@ -1,0 +1,224 @@
+[
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H09-r1/workspace/.agents/skills/adhd-md/SKILL.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H09-r1/workspace/input.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "ls -la /private/tmp/adhd-eval-20261014/claude-H09-r1/workspace/ /private/tmp/adhd-eval-20261014/claude-H09-r1/workspace/.agents/skills/adhd-md/",
+      "description": "List workspace and skill directory"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H09-r1/workspace/.agents/skills/adhd-md/references/rules.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H09-r1/workspace/.agents/skills/adhd-md/references/antipatterns.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H09-r1/workspace/.agents/skills/adhd-md/references/doc-types.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "ls -la /private/tmp/adhd-eval-20261014/claude-H09-r1/workspace/.agents/skills/adhd-md/scripts/ /private/tmp/adhd-eval-20261014/claude-H09-r1/workspace/.agents/skills/adhd-md/references/; echo \"---prompt.txt---\"; cat /private/tmp/adhd-eval-20261014/claude-H09-r1/workspace/prompt.txt",
+      "description": "List scripts and references, show prompt.txt"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py --help 2>&1 | head -60",
+      "description": "Show adhd_md.py CLI help"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit --help 2>&1 | head -40",
+      "description": "Show audit subcommand help"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 3 --scope=format; echo \"EXIT=$?\"",
+      "description": "Run audit on input.md at level deep, scope format"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 3 --scope=format",
+      "description": "Run audit on input.md at level deep, scope format"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 3 --scope=format --json > /tmp/audit_input.json; python3 -c \"\nimport json\nd=json.load(open('/tmp/audit_input.json'))\nprint(json.dumps({k:v for k,v in d.items() if k not in ('files','results')}, indent=2, ensure_ascii=False)[:3000])\nprint('TOPKEYS', list(d.keys()))\n\"",
+      "description": "Dump audit JSON top-level structure"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 3 --scope=format --json | python3 -c \"\nimport json,sys\nd=json.load(sys.stdin)\nprint('TOPKEYS', list(d.keys()))\nprint(json.dumps(d, indent=2, ensure_ascii=False)[:6000])\n\"",
+      "description": "Inspect audit JSON output"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "ls -R /private/tmp/adhd-eval-20261014/claude-H09-r1/workspace/.agents/skills/adhd-md/references/examples/ | head -40",
+      "description": "List example files in skill references"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py fmt input.md | cat -A | head -30",
+      "description": "Preview deterministic fmt output with invisible chars"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H09-r1/workspace/.agents/skills/adhd-md/references/examples/04-en-reference.before.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H09-r1/workspace/.agents/skills/adhd-md/references/examples/04-en-reference.after.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H09-r1/workspace/.agents/skills/adhd-md/references/examples/README.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H09-r1/workspace/.agents/skills/adhd-md/references/rubric.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "find /private/tmp/adhd-eval-20261014/claude-H09-r1/workspace/.claude /private/tmp/adhd-eval-20261014/claude-H09-r1/workspace/.codex /private/tmp/adhd-eval-20261014/claude-H09-r1/workspace/.agents -maxdepth 3 -type f | head -30; echo \"--- AGENTS.md ---\"; cat /private/tmp/adhd-eval-20261014/claude-H09-r1/workspace/AGENTS.md",
+      "description": "Inspect hidden config dirs and AGENTS.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py verify --help",
+      "description": "Show verify subcommand help"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "diff <(python3 .agents/skills/adhd-md/scripts/adhd_md.py fmt input.md) input.md && echo \"NO_DIFF: fmt would not change anything\"",
+      "description": "Diff fmt preview against input.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md input.md --scope=format; echo \"EXIT=$?\"",
+      "description": "Verify input against itself to test baseline"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md input.md --scope=format",
+      "description": "Verify input.md against itself, format scope"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py fmt input.md",
+      "description": "Preview deterministic fmt output"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 3 --scope=both",
+      "description": "Audit input at deep, both scopes for full coverage stats"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -c \"\nimport hashlib,pathlib\nb=pathlib.Path('input.md').read_bytes()\nprint('bytes',len(b))\nprint('sha256',hashlib.sha256(b).hexdigest())\nprint('endswith single LF:', b.endswith(b'\\n') and not b.endswith(b'\\n\\n'))\nprint('CRLF present:', b'\\r' in b)\nprint(repr(b[-80:]))\n\"",
+      "description": "Fingerprint input.md bytes"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py fmt --help",
+      "description": "Show fmt subcommand options"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "cp input.md output.md && cmp input.md output.md && echo \"IDENTICAL\" && ls -l input.md output.md",
+      "description": "Create output.md as byte-identical copy and confirm"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -c \"\nimport subprocess\nA='.agents/skills/adhd-md/scripts/adhd_md.py'\nfor args in (['audit','output.md','--level','3','--scope=format','--json'],\n             ['verify','input.md','output.md','--scope=format'],\n             ['verify','input.md','output.md','--scope=format','--json'],\n             ['report','input.md','output.md','--scope=format']):\n    r=subprocess.run(['python3',A]+args,capture_output=True,text=True)\n    print('=== ',' '.join(args),' -> EXIT',r.returncode)\n    print(r.stdout[:2500])\n    if r.stderr.strip(): print('STDERR:',r.stderr[:500])\n\"",
+      "description": "Run audit, verify, report on output.md capturing exit codes"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py report --help",
+      "description": "Show report subcommand options"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py report input.md output.md --scope=format --level 3",
+      "description": "Run report at deep level, format scope"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -c \"\nimport hashlib,pathlib\nfor f in ('input.md','output.md'):\n    b=pathlib.Path(f).read_bytes()\n    print(f, len(b), hashlib.sha256(b).hexdigest())\n\"",
+      "description": "Compare final hashes of input and output"
+    }
+  }
+]

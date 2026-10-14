@@ -1,0 +1,70 @@
+[
+  {
+    "command": "/bin/zsh -lc \"pwd && rg --files -g 'AGENTS.md' -g 'input.md' -g 'SKILL.md' -g '*.py' -g '*.md' .agents/skills/adhd-md .codex/skills/adhd-md . 2>/dev/null\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'cat .agents/skills/adhd-md/SKILL.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'cat AGENTS.md input.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'cat .agents/skills/adhd-md/references/rules.md .agents/skills/adhd-md/references/antipatterns.md .agents/skills/adhd-md/references/cjk.md .agents/skills/adhd-md/references/doc-types.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 3 --scope=format'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"cat .agents/skills/adhd-md/references/rubric.md && sed -n '185,330p' .agents/skills/adhd-md/references/rules.md\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 3 --scope=format --json'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py fmt input.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"python3 - <<'PY'\nfrom pathlib import Path\nimport hashlib\nsource = Path('input.md').read_bytes()\nold1 = '\"'`retryCount=0` 时不重试。HTTP `429` 使用响应中的 `Retry-After`，不读取 `retryDelayMs`。参数缺失时使用默认值；未知参数会被忽略并写入启动日志。'\"'.encode()\nnew1 = '\"'`retryCount=0` 时不重试。HTTP `429` 使用响应中的 `Retry-After`，不读取 `retryDelayMs`。'\"\\\\n\\\\n参数缺失时使用默认值；未知参数会被忽略并写入启动日志。'.encode()\nold2 = '\"'`ttlSeconds` 与 `retryDelayMs` 的单位不同，不能互换。更改参数后重启服务才会生效。'\"'.encode()\nnew2 = '\"'`ttlSeconds` 与 `retryDelayMs` 的单位不同，不能互换。'\"\\\\n\\\\n更改参数后重启服务才会生效。'.encode()\nassert source.count(old1) == 1 and source.count(old2) == 1\ncandidate = source.replace(old1, new1).replace(old2, new2)\nassert candidate.replace(b'\\\\n', b'') == source.replace(b'\\\\n', b'')\nassert len(candidate) == len(source) + 4\nPath('output.md').write_bytes(candidate)\nassert Path('input.md').read_bytes() == source\nprint('input.md SHA-256:', hashlib.sha256(source).hexdigest())\nprint('仅插入 4 个 LF；去除 LF 后字节及顺序完全相同；input.md 未改动。')\nPY\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'git diff --no-index -- input.md output.md'",
+    "exit_code": 1
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py audit output.md --level 3 --scope=format'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=format'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py report input.md output.md --scope=format --level=3'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'nl -ba output.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=format --json'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py report input.md output.md --scope=format --level=3 --json'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"python3 - <<'PY'\nfrom pathlib import Path\nimport hashlib, json\nsrc = Path('input.md').read_bytes()\nout = Path('output.md').read_bytes()\nassert hashlib.sha256(src).hexdigest() == '3d294a0e6e1b3f782b59058fd871628ddf046322fe6f32879ac611dfc9752af1'\nassert out.replace(b'\\\\n', b'') == src.replace(b'\\\\n', b'') and len(out) == len(src) + 4\nreport = json.loads(Path('audit-report.json').read_text())\nassert report['verify']['status'] == 'pass' and report['verify']['unknowns'] == []\nnotes = Path('audit-report.md').read_text()\nfor rule in report['after']['score']['unscored']:\n    assert f'| {rule} |' in notes, rule\nassert report['after']['score']['x_deduct'] == 0\nprint('最终检查完成：输入未变；仅新增 4 个 LF；32 条 judge 项均已记录；JSON 与报告结论一致。')\nPY\"",
+    "exit_code": 0
+  }
+]

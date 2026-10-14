@@ -1,0 +1,25 @@
+--- input.md
++++ output.md
+@@ -1,8 +1,12 @@
+ # Search rollout review · 2026-09-22
+ 
+-## Outcome
++**Outcome**
+ 
+-The new search index reached 100% of workspaces. Median query time is 210 ms against a target below 250 ms. The 95th percentile is 680 ms, above the 600 ms target.
++The new search index reached 100% of workspaces.
++
++Median query time is 210 ms against a target below 250 ms.
++
++The 95th percentile is 680 ms, above the 600 ms target.
+ 
+ ## Decisions
+ 
+@@ -17,4 +21,6 @@
+ 
+ ## Rollback trigger
+ 
+-If the error rate exceeds 1% for 10 consecutive minutes, return to the previous index version. A single slow query is not a rollback trigger.
++If the error rate exceeds 1% for 10 consecutive minutes, return to the previous index version.
++
++A single slow query is not a rollback trigger.

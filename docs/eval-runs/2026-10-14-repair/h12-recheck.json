@@ -1,0 +1,80 @@
+[
+  {
+    "input": "docs/eval-runs/2026-10-14/claude-H12-r1/output.md",
+    "sha256": "ed563572dd10b7cff97f699ed209cd8b2d80c09fc4ad863a8cb81df56cc315a8",
+    "bold_findings": [
+      {
+        "rule": "T2d",
+        "line": 1,
+        "msg": "加粗密度 8.3%，上限 8%",
+        "axis": "F",
+        "advisory": false
+      }
+    ]
+  },
+  {
+    "input": "docs/eval-runs/2026-10-14/claude-H12-r2/output.md",
+    "sha256": "ed563572dd10b7cff97f699ed209cd8b2d80c09fc4ad863a8cb81df56cc315a8",
+    "bold_findings": [
+      {
+        "rule": "T2d",
+        "line": 1,
+        "msg": "加粗密度 8.3%，上限 8%",
+        "axis": "F",
+        "advisory": false
+      }
+    ]
+  },
+  {
+    "input": "docs/eval-runs/2026-10-14/claude-H12-r3/output.md",
+    "sha256": "cee83e482726586140dfb745a020c435ecf1a60ef6363fc674a6838c01a20095",
+    "bold_findings": [
+      {
+        "rule": "T2d",
+        "line": 1,
+        "msg": "加粗密度 8.2%，上限 8%",
+        "axis": "F",
+        "advisory": false
+      }
+    ]
+  },
+  {
+    "input": "docs/eval-runs/2026-10-14/codex-H12-r1/output.md",
+    "sha256": "d7c13732d3fd164c7e5a5176079c44af8ffc2fc489e279409b037d57c8e13eee",
+    "bold_findings": [
+      {
+        "rule": "T2d",
+        "line": 1,
+        "msg": "加粗密度 8.3%，上限 8%",
+        "axis": "F",
+        "advisory": false
+      }
+    ]
+  },
+  {
+    "input": "docs/eval-runs/2026-10-14/codex-H12-r2/output.md",
+    "sha256": "d7c13732d3fd164c7e5a5176079c44af8ffc2fc489e279409b037d57c8e13eee",
+    "bold_findings": [
+      {
+        "rule": "T2d",
+        "line": 1,
+        "msg": "加粗密度 8.3%，上限 8%",
+        "axis": "F",
+        "advisory": false
+      }
+    ]
+  },
+  {
+    "input": "docs/eval-runs/2026-10-14/codex-H12-r3/output.md",
+    "sha256": "5211e7fd67651e376f8a3d5a3933d6709607b4f28d64204bc5898451453915db",
+    "bold_findings": [
+      {
+        "rule": "T2d",
+        "line": 1,
+        "msg": "加粗密度 8.3%，上限 8%",
+        "axis": "F",
+        "advisory": false
+      }
+    ]
+  }
+]

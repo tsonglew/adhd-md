@@ -1,0 +1,192 @@
+[
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H07-r1/workspace/.agents/skills/adhd-md/SKILL.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H07-r1/workspace/input.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "find /private/tmp/adhd-eval-20261014/claude-H07-r1/workspace -type f -not -path \"*/.git/*\" | head -50",
+      "description": "List files in workspace"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H07-r1/workspace/.agents/skills/adhd-md/references/rules.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H07-r1/workspace/.agents/skills/adhd-md/references/antipatterns.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 2 --scope=content 2>&1 | head -100",
+      "description": "Run audit on input.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H07-r1/workspace/.agents/skills/adhd-md/references/examples/03-en-runbook.after.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H07-r1/workspace/.agents/skills/adhd-md/references/examples/04-en-reference.after.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py --help 2>&1 | head -40; echo \"=== report help ===\"; python3 .agents/skills/adhd-md/scripts/adhd_md.py report --help 2>&1 | head -40",
+      "description": "Show CLI help"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 2 --scope=content --json 2>&1 | head -120",
+      "description": "Audit input as JSON"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 2 --scope=content --json 2>&1 | tail -60",
+      "description": "Show remaining audit JSON"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H07-r1/workspace/.agents/skills/adhd-md/references/examples/02-zh-readme.after.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H07-r1/workspace/.agents/skills/adhd-md/references/examples/README.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "wc -l .agents/skills/adhd-md/scripts/adhd_md.py && grep -n \"def \\|BOLD\\|bold\" .agents/skills/adhd-md/scripts/adhd_md.py | head -80",
+      "description": "Inspect script structure"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "sed -n '1,120p' .agents/skills/adhd-md/scripts/adhd_md.py",
+      "description": "Read script header and limits"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -c \"\nimport json\nd=json.load(open('.agents/skills/adhd-md/references/rule-definitions.json'))\nprint(json.dumps(d['thresholds'],ensure_ascii=False,indent=1)[:3000])\nprint(json.dumps(d.get('global_score_cap'),ensure_ascii=False))\n\"",
+      "description": "Print rule thresholds"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "sed -n '604,760p' .agents/skills/adhd-md/scripts/adhd_md.py",
+      "description": "Read audit function start"
+    }
+  },
+  {
+    "tool": "Write",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H07-r1/workspace/output.md",
+      "content": "# Local export archive\n\nThe archive stores completed exports for 14 days. Only workspace owners can access it, and it does not include files that failed before upload.\n\nThe archive is separate from the recycle bin. Deleting an export from the archive does not delete the source records.\n\nReading time: about 1 minute.\n\n## Download an export in 4 steps\n\n1. Open **Workspace settings → Exports**. You will see the list of exports.\n2. Select a completed export from the list. Only completed exports appear in the list.\n3. Check the date and row count before you download the ZIP file. They tell you which export you are about to get.\n4. Keep the ZIP in an approved project folder. The file may contain customer data.\n\n## Limits: 2 GB, 30 minutes, no guest access\n\n- Exports larger than 2 GB are split into numbered ZIP files.\n- A link expires 30 minutes after you create it.\n- Workspace guests cannot view the archive.\n- If the archive is empty, check the selected workspace before you request a new export.\n"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "echo \"=== AUDIT output (scope=content) ===\" && python3 .agents/skills/adhd-md/scripts/adhd_md.py audit output.md --level 2 --scope=content 2>&1 && echo && echo \"=== VERIFY ===\" && python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=content; echo \"verify exit=$?\"",
+      "description": "Audit output and verify invariants"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit output.md --level 2 --scope=content 2>&1",
+      "description": "Audit the rewritten output"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=content 2>&1",
+      "description": "Verify invariants between input and output"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py report input.md output.md --scope=content 2>&1",
+      "description": "Run before/after report"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py report input.md output.md --scope=content --json 2>&1",
+      "description": "Run report as JSON"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=format 2>&1 | head -30; echo \"---exit above---\"",
+      "description": "Cross-check format-scope verify"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "diff -u input.md output.md",
+      "description": "Show diff between input and output"
+    }
+  },
+  {
+    "tool": "Edit",
+    "input": {
+      "replace_all": false,
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H07-r1/workspace/output.md",
+      "old_string": "2. Select a completed export from the list. Only completed exports appear in the list.",
+      "new_string": "2. Select a completed export from the list. Only completed exports appear in it."
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit output.md --level 2 --scope=content 2>&1 | tail -20",
+      "description": "Re-audit final output"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py report input.md output.md --scope=content 2>&1 | tail -16",
+      "description": "Re-run final report"
+    }
+  }
+]

@@ -1,0 +1,13 @@
+{
+  "completed_runs": 47,
+  "original_matrix_runs": 40,
+  "clarification_runs": 2,
+  "other_host_attempts": 4,
+  "runtime_recovery_runs": 1,
+  "all_inputs_unchanged": true,
+  "all_skill_copies_match_frozen_snapshot": true,
+  "source_skill_unchanged": true,
+  "all_exported_output_hashes_match_records": true,
+  "both_corpus_hash_manifests_unchanged": true,
+  "all_runs_have_constraint_or_runtime_reviews": true
+}

@@ -1,0 +1,1 @@
+使用 adhd-md skill 对 `input.md` 做只改格式处理，按本案例的 `scope=format` 和 `level` 执行。把结果写到 `output.md`，不要覆盖输入。保留原有字符、数字、单位、条件、例外、链接目标、代码和信息顺序；不要补充或删除内容。运行 `audit` 与 `verify --scope=format`，报告退出状态、脚本分、反模式扣分和未判定项；`unknown` 不得写成通过。

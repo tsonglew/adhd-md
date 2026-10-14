@@ -1,0 +1,320 @@
+{
+  "schema_version": 2,
+  "scope": "format",
+  "level": 3,
+  "scope_behavior": "findings 和 coverage 按 scope 展示；score 始终覆盖全文所有适用轴",
+  "before": {
+    "path": "/Users/liucong03/Documents/adhd-md/docs/eval-corpus/held-out/09-en-reference.md",
+    "lang": "en",
+    "lines": 18,
+    "score": {
+      "total": 100.0,
+      "band": null,
+      "dims": {
+        "hook": {
+          "label": "首屏结论力",
+          "weight": 18,
+          "score": 100.0
+        },
+        "chunk": {
+          "label": "分块粒度",
+          "weight": 18,
+          "score": 100.0
+        },
+        "scan": {
+          "label": "扫读性",
+          "weight": 13,
+          "score": 100.0
+        },
+        "sentence": {
+          "label": "句子负荷",
+          "weight": 13,
+          "score": 100.0
+        },
+        "action": {
+          "label": "行动性",
+          "weight": 12,
+          "score": 100.0
+        },
+        "typo": {
+          "label": "排版一致性",
+          "weight": 13,
+          "score": 100.0
+        },
+        "human": {
+          "label": "活人感",
+          "weight": 13,
+          "score": 100.0
+        }
+      },
+      "x_deduct": 0,
+      "x_hits": {},
+      "unscored": [
+        "S4",
+        "S5",
+        "S6",
+        "S8",
+        "H3",
+        "H4",
+        "P2",
+        "P5",
+        "L2",
+        "L4",
+        "L7",
+        "W2",
+        "W3",
+        "W5",
+        "W7",
+        "W8",
+        "W9",
+        "A1",
+        "A2",
+        "A3",
+        "A5",
+        "A6",
+        "A7",
+        "A8",
+        "N4",
+        "N7",
+        "T3",
+        "C4",
+        "X3",
+        "X6",
+        "X7",
+        "X8"
+      ],
+      "det_only": true
+    },
+    "coverage": {
+      "applicable": 41,
+      "script_checked": 23,
+      "hint_only": 5,
+      "judge_only": 10,
+      "format_only": 2,
+      "hard_gate": 1,
+      "unimplemented": 0,
+      "rule_ids": {
+        "script_checked": [
+          "S1",
+          "S2",
+          "S3",
+          "P1",
+          "P4",
+          "L1",
+          "L3",
+          "L5",
+          "A4",
+          "N1",
+          "N5",
+          "T1",
+          "T2",
+          "T4",
+          "T7",
+          "T8",
+          "C1",
+          "C2",
+          "C8",
+          "M5",
+          "X1",
+          "X2",
+          "X5"
+        ],
+        "hint_only": [
+          "S7",
+          "L6",
+          "N3",
+          "T5",
+          "C6"
+        ],
+        "judge_only": [
+          "S5",
+          "S6",
+          "P2",
+          "P5",
+          "L2",
+          "N4",
+          "T3",
+          "X6",
+          "X7",
+          "X8"
+        ],
+        "format_only": [
+          "P3",
+          "T6"
+        ],
+        "hard_gate": [
+          "X4"
+        ],
+        "unimplemented": []
+      },
+      "script_scored": 23,
+      "findings": 0,
+      "advisory_findings": 0,
+      "scope": "format",
+      "level": 3
+    },
+    "findings": [],
+    "shown_findings": []
+  },
+  "after": {
+    "path": "/tmp/adhd-reacceptance-20261014/claude-H09-r1/workspace/output.md",
+    "lang": "en",
+    "lines": 22,
+    "score": {
+      "total": 100.0,
+      "band": null,
+      "dims": {
+        "hook": {
+          "label": "首屏结论力",
+          "weight": 18,
+          "score": 100.0
+        },
+        "chunk": {
+          "label": "分块粒度",
+          "weight": 18,
+          "score": 100.0
+        },
+        "scan": {
+          "label": "扫读性",
+          "weight": 13,
+          "score": 100.0
+        },
+        "sentence": {
+          "label": "句子负荷",
+          "weight": 13,
+          "score": 100.0
+        },
+        "action": {
+          "label": "行动性",
+          "weight": 12,
+          "score": 100.0
+        },
+        "typo": {
+          "label": "排版一致性",
+          "weight": 13,
+          "score": 100.0
+        },
+        "human": {
+          "label": "活人感",
+          "weight": 13,
+          "score": 100.0
+        }
+      },
+      "x_deduct": 0,
+      "x_hits": {},
+      "unscored": [
+        "S4",
+        "S5",
+        "S6",
+        "S8",
+        "H3",
+        "H4",
+        "P2",
+        "P5",
+        "L2",
+        "L4",
+        "L7",
+        "W2",
+        "W3",
+        "W5",
+        "W7",
+        "W8",
+        "W9",
+        "A1",
+        "A2",
+        "A3",
+        "A5",
+        "A6",
+        "A7",
+        "A8",
+        "N4",
+        "N7",
+        "T3",
+        "C4",
+        "X3",
+        "X6",
+        "X7",
+        "X8"
+      ],
+      "det_only": true
+    },
+    "coverage": {
+      "applicable": 41,
+      "script_checked": 23,
+      "hint_only": 5,
+      "judge_only": 10,
+      "format_only": 2,
+      "hard_gate": 1,
+      "unimplemented": 0,
+      "rule_ids": {
+        "script_checked": [
+          "S1",
+          "S2",
+          "S3",
+          "P1",
+          "P4",
+          "L1",
+          "L3",
+          "L5",
+          "A4",
+          "N1",
+          "N5",
+          "T1",
+          "T2",
+          "T4",
+          "T7",
+          "T8",
+          "C1",
+          "C2",
+          "C8",
+          "M5",
+          "X1",
+          "X2",
+          "X5"
+        ],
+        "hint_only": [
+          "S7",
+          "L6",
+          "N3",
+          "T5",
+          "C6"
+        ],
+        "judge_only": [
+          "S5",
+          "S6",
+          "P2",
+          "P5",
+          "L2",
+          "N4",
+          "T3",
+          "X6",
+          "X7",
+          "X8"
+        ],
+        "format_only": [
+          "P3",
+          "T6"
+        ],
+        "hard_gate": [
+          "X4"
+        ],
+        "unimplemented": []
+      },
+      "script_scored": 23,
+      "findings": 0,
+      "advisory_findings": 0,
+      "scope": "format",
+      "level": 3
+    },
+    "findings": [],
+    "shown_findings": []
+  },
+  "verify": {
+    "scope": "format",
+    "status": "pass",
+    "hard_failures": [],
+    "warnings": [],
+    "unknowns": [],
+    "ok": true
+  }
+}

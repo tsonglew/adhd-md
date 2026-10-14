@@ -1,0 +1,18 @@
+{
+  "audit-before": {
+    "exit_status": 0,
+    "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 3 --scope=format --json"
+  },
+  "audit-after": {
+    "exit_status": 0,
+    "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit output.md --level 3 --scope=format --json"
+  },
+  "verify": {
+    "exit_status": 0,
+    "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=format --json"
+  },
+  "report": {
+    "exit_status": 0,
+    "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py report input.md output.md --scope=format --level=3 --json"
+  }
+}

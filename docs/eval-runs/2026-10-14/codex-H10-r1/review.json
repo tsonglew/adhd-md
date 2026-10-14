@@ -1,0 +1,15 @@
+{
+  "reviewer": "current coordinating language model using frozen answer key and source; not a human reviewer",
+  "human_review": "pending",
+  "independent_machine_checks": "verify/audit/report rerun by harness, not copied from evaluated model claims",
+  "constraint_key": "Search index only; 5-minute stale threshold; queue depth; wait 3 minutes; requeue only affected workspace; no global rebuild during business hours; primary DB unchanged",
+  "constraints": "Reviewed against H10 and source: dashboard index scope/exclusions, >5-minute condition, primary record presence, no maintenance, missing-record branch, IDs/time, queue depth saved, nonzero queue wait 3 minutes/one refresh, affected workspace only, visible update before close, business-hours ban and unchanged database retained.",
+  "scope": "preserved",
+  "issues": [
+    "A8: wait and refresh remain grouped in step 3. N7 lacks per-step progress labels; final answer reports these as unjudged."
+  ],
+  "new_facts": "none identified",
+  "result": "constraints reviewed; rule issues recorded; not a human signoff",
+  "verify_and_zero_x_gate": true,
+  "note": "This machine gate excludes semantic, scope, level and unjudged-rule checks; it is not overall acceptance."
+}

@@ -1,0 +1,318 @@
+[
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H03-r1/workspace/.agents/skills/adhd-md/SKILL.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H03-r1/workspace/input.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "find /private/tmp/adhd-reacceptance-20261014/claude-H03-r1/workspace -type f | head -50; echo \"---\"; ls -la /private/tmp/adhd-reacceptance-20261014/claude-H03-r1/workspace",
+      "description": "List workspace files"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H03-r1/workspace/.agents/skills/adhd-md/references/rules.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H03-r1/workspace/.agents/skills/adhd-md/references/antipatterns.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H03-r1/workspace/prompt.txt"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H03-r1/workspace/.agents/skills/adhd-md/references/cjk.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py --help 2>&1 | head -60",
+      "description": "Show adhd_md.py CLI help"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H03-r1/workspace/.agents/skills/adhd-md/references/doc-types.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit --help 2>&1; echo \"=== AGENTS.md ===\"; cat AGENTS.md",
+      "description": "Show audit help and AGENTS.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 3 --scope=format; echo \"EXIT=$?\"",
+      "description": "Run audit on input.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 3 --scope=format",
+      "description": "Run audit on input.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 3 --scope=format --json > /tmp/h03/audit_before.json 2>&1; python3 -c \"\nimport json,sys\nd=json.load(open('/tmp/h03/audit_before.json'))\nprint(json.dumps(d, ensure_ascii=False, indent=2)[:8000])\n\"",
+      "description": "Run JSON audit and inspect"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 3 --scope=format --json | python3 -c \"\nimport json,sys\nd=json.load(sys.stdin)\nprint(json.dumps(d, ensure_ascii=False, indent=1))\n\" | head -200",
+      "description": "Inspect JSON audit output"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py fmt --help; echo \"=== fmt preview ===\"; python3 .agents/skills/adhd-md/scripts/adhd_md.py fmt input.md | cat -A | head -60",
+      "description": "Preview deterministic fmt output"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py fmt input.md; echo \"FMT_EXIT=$?\"",
+      "description": "Preview fmt diff"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py fmt input.md",
+      "description": "Preview fmt diff"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "od -c input.md | tail -8; echo \"--- file info ---\"; wc -l -c input.md; file input.md",
+      "description": "Inspect input.md bytes and encoding"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c \"\np='input.md'\nb=open(p,'rb').read()\nprint('bytes', len(b))\nprint('crlf', b.count(b'\\r\\n'), 'lone_cr', b.count(b'\\r'))\nprint('ends_with_newline', b.endswith(b'\\n'))\ns=b.decode('utf-8')\nlines=s.split('\\n')\nfor i,l in enumerate(lines,1):\n    print(i, repr(l))\n\"",
+      "description": "Print exact line contents of input.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "cd /private/tmp/adhd-reacceptance-20261014/claude-H03-r1/workspace/.agents/skills/adhd-md/references/examples && for f in README.md 04-en-reference.before.md 04-en-reference.after.md; do echo \"=========== $f ===========\"; cat \"$f\"; done",
+      "description": "Read reference example files"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H03-r1/workspace/.agents/skills/adhd-md/references/examples/04-en-reference.after.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H03-r1/workspace/.agents/skills/adhd-md/references/examples/04-en-reference.before.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H03-r1/workspace/.agents/skills/adhd-md/references/examples/README.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "wc -l /private/tmp/adhd-reacceptance-20261014/claude-H03-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py; grep -n \"def \\|WEIGHT\\|weight\" /private/tmp/adhd-reacceptance-20261014/claude-H03-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py | head -80",
+      "description": "Survey the script structure"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H03-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "limit": 240,
+      "offset": 604
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H03-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "limit": 150,
+      "offset": 844
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H03-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "limit": 130,
+      "offset": 993
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H03-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "limit": 45,
+      "offset": 1122
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c \"\nimport json\nd=json.load(open('/private/tmp/adhd-reacceptance-20261014/claude-H03-r1/workspace/.agents/skills/adhd-md/references/rule-definitions.json'))\nprint(list(d.keys()))\nprint(json.dumps(d.get('limits',{}), ensure_ascii=False, indent=1)[:3000])\n\"",
+      "description": "Inspect rule limits"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c \"\nimport sys\nsys.path.insert(0,'/private/tmp/adhd-reacceptance-20261014/claude-H03-r1/workspace/.agents/skills/adhd-md/scripts')\nimport adhd_md as m\nimport json\nprint(json.dumps(m.SCORE_COMPONENTS, ensure_ascii=False, indent=1))\nprint('X_CAP', m.X_CAP)\n\"",
+      "description": "Print score components"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c \"\nimport sys\nsys.path.insert(0,'/private/tmp/adhd-reacceptance-20261014/claude-H03-r1/workspace/.agents/skills/adhd-md/scripts')\nimport adhd_md as m\nprint('TLDR_RE', m.TLDR_RE.pattern)\nprint('BG_OPENER', m.BG_OPENER.pattern)\nprint('LIMITS H1', m.RULE_LIMITS['H1'])\nprint('LIMITS H2', m.RULE_LIMITS['H2'])\nprint('LIMITS P1', m.RULE_LIMITS['P1'])\nprint('thresholds', m.THRESHOLDS if hasattr(m,'THRESHOLDS') else m.RULE_DATA.get('thresholds'))\nprint('X2', m.RULE_LIMITS['X2'])\n\"",
+      "description": "Print H1-related constants"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c \"\nimport io\nsrc = io.open('input.md', encoding='utf-8').read()\ntarget = '\\`retryCount=0\\` 时不重试。HTTP \\`429\\` 使用响应中的 \\`Retry-After\\`，不读取 \\`retryDelayMs\\`。参数缺失时使用默认值；未知参数会被忽略并写入启动日志。'\nassert src.count(target) == 1, 'target line not unique'\nparts = target.split('。')\nhead = parts[0] + '。' + parts[1] + '。'\ntail = '。'.join(parts[2:])\nassert head + tail == target\nnew = src.replace(target, head + '\\n\\n' + tail)\nio.open('output.md','w',encoding='utf-8',newline='').write(new)\nprint('--- split into ---')\nprint(repr(head)); print(repr(tail))\n\"",
+      "description": "Generate output.md by splitting the long paragraph"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "diff <(cat input.md) <(cat output.md); echo \"=== diff exit above ===\"; python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=format; echo \"VERIFY_EXIT=$?\"",
+      "description": "Diff and verify output against input"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "diff input.md output.md",
+      "description": "Diff output.md against input.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=format",
+      "description": "Run verify --scope=format"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c \"\nimport subprocess\nA='.agents/skills/adhd-md/scripts/adhd_md.py'\np=subprocess.run(['python3',A,'verify','input.md','output.md','--scope=format'],capture_output=True,text=True)\nprint(p.stdout.strip()); print('verify exit status =', p.returncode)\np2=subprocess.run(['python3',A,'verify','input.md','output.md','--scope=format','--json'],capture_output=True,text=True)\nprint(p2.stdout.strip()); print('verify --json exit status =', p2.returncode)\n\"",
+      "description": "Capture verify exit status and JSON"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py report input.md output.md --scope=format --level=3",
+      "description": "Run before/after report"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit output.md --level 3 --scope=format",
+      "description": "Audit output.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c \"\nimport subprocess\nA='.agents/skills/adhd-md/scripts/adhd_md.py'\nruns=[('audit input.md (before)',['audit','input.md','--level','3','--scope=format']),\n      ('audit output.md (after)',['audit','output.md','--level','3','--scope=format']),\n      ('verify --scope=format',['verify','input.md','output.md','--scope=format']),\n      ('fmt input.md (preview)',['fmt','input.md']),\n      ('fmt output.md (preview)',['fmt','output.md']),\n      ('report --scope=format --level=3',['report','input.md','output.md','--scope=format','--level=3'])]\nfor name,args in runs:\n    p=subprocess.run(['python3',A]+args,capture_output=True,text=True)\n    print(f'{name:38s} exit={p.returncode}')\n    if p.stderr.strip(): print('   stderr:', p.stderr.strip()[:300])\n\"",
+      "description": "Capture exit statuses for all runs"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c \"\nimport subprocess\nA='.agents/skills/adhd-md/scripts/adhd_md.py'\nfor f in ['input.md','output.md']:\n    p=subprocess.run(['python3',A,'fmt',f],capture_output=True,text=True)\n    print('fmt',f,'->',p.stdout.strip() or '(no stdout)')\n\"",
+      "description": "Check fmt preview output for both files"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py report input.md output.md --scope=format --level=3 --json",
+      "description": "Get report JSON"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c \"\nimport io,hashlib,unicodedata\na=io.open('input.md',encoding='utf-8').read()\nb=io.open('output.md',encoding='utf-8').read()\nprint('input.md  sha256', hashlib.sha256(a.encode()).hexdigest()[:16], 'chars', len(a))\nprint('output.md sha256', hashlib.sha256(b.encode()).hexdigest()[:16], 'chars', len(b))\nprint('output ends with single \\\\\\\\n :', b.endswith('\\n') and not b.endswith('\\n\\n'))\nprint('trailing spaces per line:', [i for i,l in enumerate(b.split('\\n'),1) if l!=l.rstrip()])\nprint('CR present:', '\\r' in b)\n# 还原：把新增的空行去掉后应与原文逐字相等\nrestored = b.replace('不读取 \\`retryDelayMs\\`。\\n\\n参数缺失时', '不读取 \\`retryDelayMs\\`。参数缺失时')\nprint('restored == input (逐字):', restored == a)\n# 字符多重集对比（忽略空白差异）\nfrom collections import Counter\nca=Counter(ch for ch in a if not ch.isspace()); cb=Counter(ch for ch in b if not ch.isspace())\nprint('非空白字符多重集一致:', ca==cb, '| 差集:', dict((ca-cb)+(cb-ca)))\nprint('数字与单位串:', [s for s in ['1–300','1–5000','0–4','50–2000','503','429','Retry-After','ttlSeconds','maxEntries','retryCount','retryDelayMs'] if s in b])\n\"",
+      "description": "Verify byte-level preservation between input and output"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c \"import io,hashlib; a=io.open('input.md',encoding='utf-8').read(); b=io.open('output.md',encoding='utf-8').read(); print('in ', hashlib.sha256(a.encode()).hexdigest()[:16], len(a)); print('out', hashlib.sha256(b.encode()).hexdigest()[:16], len(b)); print('single trailing nl', b.endswith(chr(10)) and not b.endswith(chr(10)*2)); print('cr', chr(13) in b); print('trailing ws lines', [i for i,l in enumerate(b.split(chr(10)),1) if l!=l.rstrip()])\"",
+      "description": "Check hashes and whitespace hygiene"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c \"import io; from collections import Counter; a=io.open('input.md',encoding='utf-8').read(); b=io.open('output.md',encoding='utf-8').read(); r=b.replace('不读取 \\`retryDelayMs\\`。'+chr(10)*2+'参数缺失时','不读取 \\`retryDelayMs\\`。参数缺失时'); print('restored==input:', r==a); ca=Counter(c for c in a if not c.isspace()); cb=Counter(c for c in b if not c.isspace()); print('nonspace multiset equal:', ca==cb); print('only-diff:', dict((ca-cb)+(cb-ca))); print('output readonly newlines:', b.count(chr(10))-a.count(chr(10)))\"",
+      "description": "Confirm character-level preservation"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c \"\nimport sys; sys.path.insert(0,'.agents/skills/adhd-md/scripts')\nimport adhd_md as m\ndoc=m.Doc(open('output.md',encoding='utf-8').read(),'output.md')\nlang,th=doc.lang,doc.th\nfor b in doc.body_blocks():\n    if b.kind in ('para','quote'):\n        flat=m.re.sub(r'\\n+','',m.prose_of(b))\n        sents=m.split_sentences(flat,lang)\n        print(b.kind,'line',b.start,'| 句数',len(sents),'| 单位',m.units(flat,lang))\n        for s in sents: print('   -',s)\nprint('--- passive (被) sentences ---')\nallp=[s for b in doc.body_blocks() if b.kind in ('para','quote') for s in m.split_sentences(m.re.sub(r'\\n+','',m.prose_of(b)),lang)]\npas=[s for s in allp if '被' in s]\nprint('total',len(allp),'passive',len(pas), [s for s in pas])\n\"",
+      "description": "Measure sentence/paragraph metrics on output.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "ls -la /private/tmp/adhd-reacceptance-20261014/claude-H03-r1/workspace; echo \"=== output.md ===\"; cat /private/tmp/adhd-reacceptance-20261014/claude-H03-r1/workspace/output.md",
+      "description": "List workspace and show final output"
+    }
+  }
+]

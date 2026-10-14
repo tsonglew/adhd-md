@@ -1,0 +1,25 @@
+{
+  "audit-before": {
+    "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 3 --scope=format --json",
+    "exit_code": 0
+  },
+  "audit-after": {
+    "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit output.md --level 3 --scope=format --json",
+    "exit_code": 0
+  },
+  "verify": {
+    "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=format --json",
+    "exit_code": 0
+  },
+  "report": {
+    "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py report input.md output.md --scope=format --level=3 --json",
+    "exit_code": 0
+  },
+  "strict_preservation": {
+    "input_sha256": "3d294a0e6e1b3f782b59058fd871628ddf046322fe6f32879ac611dfc9752af1",
+    "output_sha256": "3813b7b9af5bdafc4b8adb4c34c360e66a2fdd3d60d725ad2d61f53d3c71637d",
+    "input_unchanged": true,
+    "exact_bytes_after_reversing_only_documented_formatting": true,
+    "exit_code": 0
+  }
+}

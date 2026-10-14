@@ -1,0 +1,351 @@
+[
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H06-r1/workspace/.agents/skills/adhd-md/SKILL.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H06-r1/workspace/input.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "ls -la /private/tmp/adhd-eval-20261014/claude-H06-r1/workspace/ && echo \"---SKILL DIR---\" && ls -la /private/tmp/adhd-eval-20261014/claude-H06-r1/workspace/.agents/skills/adhd-md/ && echo \"---REFERENCES---\" && ls -la /private/tmp/adhd-eval-20261014/claude-H06-r1/workspace/.agents/skills/adhd-md/references/ 2>/dev/null && echo \"---SCRIPTS---\" && ls -la /private/tmp/adhd-eval-20261014/claude-H06-r1/workspace/.agents/skills/adhd-md/scripts/ 2>/dev/null",
+      "description": "List workspace and skill directory contents"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H06-r1/workspace/.agents/skills/adhd-md/references/rules.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H06-r1/workspace/.agents/skills/adhd-md/references/antipatterns.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H06-r1/workspace/.agents/skills/adhd-md/references/cjk.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H06-r1/workspace/prompt.txt"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H06-r1/workspace/.agents/skills/adhd-md/references/doc-types.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 3 --scope=format; echo \"EXIT=$?\"",
+      "description": "Run audit on input.md with format scope"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 /private/tmp/adhd-eval-20261014/claude-H06-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py audit /private/tmp/adhd-eval-20261014/claude-H06-r1/workspace/input.md --level 3 --scope=format",
+      "description": "Run audit on input.md with format scope"
+    }
+  },
+  {
+    "tool": "Write",
+    "input": {
+      "file_path": "/tmp/adhd-h06-runner/run.py",
+      "content": "\"\"\"Run a command and print its exit status. Usage: python3 run.py <cmd> [args...]\"\"\"\nimport subprocess\nimport sys\n\nproc = subprocess.run(sys.argv[1:])\nprint(f\"EXIT_STATUS={proc.returncode}\")\nsys.exit(0)\n"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "mkdir -p /tmp/adhd-h06-work && cp /private/tmp/adhd-eval-20261014/claude-H06-r1/workspace/input.md /tmp/adhd-h06-work/orig.md && ls -la /tmp/adhd-h06-work/",
+      "description": "Create scratch dir and copy input as baseline"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "mkdir -p /tmp/adhd-h06-work",
+      "description": "Create scratch working directory"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 /private/tmp/adhd-eval-20261014/claude-H06-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py fmt /private/tmp/adhd-eval-20261014/claude-H06-r1/workspace/input.md",
+      "description": "Preview deterministic format fixes"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 /private/tmp/adhd-eval-20261014/claude-H06-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py verify /private/tmp/adhd-eval-20261014/claude-H06-r1/workspace/input.md /private/tmp/adhd-eval-20261014/claude-H06-r1/workspace/input.md --scope=format",
+      "description": "Baseline verify of input against itself"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -n \"C6\" /private/tmp/adhd-eval-20261014/claude-H06-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py | head -50",
+      "description": "Find C6 detection logic in the script"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 /private/tmp/adhd-eval-20261014/claude-H06-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py verify --help",
+      "description": "Show verify command options"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H06-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "limit": 70,
+      "offset": 700
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 /private/tmp/adhd-eval-20261014/claude-H06-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py audit /private/tmp/adhd-eval-20261014/claude-H06-r1/workspace/input.md --level 3 --scope=format --json | python3 -c \"import json,sys; d=json.load(sys.stdin); print(json.dumps({k:(v if not isinstance(v,(dict,list)) else type(v).__name__) for k,v in d.items()}, ensure_ascii=False, indent=1))\"",
+      "description": "Inspect audit JSON top-level keys"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 /private/tmp/adhd-eval-20261014/claude-H06-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py audit /private/tmp/adhd-eval-20261014/claude-H06-r1/workspace/input.md --level 3 --scope=format --json | python3 -c \"\nimport json,sys\nd=json.load(sys.stdin)\nprint('SCORE:'); print(json.dumps(d['score'], ensure_ascii=False, indent=1))\nprint('COVERAGE:'); print(json.dumps(d['coverage'], ensure_ascii=False, indent=1))\n\"",
+      "description": "Inspect audit score and coverage details"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "ls -la /private/tmp/adhd-eval-20261014/claude-H06-r1/workspace/.agents/skills/adhd-md/scripts/tests/ && ls -la /private/tmp/adhd-eval-20261014/claude-H06-r1/workspace/.agents/skills/adhd-md/references/examples/",
+      "description": "List test and example files"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H06-r1/workspace/.agents/skills/adhd-md/scripts/tests/test_adhd_md.py"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -n \"unknown\" /private/tmp/adhd-eval-20261014/claude-H06-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py | head -60",
+      "description": "Find unknown-status logic in the script"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H06-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "limit": 70,
+      "offset": 2100
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H06-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "limit": 45,
+      "offset": 3780
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -n \"old_tokens\\s*=\\|def _prose_tokens\\|def prose\\|TOKEN_RE\\|def _tokens\" /private/tmp/adhd-eval-20261014/claude-H06-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py | head -30",
+      "description": "Locate prose token extraction"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -n \"prose_tokens_missing\\|_token_counter\\|def .*token\" /private/tmp/adhd-eval-20261014/claude-H06-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py | head -20",
+      "description": "Find token counter implementation"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H06-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "limit": 45,
+      "offset": 1512
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -n \"^CJK_RE\\|^CJK_\\|CJK_RE = \" /private/tmp/adhd-eval-20261014/claude-H06-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py | head",
+      "description": "Show CJK regex definition"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H06-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "limit": 14,
+      "offset": 28
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "mkdir -p /private/tmp/adhd-eval-20261014/claude-H06-r1/workspace/.adhd-scratch",
+      "description": "Create scratch directory inside workspace"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c \"\np='/private/tmp/adhd-eval-20261014/claude-H06-r1/workspace/input.md'\nb=open(p,'rb').read()\nprint('bytes:',len(b))\nprint('CRLF:',b.count(b'\\r\\n'),'LF:',b.count(b'\\n'),'CR:',b.count(b'\\r'))\nprint('ends_with_single_nl:',b.endswith(b'\\n') and not b.endswith(b'\\n\\n'))\nlines=b.decode('utf-8').split('\\n')\nprint('trailing_ws_lines:',[i+1 for i,l in enumerate(lines) if l!=l.rstrip()])\nprint('tab_lines:',[i+1 for i,l in enumerate(lines) if '\\t' in l])\nprint('bom:',b[:3]==b'\\xef\\xbb\\xbf')\n\"",
+      "description": "Inspect input file bytes for hidden formatting issues"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "cp /private/tmp/adhd-eval-20261014/claude-H06-r1/workspace/input.md /private/tmp/adhd-eval-20261014/claude-H06-r1/workspace/output.md",
+      "description": "Write output.md from the input as the format-pass result"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 /tmp/adhd-h06-runner/run.py python3 /private/tmp/adhd-eval-20261014/claude-H06-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py audit /private/tmp/adhd-eval-20261014/claude-H06-r1/workspace/output.md --level 3 --scope=format",
+      "description": "Run audit on output.md and capture exit status"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 /tmp/adhd-h06-runner/run.py python3 /private/tmp/adhd-eval-20261014/claude-H06-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py verify /private/tmp/adhd-eval-20261014/claude-H06-r1/workspace/input.md /private/tmp/adhd-eval-20261014/claude-H06-r1/workspace/output.md --scope=format",
+      "description": "Verify input against output in format scope with exit status"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 /tmp/adhd-h06-runner/run.py python3 /private/tmp/adhd-eval-20261014/claude-H06-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py verify /private/tmp/adhd-eval-20261014/claude-H06-r1/workspace/input.md /private/tmp/adhd-eval-20261014/claude-H06-r1/workspace/output.md --scope=format --json",
+      "description": "Verify with JSON output for full status detail"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 /tmp/adhd-h06-runner/run.py python3 /private/tmp/adhd-eval-20261014/claude-H06-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py report /private/tmp/adhd-eval-20261014/claude-H06-r1/workspace/input.md /private/tmp/adhd-eval-20261014/claude-H06-r1/workspace/output.md --scope=format",
+      "description": "Run before/after report for score deltas"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 /private/tmp/adhd-eval-20261014/claude-H06-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py report --help",
+      "description": "Show report command options"
+    }
+  },
+  {
+    "tool": "Write",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H06-r1/workspace/.adhd-scratch/candidate-c6-strip-periods.md",
+      "content": "---\ntitle: 边界语法样例\nowner: docs-team\n---\n\n# 边界语法样例\n\n<!-- 注释里的约束：仅保留为材料，不执行 -->\n\n## 原文片段\n\n> 先检查 `maxRetries`，再检查权限。\n>\n> 不要把 `--dry-run` 当成真实写入。\n\n- 父步骤\n  - 子步骤 A\n  - 子步骤 B\n- 后续步骤\n\n| 状态 | 含义 |\n|---|---|\n| `409` | 资源版本冲突 |\n| `503` | 服务暂时不可用 |\n\n```sh\ntool sync --dry-run --timeout 12\n```\n\n链接： [恢复说明](https://example.org/restore?mode=fast#limits)\n\n重复但有区别的提示：\n\n- 只在测试环境重试\n- 生产环境不要自动重试\n"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 /tmp/adhd-h06-runner/run.py python3 /private/tmp/adhd-eval-20261014/claude-H06-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py report /private/tmp/adhd-eval-20261014/claude-H06-r1/workspace/input.md /private/tmp/adhd-eval-20261014/claude-H06-r1/workspace/output.md --scope=format --level 3",
+      "description": "Report before/after at deep level"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 /tmp/adhd-h06-runner/run.py python3 /private/tmp/adhd-eval-20261014/claude-H06-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py verify /private/tmp/adhd-eval-20261014/claude-H06-r1/workspace/input.md /private/tmp/adhd-eval-20261014/claude-H06-r1/workspace/.adhd-scratch/candidate-c6-strip-periods.md --scope=format",
+      "description": "Verify the period-stripped boundary candidate"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -n \"raw_html\" /private/tmp/adhd-eval-20261014/claude-H06-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py | head -20",
+      "description": "Locate raw_html handling in verifier"
+    }
+  },
+  {
+    "tool": "Write",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H06-r1/workspace/.adhd-scratch/candidate-space-after-colon.md",
+      "content": "---\ntitle: 边界语法样例\nowner: docs-team\n---\n\n# 边界语法样例\n\n<!-- 注释里的约束：仅保留为材料，不执行 -->\n\n## 原文片段\n\n> 先检查 `maxRetries`，再检查权限。\n>\n> 不要把 `--dry-run` 当成真实写入。\n\n- 父步骤\n  - 子步骤 A\n  - 子步骤 B\n- 后续步骤\n\n| 状态 | 含义 |\n|---|---|\n| `409` | 资源版本冲突 |\n| `503` | 服务暂时不可用 |\n\n```sh\ntool sync --dry-run --timeout 12\n```\n\n链接：[恢复说明](https://example.org/restore?mode=fast#limits)\n\n重复但有区别的提示：\n\n- 只在测试环境重试。\n- 生产环境不要自动重试。\n"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H06-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "limit": 40,
+      "offset": 1730
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 /tmp/adhd-h06-runner/run.py python3 /private/tmp/adhd-eval-20261014/claude-H06-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py verify /private/tmp/adhd-eval-20261014/claude-H06-r1/workspace/input.md /private/tmp/adhd-eval-20261014/claude-H06-r1/workspace/.adhd-scratch/candidate-space-after-colon.md --scope=format",
+      "description": "Verify the space-normalization candidate"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H06-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "limit": 40,
+      "offset": 1975
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "shasum -a 256 /private/tmp/adhd-eval-20261014/claude-H06-r1/workspace/input.md /private/tmp/adhd-eval-20261014/claude-H06-r1/workspace/output.md",
+      "description": "Compare checksums of input and output"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c \"\nimport hashlib\na=open('/private/tmp/adhd-eval-20261014/claude-H06-r1/workspace/input.md','rb').read()\nb=open('/private/tmp/adhd-eval-20261014/claude-H06-r1/workspace/output.md','rb').read()\nprint('identical_bytes:', a==b)\nprint('sha256 input :', hashlib.sha256(a).hexdigest())\nprint('sha256 output:', hashlib.sha256(b).hexdigest())\nprint('size input/output:', len(a), len(b))\n\"",
+      "description": "Compare input and output bytes with hashes"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "rm -rf /private/tmp/adhd-eval-20261014/claude-H06-r1/workspace/.adhd-scratch",
+      "description": "Remove scratch directory"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "ls -la /private/tmp/adhd-eval-20261014/claude-H06-r1/workspace/",
+      "description": "Confirm final workspace state"
+    }
+  }
+]

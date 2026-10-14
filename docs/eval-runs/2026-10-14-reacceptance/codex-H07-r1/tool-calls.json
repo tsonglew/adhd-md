@@ -1,0 +1,58 @@
+[
+  {
+    "command": "/bin/zsh -lc \"pwd && rg --files -g 'AGENTS.md' -g 'input.md' -g 'SKILL.md' -g '*adhd*' -g '*.py' .agents/skills/adhd-md .codex/skills/adhd-md . 2>/dev/null\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'cat .agents/skills/adhd-md/SKILL.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'cat .agents/skills/adhd-md/references/rules.md && cat .agents/skills/adhd-md/references/antipatterns.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'cat AGENTS.md && cat input.md && git status --short'",
+    "exit_code": 128
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 2 --scope=content'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"rg -n 'def .*verify|number|numeric|numbers|anti_pattern|unjudged|judge_rules|model_judgment' .agents/skills/adhd-md/scripts/adhd_md.py\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 2 --scope=content --json'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py audit output.md --level 2 --scope=content'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py report input.md output.md --scope=content --level 2'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'diff -u input.md output.md; nl -ba output.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=content --json'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py report input.md output.md --scope=content --level 2 --json'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"python3 - <<'PY'\nfrom pathlib import Path\nimport re\noriginal = Path('input.md').read_text()\nrewritten = Path('output.md').read_text()\ndef structure(text):\n    return [('heading', len(m.group(1))) if (m := re.match(r'\"'^(#+) '\"', line)) else ('ordered', re.match(r'\"'^'\"\\\\d+\\\\.', line).group()) if re.match(r'\"'^'\"\\\\d+\\\\. ', line) else ('bullet', '-') if line.startswith('- ') else ('blank',) if not line else ('paragraph',) for line in text.splitlines()]\nassert structure(original) == structure(rewritten), 'Block or list structure changed'\nassert re.findall(r'\\\\*\\\\*.*?\\\\*\\\\*', original) == re.findall(r'\\\\*\\\\*.*?\\\\*\\\\*', rewritten), 'Bold text changed'\nfor literal in ('14 days', '2 GB', '30 minutes'):\n    assert original.count(literal) == rewritten.count(literal), literal\nprint('Structure, numbering, bold span, and original number/unit counts match.')\nPY\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py report input.md output.md --scope=content --level 2 --json > report.json'",
+    "exit_code": 0
+  }
+]

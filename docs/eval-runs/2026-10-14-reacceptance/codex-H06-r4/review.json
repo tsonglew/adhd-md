@@ -1,0 +1,9 @@
+{
+  "reviewer": "coordinator against source constraints plus independent machine checks",
+  "human_review": "not performed",
+  "information_preserved": true,
+  "byte_identical": true,
+  "runtime_complete": true,
+  "purpose": "Recovery from the r2 service-capacity failure; r2 is retained, not replaced.",
+  "result": "pass"
+}

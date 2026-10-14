@@ -1,0 +1,30 @@
+[
+  {
+    "command": "/bin/zsh -lc 'cat .agents/skills/adhd-md/SKILL.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'cat input.md; cat .agents/skills/adhd-md/references/{rules,antipatterns,cjk,doc-types}.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 2 --scope=format; python3 .agents/skills/adhd-md/scripts/adhd_md.py fmt input.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 3 --scope=format --json'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"python3 - <<'PY'\nfrom pathlib import Path\ns=Path('input.md').read_text()\ns=s.replace('\"'`retryCount=0` 时不重试。HTTP `429` 使用响应中的 `Retry-After`，不读取 `retryDelayMs`。参数缺失时使用默认值；未知参数会被忽略并写入启动日志。'\"','- \"'`retryCount=0` 时不重试。'\"\\\\n- HTTP \"'`429` 使用响应中的 `Retry-After`，不读取 `retryDelayMs`。'\"\\\\n- 参数缺失时使用默认值；未知参数会被忽略并写入启动日志。')\ns=s.replace('不能互换。更改参数后重启服务才会生效。','不能互换。\\\\n\\\\n更改参数后**重启服务**才会生效。')\nPath('output.md').write_text(s)\nPY\npython3 .agents/skills/adhd-md/scripts/adhd_md.py audit output.md --level 3 --scope=format --json\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=format; python3 .agents/skills/adhd-md/scripts/adhd_md.py report --help'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"python3 - <<'PY'\nfrom pathlib import Path\nimport subprocess,json\nbase=['python3','.agents/skills/adhd-md/scripts/adhd_md.py']\nfor name,args in [('audit-before',['audit','input.md','--level','3','--scope=format','--json']),('audit-after',['audit','output.md','--level','3','--scope=format','--json']),('verify',['verify','input.md','output.md','--scope=format']),('report',['report','input.md','output.md','--scope=format','--level','3','--json'])]:\n r=subprocess.run(base+args,capture_output=True,text=True)\n Path(name+('.txt' if name=='verify' else '.json')).write_text(r.stdout)\n print(name,'exit=',r.returncode)\n if name=='verify': print(r.stdout)\na=Path('input.md').read_text(); b=Path('output.md').read_text()\nb=b.replace('- \"'`retryCount=0`'\"','\"'`retryCount=0`'\"').replace('- HTTP','HTTP').replace('- 参数缺失','参数缺失').replace('**重启服务**','重启服务')\nassert ''.join(a.split())==''.join(b.split())\nprint('移除新增排版标记后，非空白字符及顺序完全一致。')\nPY\"",
+    "exit_code": 0
+  }
+]

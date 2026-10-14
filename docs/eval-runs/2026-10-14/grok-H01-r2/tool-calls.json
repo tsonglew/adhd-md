@@ -1,0 +1,57 @@
+[
+  {
+    "tool": "read_file",
+    "input": {
+      "target_file": "/Users/liucong03/.grok/skills/adhd-md/SKILL.md"
+    }
+  },
+  {
+    "tool": "list_dir",
+    "input": {
+      "target_directory": "/private/tmp/adhd-eval-20261014/grok-H01-r2/workspace"
+    }
+  },
+  {
+    "tool": "list_dir",
+    "input": {
+      "target_directory": "/Users/liucong03/.grok/skills/adhd-md"
+    }
+  },
+  {
+    "tool": "read_file",
+    "input": {
+      "target_file": "/private/tmp/adhd-eval-20261014/grok-H01-r2/workspace/prompt.txt"
+    }
+  },
+  {
+    "tool": "read_file",
+    "input": {
+      "target_file": "/private/tmp/adhd-eval-20261014/grok-H01-r2/workspace/input.md"
+    }
+  },
+  {
+    "tool": "read_file",
+    "input": {
+      "target_file": "/private/tmp/adhd-eval-20261014/grok-H01-r2/workspace/AGENTS.md"
+    }
+  },
+  {
+    "tool": "read_file",
+    "input": {
+      "target_file": "/private/tmp/adhd-eval-20261014/grok-H01-r2/workspace/CLAUDE.md"
+    }
+  },
+  {
+    "tool": "read_file",
+    "input": {
+      "target_file": "/private/tmp/adhd-eval-20261014/grok-H01-r2/workspace/GEMINI.md"
+    }
+  },
+  {
+    "tool": "run_terminal_command",
+    "input": {
+      "command": "ls -la /private/tmp/adhd-eval-20261014/grok-H01-r2/workspace && ls -la /private/tmp/adhd-eval-20261014/grok-H01-r2/workspace/.agents/skills/adhd-md 2>/dev/null || ls -la /private/tmp/adhd-eval-20261014/grok-H01-r2/.agents 2>/dev/null; find /private/tmp/adhd-eval-20261014/grok-H01-r2 -name 'SKILL.md' -o -name 'adhd_md.py' 2>/dev/null | head -50",
+      "description": "Locate case skill snapshot and workspace files"
+    }
+  }
+]

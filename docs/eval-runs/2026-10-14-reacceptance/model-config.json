@@ -1,0 +1,15 @@
+{
+  "codex_configured": {
+    "model": "gpt-6-astra",
+    "model_reasoning_effort": "ultra"
+  },
+  "claude_configured": {
+    "model": "leihuo/deepseek-flash[1m]",
+    "model_env": {
+      "ANTHROPIC_DEFAULT_HAIKU_MODEL": "leihuo/deepseek-flash[1m]",
+      "ANTHROPIC_DEFAULT_SONNET_MODEL": "leihuo/deepseek-flash[1m]",
+      "ANTHROPIC_DEFAULT_OPUS_MODEL": "leihuo/deepseek-flash[1m]"
+    }
+  },
+  "note": "Configuration values, not proof of server-side model identity. Response IDs extracted separately from logs."
+}

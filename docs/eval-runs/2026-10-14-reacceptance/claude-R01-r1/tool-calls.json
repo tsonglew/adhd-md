@@ -1,0 +1,272 @@
+[
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-R01-r1/workspace/.agents/skills/adhd-md/SKILL.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-R01-r1/workspace/input.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "ls -la /private/tmp/adhd-reacceptance-20261014/claude-R01-r1/workspace/ /private/tmp/adhd-reacceptance-20261014/claude-R01-r1/workspace/.agents/skills/adhd-md/ /private/tmp/adhd-reacceptance-20261014/claude-R01-r1/workspace/.agents/skills/adhd-md/references/ /private/tmp/adhd-reacceptance-20261014/claude-R01-r1/workspace/.agents/skills/adhd-md/scripts/ 2>&1",
+      "description": "List skill and workspace files"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-R01-r1/workspace/.agents/skills/adhd-md/references/rules.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-R01-r1/workspace/.agents/skills/adhd-md/references/antipatterns.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-R01-r1/workspace/.agents/skills/adhd-md/references/doc-types.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-R01-r1/workspace/prompt.txt"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 3 --scope=content 2>&1 | head -100",
+      "description": "Run audit on input.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit --help 2>&1 | head -40; echo \"---VERIFY---\"; python3 .agents/skills/adhd-md/scripts/adhd_md.py verify --help 2>&1 | head -40; echo \"---REPORT---\"; python3 .agents/skills/adhd-md/scripts/adhd_md.py report --help 2>&1 | head -40",
+      "description": "Check CLI help for audit/verify/report"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c \"\nimport json\nd=json.load(open('.agents/skills/adhd-md/references/rule-definitions.json'))\nprint(type(d), list(d.keys())[:20] if isinstance(d,dict) else len(d))\n\"",
+      "description": "Inspect rule-definitions.json structure"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c \"\nimport json\nd=json.load(open('.agents/skills/adhd-md/references/rule-definitions.json'))\nprint(json.dumps(d['thresholds'], ensure_ascii=False, indent=1)[:3000])\n\"",
+      "description": "Print thresholds from rule definitions"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c \"\nimport json\nd=json.load(open('.agents/skills/adhd-md/references/rule-definitions.json'))\nfor r in d['rules']:\n    if r.get('id') in ('H1','H2','H3','H4','N7','A7','A8','S5','S4','A1','A2','W7','W9','A5'):\n        print(json.dumps(r, ensure_ascii=False, indent=1))\n        print('===')\n\"",
+      "description": "Print key rule definitions"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -n \"H1\" .agents/skills/adhd-md/scripts/adhd_md.py | head -60",
+      "description": "Find H1 rule implementation"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "sed -n 600,700p .agents/skills/adhd-md/scripts/adhd_md.py",
+      "description": "Read H1 detection code"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "sed -n 3590,3640p .agents/skills/adhd-md/scripts/adhd_md.py",
+      "description": "Read H1 tests"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -n \"TLDR_RE\\s*=\\|BG_OPENER\\s*=\\|^def units\\|^def split_sentences\\|^def prose_of\" -A 25 .agents/skills/adhd-md/scripts/adhd_md.py | head -90",
+      "description": "Inspect TLDR/BG regexes and helpers"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -n \"^def verify\\|def verify(\" .agents/skills/adhd-md/scripts/adhd_md.py | head",
+      "description": "Locate verify function"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -n \"def count_units\" -A 20 .agents/skills/adhd-md/scripts/adhd_md.py",
+      "description": "Read count_units"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "sed -n 2004,2200p .agents/skills/adhd-md/scripts/adhd_md.py",
+      "description": "Read verify implementation"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -n \"def extract_invariants\" -A 60 .agents/skills/adhd-md/scripts/adhd_md.py",
+      "description": "Read extract_invariants"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -n \"IDENT_RE\\s*=\\|NUM_RE\\s*=\\|PRESENCE_ONLY_IDENTIFIERS\\s*=\\|OPTION_RE\\s*=\\|PATH_RE\\s*=\\|PERMISSION_RE\\s*=\\|INLINE_SPAN_RE\\s*=\\|URL_RE\\s*=\" -A 12 .agents/skills/adhd-md/scripts/adhd_md.py | head -80",
+      "description": "Inspect invariant regexes"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "ls -R .agents/skills/adhd-md/references/examples | head -40",
+      "description": "List examples"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -rn \"scope=content\\|scope content\" .agents/skills/adhd-md/references/evidence.md | head -30",
+      "description": "Search evidence.md for content scope guidance"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-R01-r1/workspace/.agents/skills/adhd-md/references/examples/README.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-R01-r1/workspace/.agents/skills/adhd-md/references/examples/03-en-runbook.before.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-R01-r1/workspace/.agents/skills/adhd-md/references/examples/03-en-runbook.after.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-R01-r1/workspace/.agents/skills/adhd-md/references/rubric.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -n \"M1_RE\\|M6_RE\\|M7_RE\\|M8_RE\\|M9_RE\\|M11_RE\\|M12_RE\\|M13_RE\\|M14_RE\\|M3_RE\\|M4_RE\\|W4_RE\\|W6_RE\" .agents/skills/adhd-md/scripts/adhd_md.py | head -30",
+      "description": "List M/W lint regex names"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "git -C /private/tmp/adhd-reacceptance-20261014/claude-R01-r1/workspace status --porcelain 2>&1 | head -5; echo \"exit=$?\"",
+      "description": "Check git status of workspace"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "git -C /private/tmp/adhd-reacceptance-20261014/claude-R01-r1/workspace status --porcelain",
+      "description": "Check git status of workspace"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -n '\"M[0-9]\"\\|M1\\b.*re.compile\\|AI_PATTERNS\\|M_PATTERNS' .agents/skills/adhd-md/scripts/adhd_md.py | head -30",
+      "description": "Find M-group implementation"
+    }
+  },
+  {
+    "tool": "Write",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-R01-r1/workspace/output.md",
+      "content": "# Retry a failed thumbnail job\n\nRetry one failed thumbnail job in 4 steps.\n\nYour manual retry settings apply only to this browser session. Signing in elsewhere does not copy those manual settings. Do not retry jobs marked archived.\n\n1. Step 1 of 4: Open the job panel. Select a failed job.\n2. Step 2 of 4: If the job's lock is active, wait 7 minutes. After the wait, reload the panel once.\n3. Step 3 of 4: Copy the job key into the incident note.\n4. Step 4 of 4: Submit the retry request. A successful request shows status accepted.\n\nStatus accepted does not mean the thumbnail has finished rendering.\n"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=content; echo \"exit=$?\"",
+      "description": "Verify output against original (content scope)"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit output.md --level 3 --scope=content; echo \"exit=$?\"",
+      "description": "Audit the new output.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=content",
+      "description": "Verify output against original (content scope)"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit output.md --level 3 --scope=content",
+      "description": "Audit the new output.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py report input.md output.md --scope=content --level=3",
+      "description": "Generate before/after report"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py report input.md output.md --scope=content --level=3 --json",
+      "description": "Generate JSON report"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=both",
+      "description": "Verify with both scope"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=format",
+      "description": "Verify with format scope (expected to reject content rewrites)"
+    }
+  }
+]

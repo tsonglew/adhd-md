@@ -1,0 +1,9 @@
+{
+  "trigger": "codex-H06-r2 exited 1 after TLS/503/model-capacity failures; output retained",
+  "recovery_job": [
+    "codex",
+    "H06",
+    4
+  ],
+  "policy": "Run once after original matrix; preserve r2 and count it as a failed runtime. Do not replace or silently discard it. No semantic-failure retries."
+}

@@ -1,0 +1,16 @@
+{
+  "reviewer": "current coordinating language model using frozen answer key and source; not a human reviewer",
+  "human_review": "pending",
+  "independent_machine_checks": "verify/audit/report rerun by harness, not copied from evaluated model claims",
+  "constraint_key": "Search index only; 5-minute stale threshold; queue depth; wait 3 minutes; requeue only affected workspace; no global rebuild during business hours; primary DB unchanged",
+  "constraints": "Numbers, scope, record/database prerequisites, maintenance condition, IDs, queue metric, workspace-limited requeue and warnings remain. The condition on refresh is not preserved.",
+  "scope": "list remains ordered; actions split from 5 to 6",
+  "issues": [
+    "Conditional behavior changed: source says if queue is nonzero, wait 3 minutes and refresh once; candidate step 4 refreshes unconditionally.",
+    "Adds unsupported interpretation that a nonzero queue means the indexer is still behind, plus a claim that all three saved values will be used for requeue/confirmation."
+  ],
+  "new_facts": "unsupported operational interpretation; conditional-preservation review fail",
+  "result": "constraints reviewed; rule issues recorded; not a human signoff",
+  "verify_and_zero_x_gate": true,
+  "note": "This machine gate excludes semantic, scope, level and unjudged-rule checks; it is not overall acceptance."
+}

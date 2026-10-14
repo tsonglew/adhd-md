@@ -1,0 +1,403 @@
+[
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-repair-validation/claude-R02-r1/workspace/.agents/skills/adhd-md/SKILL.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-repair-validation/claude-R02-r1/workspace/input.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "find /private/tmp/adhd-repair-validation/claude-R02-r1/workspace/.agents/skills/adhd-md -type f | sort",
+      "description": "List skill directory files"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "ls -la && git status --porcelain 2>&1 | head -5",
+      "description": "List workspace and check git status"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "cp input.md /tmp/adhd-orig-input.md && python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 3 --scope=format 2>&1 | head -100",
+      "description": "Run audit on input.md at level 3, scope format"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-repair-validation/claude-R02-r1/workspace/.agents/skills/adhd-md/references/rules.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "cp input.md /tmp/adhd-orig-input.md",
+      "description": "Back up original input.md to /tmp"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-repair-validation/claude-R02-r1/workspace/.agents/skills/adhd-md/references/antipatterns.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 3 --scope=format 2>&1",
+      "description": "Run audit on input.md at level 3, scope format"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-repair-validation/claude-R02-r1/workspace/.agents/skills/adhd-md/references/cjk.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py fmt input.md 2>&1 | cat -A | head -40",
+      "description": "Preview fmt output with visible whitespace"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py --help 2>&1 | head -60",
+      "description": "Show adhd_md.py CLI help"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py fmt input.md 2>&1 | diff input.md - ; echo \"diff-exit=$?\"",
+      "description": "Diff fmt preview against input.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py fmt --help 2>&1; python3 .agents/skills/adhd-md/scripts/adhd_md.py verify --help 2>&1; python3 .agents/skills/adhd-md/scripts/adhd_md.py report --help 2>&1",
+      "description": "Show subcommand help for fmt, verify, report"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py fmt input.md > /tmp/fmt-preview.txt 2>&1; wc -c /tmp/fmt-preview.txt; head -20 /tmp/fmt-preview.txt",
+      "description": "Capture fmt preview output to file and show it"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-repair-validation/claude-R02-r1/workspace/.agents/skills/adhd-md/references/rubric.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "wc -l .agents/skills/adhd-md/scripts/adhd_md.py; grep -n \"def \\|^class \" .agents/skills/adhd-md/scripts/adhd_md.py | head -120",
+      "description": "Outline the adhd_md.py script"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-repair-validation/claude-R02-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "limit": 230,
+      "offset": 1727
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-repair-validation/claude-R02-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "limit": 350,
+      "offset": 2004
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-repair-validation/claude-R02-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "limit": 120,
+      "offset": 1540
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-repair-validation/claude-R02-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "limit": 130,
+      "offset": 249
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-repair-validation/claude-R02-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "limit": 160,
+      "offset": 379
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -n \"PUNCT_FOLD\\|HTML_RE =\\|CJK_RE =\\|EMPH_RE\\|UL_RE =\\|OL_RE =\" .agents/skills/adhd-md/scripts/adhd_md.py | head -20",
+      "description": "Locate regex constants in script"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-repair-validation/claude-R02-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "limit": 30,
+      "offset": 1436
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -n \"HTML_RE.match\\|kind == \\\"html\\\"\\|AUTOLINK_RE\\|INLINE_CODE_RE = \\|HTML_TAG_RE = \" .agents/skills/adhd-md/scripts/adhd_md.py | head -30",
+      "description": "Find HTML handling in audit"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -n \"T8\" .agents/skills/adhd-md/scripts/adhd_md.py | head; grep -n \"html_comment\\|HTML_COMMENT\\|<!--\" .agents/skills/adhd-md/scripts/adhd_md.py | head -30",
+      "description": "Check T8 and html comment handling"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-repair-validation/claude-R02-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "limit": 60,
+      "offset": 925
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-repair-validation/claude-R02-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "limit": 120,
+      "offset": 589
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -c \"\nimport sys; sys.path.insert(0, '.agents/skills/adhd-md/scripts')\nimport adhd_md as m\nsrc = open('input.md', encoding='utf-8').read()\ndoc = m.Doc(src)\nprint('lang:', doc.lang, 'lines:', len(doc.lines))\nfor b in doc.blocks:\n    print(b.kind, b.start, b.end, repr(b.text[:60]))\nprint('--- uncertainties ---')\nfor u in m.verification_uncertainties(src):\n    print(u)\nprint('--- prose tokens ---')\nprint(m.normalize_prose(src))\n\"",
+      "description": "Inspect parse blocks, uncertainties, tokens"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -c \"\nimport sys; sys.path.insert(0, '.agents/skills/adhd-md/scripts')\nimport adhd_md as m\nsrc = open('input.md', encoding='utf-8').read()\ndoc = m.Doc(src)\nfor b in doc.blocks:\n    if b.kind != 'heading':\n        print(b.kind, b.start, 'bold_metrics=', m.bold_metrics(b), 'units=', m.units(m.prose_of(b), doc.lang))\n\"",
+      "description": "Compute bold metrics and unit counts per block"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "cat > /private/tmp/cand_a.md <<'EOF'\n# 配额说明\n\n<!-- 该说明供离线同步使用，请保留。 -->\n\n仅超过 **75,000** 条的请求需要拆批；恰好 **75,000** 条可以直接提交。\n\n使用 `n ** 3` 表示公式；默认间隔为 **8 秒**；日志中的单位为毫秒。\n\n测试环境允许关闭校验，生产环境必须启用校验。\nEOF\ncat > /private/tmp/cand_b.md <<'EOF'\n# 配额说明\n\n<!-- 该说明供离线同步使用，请保留。 -->\n\n仅超过 **75,000** 条的请求需要拆批；恰好 **75,000** 条可以直接提交。\n\n使用 `n ** 3` 表示公式；默认间隔为 **8 秒**；日志中的单位为**毫秒**。\n\n测试环境允许**关闭**校验，生产环境必须**启用**校验。\nEOF\necho \"--- cand A verify ---\"\npython3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md /private/tmp/cand_a.md --scope=format\necho \"exit=$?\"\necho \"--- cand B verify ---\"\npython3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md /private/tmp/cand_b.md --scope=format\necho \"exit=$?\"",
+      "description": "Test two bold-only candidates with verify"
+    }
+  },
+  {
+    "tool": "Write",
+    "input": {
+      "file_path": "/private/tmp/adhd-repair-validation/claude-R02-r1/workspace/.work/cand_a.md",
+      "content": "# 配额说明\n\n<!-- 该说明供离线同步使用，请保留。 -->\n\n仅超过 **75,000** 条的请求需要拆批；恰好 **75,000** 条可以直接提交。\n\n使用 `n ** 3` 表示公式；默认间隔为 **8 秒**；日志中的单位为毫秒。\n\n测试环境允许关闭校验，生产环境必须启用校验。\n"
+    }
+  },
+  {
+    "tool": "Write",
+    "input": {
+      "file_path": "/private/tmp/adhd-repair-validation/claude-R02-r1/workspace/.work/cand_b.md",
+      "content": "# 配额说明\n\n<!-- 该说明供离线同步使用，请保留。 -->\n\n仅超过 **75,000** 条的请求需要拆批；恰好 **75,000** 条可以直接提交。\n\n使用 `n ** 3` 表示公式；默认间隔为 **8 秒**；日志中的单位为**毫秒**。\n\n测试环境允许**关闭**校验，生产环境必须**启用**校验。\n"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md .work/cand_a.md --scope=format; echo \"A-exit=$?\"; python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md .work/cand_b.md --scope=format; echo \"B-exit=$?\"",
+      "description": "Verify both bold candidates"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md .work/cand_a.md --scope=format",
+      "description": "Verify candidate A"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md .work/cand_b.md --scope=format",
+      "description": "Verify candidate B"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -c \"\nimport sys; sys.path.insert(0, '.agents/skills/adhd-md/scripts')\nimport adhd_md as m\nfor p in ['input.md', '.work/cand_a.md', '.work/cand_b.md']:\n    t = open(p, encoding='utf-8').read()\n    inv = m.extract_invariants(t)\n    print(p, [ (n['value'], n['line']) for n in inv['numbers'] ])\n    print('   literals:', [(l['type'], l['value']) for l in inv['literals']])\n    print('   inline:', inv['inline'])\n\"",
+      "description": "Print extracted numbers/literals for input and candidates"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -c \"\nimport re\nNUM_UNIT_PATTERN = (\n    r'%|milliseconds?|msecs?|seconds?|secs?|minutes?|mins?|hours?|days?|weeks?|months?|years?|'\n    r'ms|s|m|h|d|GB|MB|KB|TB|GiB|MiB|KiB|px|个|次|秒|分钟|小时|天|倍|条|行|列'\n)\nNUM_RE = re.compile(rf'(?<![A-Za-z0-9_.])(\\d+(?:\\.\\d+)?)\\s*({NUM_UNIT_PATTERN})?(?![A-Za-z0-9_])', re.I)\nfor s in ['仅超过 75,000 条的请求需要拆批；恰好 75,000 条可以直接提交。',\n          '仅超过 **75,000** 条的请求需要拆批；恰好 **75,000** 条可以直接提交。',\n          '仅超过 **75,000 条**的请求需要拆批；恰好 **75,000 条**可以直接提交。',\n          '默认间隔为 **8 秒**；日志中的单位为毫秒。']:\n    print(repr(s))\n    print('   ', [(m.group(0), m.group(1), m.group(2)) for m in NUM_RE.finditer(s)])\n\"",
+      "description": "Trace NUM_RE behaviour on bold variants"
+    }
+  },
+  {
+    "tool": "Write",
+    "input": {
+      "file_path": "/private/tmp/adhd-repair-validation/claude-R02-r1/workspace/.work/cand_c.md",
+      "content": "# 配额说明\n\n<!-- 该说明供离线同步使用，请保留。 -->\n\n仅超过 **75,000 条**的请求需要拆批；恰好 **75,000 条**可以直接提交。\n\n使用 `n ** 3` 表示公式；默认间隔为 **8 秒**；日志中的单位为毫秒。\n\n测试环境允许关闭校验，生产环境必须启用校验。\n"
+    }
+  },
+  {
+    "tool": "Write",
+    "input": {
+      "file_path": "/private/tmp/adhd-repair-validation/claude-R02-r1/workspace/.work/cand_d.md",
+      "content": "# 配额说明\n\n<!-- 该说明供离线同步使用，请保留。 -->\n\n仅超过 **75,000 条**的请求需要拆批；恰好 **75,000 条**可以直接提交。\n\n使用 `n ** 3` 表示公式；默认间隔为 **8 秒**；日志中的单位为毫秒。\n\n测试环境允许**关闭校验**，生产环境必须**启用校验**。\n"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md .work/cand_c.md --scope=format",
+      "description": "Verify candidate C"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md .work/cand_d.md --scope=format",
+      "description": "Verify candidate D"
+    }
+  },
+  {
+    "tool": "Write",
+    "input": {
+      "file_path": "/private/tmp/adhd-repair-validation/claude-R02-r1/workspace/.work/cand_e.md",
+      "content": "# 配额说明\n\n<!-- 该说明供离线同步使用，请保留。 -->\n\n仅超过 **75,000 条**的请求需要拆批；恰好 **75,000 条**可以直接提交。\n\n使用 `n ** 3` 表示公式；\n\n- 默认间隔为 **8 秒**；\n- 日志中的单位为毫秒。\n\n测试环境允许**关闭校验**，生产环境必须**启用校验**。\n"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -c \"\nimport sys; sys.path.insert(0, '.agents/skills/adhd-md/scripts')\nimport adhd_md as m\nfor p in ['input.md', '.work/cand_c.md', '.work/cand_d.md']:\n    t = open(p, encoding='utf-8').read()\n    doc = m.Doc(t)\n    stats = [m.bold_metrics(b) for b in doc.blocks]\n    bc = sum(s[0] for s in stats); tc = max(1, sum(s[1] for s in stats))\n    print(p, 'bold_chars=%d total=%d ratio=%.2f%%' % (bc, tc, 100*bc/tc), 'per-block:', [(b.start, m.bold_metrics(b)[2]) for b in doc.blocks if b.kind in ('para','quote')])\n\"",
+      "description": "Compare bold density of candidates"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit .work/cand_e.md --level 3 --scope=format",
+      "description": "Audit candidate E"
+    }
+  },
+  {
+    "tool": "Write",
+    "input": {
+      "file_path": "/private/tmp/adhd-repair-validation/claude-R02-r1/workspace/.work/cand_f.md",
+      "content": "# 配额说明\n\n<!-- 该说明供离线同步使用，请保留。 -->\n\n仅超过 75,000 条的请求需要拆批；恰好 75,000 条可以直接提交。\n\n- 使用 `n ** 3` 表示公式；\n- 默认间隔为 8 秒；\n- 日志中的单位为毫秒。\n\n测试环境允许关闭校验，生产环境必须启用校验。\n"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md .work/cand_f.md --scope=format",
+      "description": "Verify candidate F"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit .work/cand_f.md --level 3 --scope=format",
+      "description": "Audit candidate F"
+    }
+  },
+  {
+    "tool": "Write",
+    "input": {
+      "file_path": "/private/tmp/adhd-repair-validation/claude-R02-r1/workspace/.work/cand_h.md",
+      "content": "# 配额说明\n\n<!-- 该说明供离线同步使用，请保留。 -->\n\n仅超过 75,000 条的请求需要拆批；恰好 75,000 条可以直接提交。\n\n使用 `n ** 3` 表示公式；\n默认间隔为 8 秒；\n日志中的单位为毫秒。\n\n测试环境允许关闭校验，生产环境必须启用校验。\n"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -c \"\nraw = open('input.md','rb').read()\nprint('bytes:', len(raw))\nprint('CRLF count:', raw.count(b'\\r\\n'), 'LF count:', raw.count(b'\\n'))\nprint('endswith single LF:', raw.endswith(b'\\n') and not raw.endswith(b'\\n\\n'))\nprint('trailing spaces per line:', [i+1 for i,l in enumerate(raw.decode().split('\\n')) if l != l.rstrip()])\nprint('repr:', repr(raw.decode()))\n\"",
+      "description": "Check input file byte-level properties"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md .work/cand_h.md --scope=format",
+      "description": "Verify candidate H"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md input.md --scope=format --json",
+      "description": "Verify identical file (baseline)"
+    }
+  },
+  {
+    "tool": "Write",
+    "input": {
+      "file_path": "/private/tmp/adhd-repair-validation/claude-R02-r1/workspace/output.md",
+      "content": "# 配额说明\n\n<!-- 该说明供离线同步使用，请保留。 -->\n\n仅超过 75,000 条的请求需要拆批；恰好 75,000 条可以直接提交。\n\n使用 `n ** 3` 表示公式；默认间隔为 8 秒；日志中的单位为毫秒。\n\n测试环境允许关闭校验，生产环境必须启用校验。\n"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=format --json",
+      "description": "Verify output.md against input.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py report input.md output.md --scope=format --level 3",
+      "description": "Generate before/after report"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -c \"\na = open('input.md','rb').read(); b = open('output.md','rb').read()\nimport hashlib\nprint('input :', len(a), 'bytes sha256', hashlib.sha256(a).hexdigest()[:16])\nprint('output:', len(b), 'bytes sha256', hashlib.sha256(b).hexdigest()[:16])\nprint('byte-identical:', a == b)\n\"",
+      "description": "Confirm output.md is byte-identical to input.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "rm -rf .work && ls -la",
+      "description": "Remove scratch candidates and list workspace"
+    }
+  }
+]

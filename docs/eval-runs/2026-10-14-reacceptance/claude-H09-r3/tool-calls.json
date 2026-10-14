@@ -1,0 +1,224 @@
+[
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H09-r3/workspace/.agents/skills/adhd-md/SKILL.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H09-r3/workspace/input.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "find /private/tmp/adhd-reacceptance-20261014/claude-H09-r3/workspace/.agents/skills/adhd-md -type f | sort",
+      "description": "List skill files"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "ls -la && git status --porcelain 2>&1 | head -5",
+      "description": "List workspace and check git status"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H09-r3/workspace/.agents/skills/adhd-md/references/rules.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H09-r3/workspace/.agents/skills/adhd-md/references/antipatterns.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 3 --scope=format; echo \"EXIT=$?\"",
+      "description": "Run audit at level 3 scope format"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H09-r3/workspace/.agents/skills/adhd-md/references/examples/04-en-reference.after.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H09-r3/workspace/.agents/skills/adhd-md/references/examples/04-en-reference.before.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 3 --scope=format > /tmp/audit-before.txt 2>&1; echo \"EXIT=$?\"; cat /tmp/audit-before.txt",
+      "description": "Run audit at level 3 scope format"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 3 --scope=format",
+      "description": "Run audit at level 3 scope format"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H09-r3/workspace/.agents/skills/adhd-md/references/doc-types.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py fmt input.md",
+      "description": "Preview deterministic format fixes"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 3 --scope=format --json",
+      "description": "Audit with JSON output"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -c \"\nimport json\nd=json.load(open('.agents/skills/adhd-md/references/rule-definitions.json'))\nprint(type(d), list(d)[:20] if isinstance(d,dict) else len(d))\n\"",
+      "description": "Inspect rule definitions JSON shape"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H09-r3/workspace/.agents/skills/adhd-md/references/examples/03-en-runbook.after.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H09-r3/workspace/.agents/skills/adhd-md/references/examples/README.md"
+    }
+  },
+  {
+    "tool": "Write",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H09-r3/workspace/output.md",
+      "content": "# Queue configuration\n\n| Setting | Default | Valid range | Behavior |\n|---|---:|---:|---|\n| `visibilitySeconds` | 45 | 5–600 | Time before an unacknowledged job is visible again |\n| `maxAttempts` | 3 | 1–8 | Includes the first delivery attempt |\n| `backoffMs` | 400 | 100–5000 | Base delay between retry attempts |\n| `deadLetterAfter` | 8 | 1–20 | Failed jobs moved to the dead-letter queue |\n\n`maxAttempts` counts the initial delivery. A value of `1` disables retries.\n\nAuthentication errors (`401` and `403`) are never retried, even when `maxAttempts` is greater than one.\n\n```yaml\nqueue:\n  maxAttempts: 4\n  backoffMs: 800\n```\n\nConfiguration changes take effect after the worker restarts.\n\n- `visibilitySeconds` is measured in seconds.\n- `backoffMs` is measured in milliseconds.\n"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=format; echo \"VERIFY_EXIT=$?\"",
+      "description": "Verify output against input"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=format",
+      "description": "Verify output against input"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "bash -c 'python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=format; echo \"VERIFY_EXIT=$?\"'",
+      "description": "Verify and capture exit status"
+    }
+  },
+  {
+    "tool": "Write",
+    "input": {
+      "file_path": "/tmp/h09-run/adhd-check.sh",
+      "content": "#!/bin/sh\nW=/private/tmp/adhd-reacceptance-20261014/claude-H09-r3/workspace\nA=\"$W/.agents/skills/adhd-md/scripts/adhd_md.py\"\n\necho \"=== VERIFY (input.md -> output.md, scope=format) ===\"\npython3 \"$A\" verify \"$W/input.md\" \"$W/output.md\" --scope=format\necho \"VERIFY_EXIT=$?\"\n\necho\necho \"=== AUDIT (output.md, level 3, scope=format) ===\"\npython3 \"$A\" audit \"$W/output.md\" --level 3 --scope=format\necho \"AUDIT_EXIT=$?\"\n\necho\necho \"=== REPORT (input.md -> output.md, scope=format, level 3) ===\"\npython3 \"$A\" report \"$W/input.md\" \"$W/output.md\" --scope=format --level 3\necho \"REPORT_EXIT=$?\"\n\necho\necho \"=== REPORT JSON ===\"\npython3 \"$A\" report \"$W/input.md\" \"$W/output.md\" --scope=format --level 3 --json\necho \"REPORT_JSON_EXIT=$?\"\n\necho\necho \"=== AUDIT input.md (again, for before/after) ===\"\npython3 \"$A\" audit \"$W/input.md\" --level 3 --scope=format\necho \"AUDIT_BEFORE_EXIT=$?\"\n"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "sh /tmp/h09-run/adhd-check.sh",
+      "description": "Run verify, audit, and report with exit codes"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -c \"import sys; sys.exit(3)\"",
+      "description": "Probe how non-zero exit codes surface"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit output.md --level 3 --scope=format",
+      "description": "Audit the reformatted output"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py report input.md output.md --scope=format --level 3",
+      "description": "Report input vs output"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py report input.md output.md --scope=format --level 3 --json",
+      "description": "Report input vs output as JSON"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -c \"\nfrom collections import Counter\nimport re\na=open('input.md',encoding='utf-8').read()\nb=open('output.md',encoding='utf-8').read()\nca,cb=Counter(a),Counter(b)\nprint('char delta (after - before):',{k:cb[k]-ca[k] for k in set(ca)|set(cb) if cb[k]-ca[k]})\ndef toks(t):\n    return re.findall(r'[A-Za-z0-9_@./-]+', t)\nta,tb=toks(a),toks(b)\nprint('word-token count:',len(ta),len(tb))\nprint('word-token sequence identical:',ta==tb)\nna=re.sub(r'\\s+','',a).replace(';','.')\nnb=re.sub(r'\\s+','',b).replace('-','')\nprint('whitespace-stripped, list-marker-stripped, ;->. equal:', na==nb)\nprint('lines:',len(a.splitlines()),'->',len(b.splitlines()))\n\"",
+      "description": "Character-level comparison of input and output"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -c \"\nimport re\na=open('input.md',encoding='utf-8').read()\nb=open('output.md',encoding='utf-8').read()\n# a has no '- ' list markers; b has two added ones\nb_nomark=re.sub(r'(?m)^- ','',b)\ndef toks(t): return re.findall(r'[A-Za-z0-9_@./\\`\\-]+', t)\nta,tb=toks(a),toks(b_nomark)\nprint('word/code-token sequence identical:',ta==tb, len(ta), len(tb))\nna=re.sub(r'\\s+','',a).replace(';','.')\nnb=re.sub(r'\\s+','',b_nomark).replace(';','.')\nprint('chars identical after whitespace-strip + ;->. :',na==nb)\nprint()\nprint('--- diff ---')\n\"",
+      "description": "Re-compare ignoring added list markers"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "diff -u input.md output.md",
+      "description": "Show unified diff"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -c \"\nimport re\na=open('input.md',encoding='utf-8').read()\nb=open('output.md',encoding='utf-8').read()\nb_nomark=b.replace(chr(10)+'- ',chr(10))\ndef toks(t): return re.findall(r'[A-Za-z0-9_@./\\`]+', t)\nta,tb=toks(a),toks(b_nomark)\nprint('word/code-token sequence identical:',ta==tb,'| counts:',len(ta),len(tb))\nna=re.sub(r'\\s+','',a).replace(';','.')\nnb=re.sub(r'\\s+','',b_nomark).replace(';','.')\nprint('char-identical after whitespace strip + ;->. :',na==nb)\nprint('code fences:',a.count('\\`\\`\\`'),b.count('\\`\\`\\`'),'| numbers a:',sorted(re.findall(r'\\d+',a))==sorted(re.findall(r'\\d+',b)))\nprint('inline-code spans a:',re.findall(r'\\`[^\\`]+\\`',a))\nprint('inline-code spans b:',re.findall(r'\\`[^\\`]+\\`',b))\n\"",
+      "description": "Verify token and character equivalence"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -c \"\nimport re\na=open('input.md',encoding='utf-8').read()\nb=open('output.md',encoding='utf-8').read()\nb_nomark=b.replace(chr(10)+'- ',chr(10))\ndef toks(t): return [w.strip('.;') for w in re.findall(r'[A-Za-z0-9_@./\\`]+', t)]\nta,tb=toks(a),toks(b_nomark)\nprint('token sequence identical (punctuation-stripped):',ta==tb,'| counts:',len(ta),len(tb))\nd=[(i,x,y) for i,(x,y) in enumerate(zip(ta,tb)) if x!=y]\nprint('differing positions:',d[:5])\nprint('input.md untouched — sha:',__import__('hashlib').sha256(a.encode()).hexdigest()[:16])\nprint('output.md sha:',__import__('hashlib').sha256(b.encode()).hexdigest()[:16])\n\"",
+      "description": "Final token equivalence check"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -c \"\nimport subprocess\nA='.agents/skills/adhd-md/scripts/adhd_md.py'\ncmds=[['audit','input.md','--level','3','--scope=format'],\n      ['audit','output.md','--level','3','--scope=format'],\n      ['verify','input.md','output.md','--scope=format'],\n      ['report','input.md','output.md','--scope=format','--level','3']]\nfor c in cmds:\n    p=subprocess.run(['python3',A]+c,capture_output=True,text=True)\n    print(' '.join(c[:2]),'-> exit',p.returncode)\n\"",
+      "description": "Capture exit codes for audit, verify, report"
+    }
+  }
+]

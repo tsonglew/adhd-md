@@ -1,0 +1,9 @@
+{
+  "reviewer": "coordinator with source constraints and independent machine checks",
+  "human_review": "not performed",
+  "information_preserved": true,
+  "byte_identical": true,
+  "runtime_complete": true,
+  "evidence": "Exact original copied; raw HTML comment, frontmatter, conditions, nested ordering, links and code all retained. Final verifier pass is identical-input fallback, not expanded parser support.",
+  "result": "pass"
+}

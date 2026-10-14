@@ -1,0 +1,15 @@
+{
+  "command": [
+    "python3",
+    ".agents/skills/adhd-md/scripts/adhd_md.py",
+    "report",
+    "input.md",
+    "output.md",
+    "--scope=format",
+    "--level",
+    "3",
+    "--json"
+  ],
+  "exit_code": 0,
+  "stderr": ""
+}

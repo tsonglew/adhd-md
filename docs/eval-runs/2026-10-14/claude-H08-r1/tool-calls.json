@@ -1,0 +1,277 @@
+[
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H08-r1/workspace/.agents/skills/adhd-md/SKILL.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H08-r1/workspace/input.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "find /private/tmp/adhd-eval-20261014/claude-H08-r1/workspace/.agents/skills/adhd-md -type f | sort && echo \"--- workspace ---\" && ls -la /private/tmp/adhd-eval-20261014/claude-H08-r1/workspace",
+      "description": "List skill files and workspace"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H08-r1/workspace/.agents/skills/adhd-md/references/rules.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H08-r1/workspace/.agents/skills/adhd-md/references/antipatterns.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H08-r1/workspace/.agents/skills/adhd-md/references/examples/03-en-runbook.before.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H08-r1/workspace/.agents/skills/adhd-md/references/examples/03-en-runbook.after.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H08-r1/workspace/prompt.txt"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py --help 2>&1 | head -60",
+      "description": "Show adhd_md.py CLI help"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 2 --scope=format; echo \"AUDIT_EXIT=$?\"",
+      "description": "Run audit on input.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 2 --scope=format",
+      "description": "Run audit on input.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "wc -l .agents/skills/adhd-md/scripts/adhd_md.py; python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 2 --scope=format --json > /tmp/h08_audit_before.json; echo \"exit=$?\"; python3 -c \"\nimport json\nd=json.load(open('/tmp/h08_audit_before.json'))\nprint(json.dumps(d, ensure_ascii=False, indent=1)[:4000])\n\"",
+      "description": "Dump audit JSON for input.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "mkdir -p /tmp/h08-tools /tmp/h08-out && wc -l /private/tmp/adhd-eval-20261014/claude-H08-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "description": "Create tool dir and check script size"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "mkdir -p .scratch && wc -l .agents/skills/adhd-md/scripts/adhd_md.py && ls -la .scratch",
+      "description": "Create scratch dir and check script size"
+    }
+  },
+  {
+    "tool": "Write",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H08-r1/workspace/.scratch/run.sh",
+      "content": "#!/bin/sh\n# usage: run.sh <label> <command...>\n# runs the command, captures exit status, stdout, stderr into .scratch/<label>.*\nlabel=\"$1\"; shift\n\"$@\" > \".scratch/$label.out\" 2> \".scratch/$label.err\"\nstatus=$?\nprintf '%s\\n' \"$status\" > \".scratch/$label.status\"\necho \"exit_status=$status\"\necho \"--- stdout (last 40 lines) ---\"\ntail -n 40 \".scratch/$label.out\"\necho \"--- stderr (last 20 lines) ---\"\ntail -n 20 \".scratch/$label.err\"\n"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "sh .scratch/run.sh audit-before-json python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 2 --scope=format --json",
+      "description": "Run audit with JSON output and capture exit status"
+    }
+  },
+  {
+    "tool": "Write",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H08-r1/workspace/.scratch/run.py",
+      "content": "#!/usr/bin/env python3\n\"\"\"Run an adhd-md CLI command, print exit status + captured output.\"\"\"\nimport subprocess\nimport sys\n\nSKILL = \"/private/tmp/adhd-eval-20261014/claude-H08-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py\"\n\nargs = [sys.argv[1]] + sys.argv[2:]\np = subprocess.run([sys.executable, \"-I\", SKILL] + args, capture_output=True, text=True)\nsys.stdout.write(p.stdout)\nsys.stderr.write(p.stderr)\nprint(f\"\\n[exit_status={p.returncode}]\")\n"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .scratch/run.py audit input.md --level 2 --scope=format --json",
+      "description": "Run audit JSON via helper"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -n \"def .*x2\\|_check_x2\\|fragmentation\\|碎片\" .agents/skills/adhd-md/scripts/adhd_md.py | head -40",
+      "description": "Find X2 fragmentation check in script"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H08-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "limit": 180,
+      "offset": 900
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -n \"RULE_LIMITS\\s*=\" -A 60 .agents/skills/adhd-md/scripts/adhd_md.py | head -80",
+      "description": "Show rule limit thresholds"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -c \"\nimport json\nd=json.load(open('.agents/skills/adhd-md/references/rule-definitions.json'))\nprint(json.dumps(d['thresholds'], ensure_ascii=False, indent=1))\nprint('global_score_cap', d.get('global_score_cap'))\n\"",
+      "description": "Print thresholds from rule definitions"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -n \"def cmd_verify\\|def verify\\|def _verify\\|def check_invariants\\|def collect_invariants\\|def _blocks_key\\|hard_failures\\|def diff_blocks\" .agents/skills/adhd-md/scripts/adhd_md.py | head -40",
+      "description": "Locate verify implementation"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H08-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "limit": 200,
+      "offset": 1975
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -n \"def normalize_prose\\|def normalize_prose_with_lines\\|def verification_uncertainties\\|def compare_fragment_order\\|def prose_of\\|def units\\|def extract_invariants\" .agents/skills/adhd-md/scripts/adhd_md.py",
+      "description": "Locate helper functions"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H08-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "limit": 200,
+      "offset": 1565
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H08-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "limit": 80,
+      "offset": 505
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .scratch/run.py fmt input.md",
+      "description": "Preview deterministic format fixes"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "od -c input.md | tail -5",
+      "description": "Inspect trailing bytes of input.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H08-r1/workspace/.agents/skills/adhd-md/references/examples/README.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H08-r1/workspace/.agents/skills/adhd-md/references/examples/04-en-reference.after.md"
+    }
+  },
+  {
+    "tool": "Write",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H08-r1/workspace/output.md",
+      "content": "# Replace a service certificate\n\nPrerequisite: you have deployment-admin access, and the current certificate remains valid for at least 48 hours.\n\nDo not remove the current certificate during the check.\n\n## Steps\n\n1. Upload the replacement certificate to the staging secret store.\n2. Confirm the displayed fingerprint matches the approved change record.\n3. Deploy to one staging instance and request `/health` over HTTPS.\n4. Confirm the response is `200` and the certificate expires on the approved date.\n5. Roll out to production one instance at a time.\n6. After all instances report the new fingerprint, remove the old certificate.\n\n> If staging returns `495`, stop the rollout and compare the certificate chain with the approved record. Keep the current production certificate active while investigating.\n\nThe certificate renewal does not change the service hostname or client trust bundle.\n"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .scratch/run.py verify input.md output.md --scope=format",
+      "description": "Verify output against input in format scope"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .scratch/run.py verify input.md output.md --scope=format --json",
+      "description": "Verify JSON report"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .scratch/run.py audit output.md --level 2 --scope=format",
+      "description": "Audit output.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .scratch/run.py report input.md output.md --scope=format",
+      "description": "Before/after report"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .scratch/run.py report input.md output.md --scope=format --json",
+      "description": "Before/after report JSON"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "diff -u input.md output.md",
+      "description": "Diff input vs output"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "ls -l input.md output.md && python3 -c \"\nimport re\na=open('input.md').read(); b=open('output.md').read()\ntoks=lambda s: re.findall(r'[A-Za-z0-9_.@/+-]+', s)\nfrom collections import Counter\nprint('token multiset identical:', Counter(toks(a))==Counter(toks(b)))\nprint('token order identical:', toks(a)==toks(b))\nprint('chars added:', sorted(set(b)-set(a)))\nfor k in ['48','\\`/health\\`','\\`200\\`','\\`495\\`','deployment-admin']:\n    print(k, '->', b.count(k.replace('\\\\\\\\','')))\n\"",
+      "description": "Confirm input untouched and token parity"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "rm -rf .scratch && ls -a",
+      "description": "Remove scratch dir"
+    }
+  }
+]

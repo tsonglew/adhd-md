@@ -1,0 +1,15 @@
+{
+  "reviewer": "current coordinating language model using frozen answer key and source; not a human reviewer",
+  "human_review": "pending",
+  "independent_machine_checks": "verify/audit/report rerun by harness, not copied from evaluated model claims",
+  "constraint_key": "14 days、workspace owners、failed-before-upload exclusion、archive differs from recycle bin、2 GB split、30-minute link、guests excluded",
+  "constraints": "Reviewed against H07 and source: 14 days, owners only, failed-before-upload exclusion, recycle-bin distinction, source records, path, completed export selection, date/row count, ZIP/customer data storage, 2 GB split, 30-minute expiry, guests and empty-workspace branch retained.",
+  "scope": "preserved",
+  "issues": [
+    "H4 has no reading length/time estimate; N7 has no per-step progress label. Final answer leaves these unjudged."
+  ],
+  "new_facts": "none identified",
+  "result": "constraints reviewed; rule issues recorded; not a human signoff",
+  "verify_and_zero_x_gate": true,
+  "note": "This machine gate excludes semantic, scope, level and unjudged-rule checks; it is not overall acceptance."
+}

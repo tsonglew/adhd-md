@@ -1,0 +1,11 @@
+{
+  "reviewer": "coordinator inspected source/diff and preannotated constraints with independent machine checks",
+  "human_review": "not performed",
+  "information_preserved": true,
+  "scope_preserved": true,
+  "strict_character_preservation": true,
+  "byte_identical": true,
+  "diff_review": "Exact source copied.",
+  "parser_check": "No X5 false positive; inline exponent and both repeated copies retained. Real T2 density may remain and is distinct from X5.",
+  "result": "pass"
+}

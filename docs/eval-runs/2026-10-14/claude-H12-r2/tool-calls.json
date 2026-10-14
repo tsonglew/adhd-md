@@ -1,0 +1,388 @@
+[
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H12-r2/workspace/.agents/skills/adhd-md/SKILL.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H12-r2/workspace/input.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "find /private/tmp/adhd-eval-20261014/claude-H12-r2/workspace -type f | head -50; echo \"---\"; ls -la /private/tmp/adhd-eval-20261014/claude-H12-r2/workspace",
+      "description": "List workspace files"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H12-r2/workspace/.agents/skills/adhd-md/references/rules.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H12-r2/workspace/.agents/skills/adhd-md/references/antipatterns.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H12-r2/workspace/prompt.txt"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 2 --scope=format; echo \"EXIT=$?\"",
+      "description": "Run audit on input.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H12-r2/workspace/.agents/skills/adhd-md/references/doc-types.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 2 --scope=format",
+      "description": "Run audit on input.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -n \"T2d\\|X5\\|bold\" .agents/skills/adhd-md/scripts/adhd_md.py | head -60",
+      "description": "Find bold density logic in script"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H12-r2/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "limit": 90,
+      "offset": 925
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py fmt input.md",
+      "description": "Preview deterministic format fixes"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -n \"def prose_all\\|def prose_of\\|def units\\|prose_all =\" .agents/skills/adhd-md/scripts/adhd_md.py | head -20",
+      "description": "Find prose_all definition"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H12-r2/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "limit": 60,
+      "offset": 512
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "mkdir -p /tmp/adhd_probe && cp /private/tmp/adhd-eval-20261014/claude-H12-r2/workspace/input.md /tmp/adhd_probe/input_copy.md && ls -la /tmp/adhd_probe",
+      "description": "Create scratch dir with input copy"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -c \"\nimport re\np='/private/tmp/adhd-eval-20261014/claude-H12-r2/workspace/input.md'\nt=open(p,encoding='utf-8').read()\nms=list(re.finditer(r'\\*\\*([^*]+)\\*\\*', t))\nfor m in ms:\n    print(repr(m.group(0)[:60]), len(m.group(1)))\nprint('bold_chars', sum(len(m.group(1)) for m in ms))\nprint('total_nonspace', len(re.sub(r'\\s','',t)))\n\"",
+      "description": "Probe bold regex behavior on input"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -c \"\nimport os,shutil\nd='/tmp/adhd_probe'\nos.makedirs(d,exist_ok=True)\nsrc='/private/tmp/adhd-eval-20261014/claude-H12-r2/workspace/input.md'\nfor n in ['ident.md','nobold.md','split.md','toc.md']:\n    shutil.copy(src, os.path.join(d,n))\nprint(sorted(os.listdir(d)))\n\"",
+      "description": "Create scratch dir and variant copies"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -c \"\nimport re\nd='/tmp/adhd_probe/'\ndef rd(n): return open(d+n,encoding='utf-8').read()\ndef wr(n,s): open(d+n,'w',encoding='utf-8').write(s)\n\n# A: strip bold from repeated-terms line only\ns=rd('nobold.md')\ns2=s.replace('the **first copy**. Retain the **second copy** too.','the first copy. Retain the second copy too.')\nassert s2!=s\nwr('nobold.md',s2)\n\n# B: split final paragraph at sentence boundary\ns=rd('split.md')\ns2=s.replace('Repeated terms: retain the **first copy**. Retain the **second copy** too.','Repeated terms: retain the **first copy**.\\n\\nRetain the **second copy** too.')\nassert s2!=s\nwr('split.md',s2)\n\n# C: TOC after H1\ns=rd('toc.md')\ns2=s.replace('# Mixed Markdown edge case\\n\\n','# Mixed Markdown edge case\\n\\n- [Mixed Markdown edge case](#mixed-markdown-edge-case)\\n\\n')\nwr('toc.md',s2)\nprint('ok')\n\"",
+      "description": "Build experiment variants"
+    }
+  },
+  {
+    "tool": "Write",
+    "input": {
+      "file_path": "/tmp/adhd_scratch/mkvariants.py",
+      "content": "\"\"\"Build experiment variants of the eval input in the data dir given as argv[1].\"\"\"\nimport sys\n\nd = sys.argv[1].rstrip(\"/\") + \"/\"\n\n\ndef rd(n):\n    with open(d + n, encoding=\"utf-8\") as fh:\n        return fh.read()\n\n\ndef wr(n, s):\n    with open(d + n, \"w\", encoding=\"utf-8\") as fh:\n        fh.write(s)\n\n\ntarget = \"Repeated terms: retain the **first copy**. Retain the **second copy** too.\"\n\n# A: strip bold from the repeated-terms line only\ns = rd(\"nobold.md\")\ns2 = s.replace(target, \"Repeated terms: retain the first copy. Retain the second copy too.\")\nassert s2 != s\nwr(\"nobold.md\", s2)\n\n# B: split the final paragraph at its sentence boundary\ns = rd(\"split.md\")\ns2 = s.replace(\n    target,\n    \"Repeated terms: retain the **first copy**.\\n\\nRetain the **second copy** too.\",\n)\nassert s2 != s\nwr(\"split.md\", s2)\n\n# C: insert a TOC generated from the existing heading\ns = rd(\"toc.md\")\ns2 = s.replace(\n    \"# Mixed Markdown edge case\\n\\n\",\n    \"# Mixed Markdown edge case\\n\\n- [Mixed Markdown edge case](#mixed-markdown-edge-case)\\n\\n\",\n)\nassert s2 != s\nwr(\"toc.md\", s2)\n\nprint(\"variants written\")\n"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I /tmp/adhd_scratch/mkvariants.py /tmp/adhd_probe",
+      "description": "Run variant builder"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 /private/tmp/adhd-eval-20261014/claude-H12-r2/workspace/.agents/skills/adhd-md/scripts/adhd_md.py verify /tmp/adhd_probe/ident.md /tmp/adhd_probe/nobold.md --scope=format",
+      "description": "Verify bold-removal variant"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 /private/tmp/adhd-eval-20261014/claude-H12-r2/workspace/.agents/skills/adhd-md/scripts/adhd_md.py audit /tmp/adhd_probe/nobold.md --level 3 --scope=format",
+      "description": "Audit bold-removal variant"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 /private/tmp/adhd-eval-20261014/claude-H12-r2/workspace/.agents/skills/adhd-md/scripts/adhd_md.py audit /tmp/adhd_probe/split.md --level 3 --scope=format",
+      "description": "Audit paragraph-split variant"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -c \"\nsrc='/private/tmp/adhd-eval-20261014/claude-H12-r2/workspace/input.md'\ns=open(src,encoding='utf-8').read()\nout=s.replace('\\`x ** 2\\`','\\`x ** 3\\`')\nassert out!=s\nopen('/tmp/adhd_probe/codechanged.md','w',encoding='utf-8').write(out)\nout2=s.replace('https://example.org/rollback?region=west#step-2','https://example.org/rollback?region=east#step-2')\nassert out2!=s\nopen('/tmp/adhd_probe/linkchanged.md','w',encoding='utf-8').write(out2)\nprint('ok')\n\"",
+      "description": "Build code and link tamper variants"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 /private/tmp/adhd-eval-20261014/claude-H12-r2/workspace/.agents/skills/adhd-md/scripts/adhd_md.py verify /private/tmp/adhd-eval-20261014/claude-H12-r2/workspace/input.md /tmp/adhd_probe/codechanged.md --scope=format",
+      "description": "Verify inline-code tamper variant"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 /private/tmp/adhd-eval-20261014/claude-H12-r2/workspace/.agents/skills/adhd-md/scripts/adhd_md.py verify /private/tmp/adhd-eval-20261014/claude-H12-r2/workspace/input.md /tmp/adhd_probe/split.md --scope=format",
+      "description": "Verify paragraph-split variant"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H12-r2/workspace/.agents/skills/adhd-md/references/examples/04-en-reference.after.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H12-r2/workspace/.agents/skills/adhd-md/references/examples/04-en-reference.before.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H12-r2/workspace/.agents/skills/adhd-md/references/examples/README.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 /private/tmp/adhd-eval-20261014/claude-H12-r2/workspace/.agents/skills/adhd-md/scripts/adhd_md.py verify /private/tmp/adhd-eval-20261014/claude-H12-r2/workspace/input.md /tmp/adhd_probe/ident.md --scope=format",
+      "description": "Verify identical copy baseline"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 /private/tmp/adhd-eval-20261014/claude-H12-r2/workspace/.agents/skills/adhd-md/scripts/adhd_md.py report /private/tmp/adhd-eval-20261014/claude-H12-r2/workspace/input.md /tmp/adhd_probe/ident.md --scope=format",
+      "description": "Report before/after for identical copy"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H12-r2/workspace/.agents/skills/adhd-md/references/evidence.md"
+    }
+  },
+  {
+    "tool": "Write",
+    "input": {
+      "file_path": "/tmp/adhd_scratch/copy_faithful.py",
+      "content": "\"\"\"Copy src to dst byte-for-byte and print hashes of both.\"\"\"\nimport hashlib\nimport shutil\nimport sys\n\nsrc, dst = sys.argv[1], sys.argv[2]\nshutil.copyfile(src, dst)\n\n\ndef h(p):\n    with open(p, \"rb\") as fh:\n        return hashlib.sha256(fh.read()).hexdigest()\n\n\na, b = h(src), h(dst)\nprint(\"src\", a)\nprint(\"dst\", b)\nprint(\"identical\", a == b)\nprint(\"src_bytes\", len(open(src, \"rb\").read()), \"dst_bytes\", len(open(dst, \"rb\").read()))\n"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I /tmp/adhd_scratch/copy_faithful.py /private/tmp/adhd-eval-20261014/claude-H12-r2/workspace/input.md /private/tmp/adhd-eval-20261014/claude-H12-r2/workspace/output.md",
+      "description": "Write output.md as faithful copy"
+    }
+  },
+  {
+    "tool": "Write",
+    "input": {
+      "file_path": "/tmp/adhd_scratch/run.py",
+      "content": "\"\"\"Run a command, echo its output, and print its exit code.\"\"\"\nimport subprocess\nimport sys\n\np = subprocess.run(sys.argv[1:], capture_output=True, text=True)\nsys.stdout.write(p.stdout)\nsys.stderr.write(p.stderr)\nprint(\"EXIT=%d\" % p.returncode)\n"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I /tmp/adhd_scratch/run.py python3 /private/tmp/adhd-eval-20261014/claude-H12-r2/workspace/.agents/skills/adhd-md/scripts/adhd_md.py audit /private/tmp/adhd-eval-20261014/claude-H12-r2/workspace/output.md --level 3 --scope=format",
+      "description": "Audit output.md at deep level"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I /tmp/adhd_scratch/run.py python3 /private/tmp/adhd-eval-20261014/claude-H12-r2/workspace/.agents/skills/adhd-md/scripts/adhd_md.py verify /private/tmp/adhd-eval-20261014/claude-H12-r2/workspace/input.md /private/tmp/adhd-eval-20261014/claude-H12-r2/workspace/output.md --scope=format",
+      "description": "Verify output.md against input under format scope"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -n \"add_argument\\|add_parser\" /private/tmp/adhd-eval-20261014/claude-H12-r2/workspace/.agents/skills/adhd-md/scripts/adhd_md.py | head -40",
+      "description": "List CLI arguments"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I /tmp/adhd_scratch/run.py python3 /private/tmp/adhd-eval-20261014/claude-H12-r2/workspace/.agents/skills/adhd-md/scripts/adhd_md.py report /private/tmp/adhd-eval-20261014/claude-H12-r2/workspace/input.md /private/tmp/adhd-eval-20261014/claude-H12-r2/workspace/output.md --scope=format --level 3",
+      "description": "Report before/after at deep level"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I /tmp/adhd_scratch/run.py python3 /private/tmp/adhd-eval-20261014/claude-H12-r2/workspace/.agents/skills/adhd-md/scripts/adhd_md.py report /private/tmp/adhd-eval-20261014/claude-H12-r2/workspace/input.md /private/tmp/adhd-eval-20261014/claude-H12-r2/workspace/output.md --scope=format --level 3 --json",
+      "description": "Report JSON for exact numbers"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -n \"judge_only\\|def coverage\\|hint_only\" /private/tmp/adhd-eval-20261014/claude-H12-r2/workspace/.agents/skills/adhd-md/scripts/adhd_md.py | head -20",
+      "description": "Locate coverage computation"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H12-r2/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "limit": 30,
+      "offset": 1040
+    }
+  },
+  {
+    "tool": "Write",
+    "input": {
+      "file_path": "/tmp/adhd_scratch/probe_bold.py",
+      "content": "\"\"\"Reproduce the audit's bold-density computation and compare with a code-span-aware count.\"\"\"\nimport importlib.util\nimport re\nimport sys\n\nSCRIPT = \"/private/tmp/adhd-eval-20261014/claude-H12-r2/workspace/.agents/skills/adhd-md/scripts/adhd_md.py\"\nspec = importlib.util.spec_from_file_location(\"adhd_md\", SCRIPT)\nm = importlib.util.module_from_spec(spec)\nspec.loader.exec_module(m)\n\npath = sys.argv[1]\ndoc = m.parse_document(open(path, encoding=\"utf-8\").read())\nblocks = doc.blocks\n\nraw = m.prose_all_raw(blocks)\nprose_all = \"\\n\".join(m.prose_of(b) for b in blocks if b.kind != \"heading\")\n\nprint(\"total_chars (audit denominator, inline code stripped):\", len(re.sub(r\"\\s\", \"\", prose_all)))\n\nspans = [(mm.group(1), len(mm.group(1))) for mm in re.finditer(r\"\\*\\*([^*]+)\\*\\*\", raw)]\nprint(\"what the audit counts as bold:\")\nfor txt, n in spans:\n    print(\"   %3d chars | %r\" % (n, txt[:48]))\nbold_chars = sum(n for _, n in spans)\nprint(\"bold_chars (audit):\", bold_chars, \"-> ratio %.2f%%\" % (100.0 * bold_chars / len(re.sub(r\"\\s\", \"\", prose_all))))\n\n# code-span aware: blank out inline code first, then look for bold\nno_code = re.sub(r\"`[^`]*`\", lambda mm: \" \" * len(mm.group(0)), raw)\nreal = [(mm.group(1), len(mm.group(1))) for mm in re.finditer(r\"\\*\\*([^*]+)\\*\\*\", no_code)]\nprint(\"genuine bold runs (inline code masked):\")\nfor txt, n in real:\n    print(\"   %3d chars | %r\" % (n, txt))\nreal_chars = sum(n for _, n in real)\nprint(\"bold_chars (corrected):\", real_chars, \"-> ratio %.2f%%\" % (100.0 * real_chars / len(re.sub(r\"\\s\", \"\", prose_all))))\n"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I /tmp/adhd_scratch/probe_bold.py /private/tmp/adhd-eval-20261014/claude-H12-r2/workspace/output.md",
+      "description": "Probe bold-density computation"
+    }
+  },
+  {
+    "tool": "Edit",
+    "input": {
+      "replace_all": false,
+      "file_path": "/tmp/adhd_scratch/probe_bold.py",
+      "old_string": "m = importlib.util.module_from_spec(spec)\nspec.loader.exec_module(m)",
+      "new_string": "m = importlib.util.module_from_spec(spec)\nsys.modules[\"adhd_md\"] = m\nspec.loader.exec_module(m)"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I /tmp/adhd_scratch/probe_bold.py /private/tmp/adhd-eval-20261014/claude-H12-r2/workspace/output.md",
+      "description": "Probe bold-density computation"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -n \"^def parse\\|^def .*blocks\\|^def audit\\|^def build_blocks\\|kind=\\\"frontmatter\\\"\" /private/tmp/adhd-eval-20261014/claude-H12-r2/workspace/.agents/skills/adhd-md/scripts/adhd_md.py | head -20",
+      "description": "Find the document parser entry point"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -n \"class Doc\\|Doc(\\|def load_doc\\|doc.lines\\|doc.raw\" /private/tmp/adhd-eval-20261014/claude-H12-r2/workspace/.agents/skills/adhd-md/scripts/adhd_md.py | head -20",
+      "description": "Find Doc construction"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -c \"\nimport re\np='/tmp/adhd_scratch/probe_bold.py'\ns=open(p).read()\ns=s.replace('m.parse_document(open(path, encoding=\\\"utf-8\\\").read())','m.Doc(open(path, encoding=\\\"utf-8\\\").read())')\nopen(p,'w').write(s)\nprint('patched')\n\"",
+      "description": "Patch probe to use Doc constructor"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I /tmp/adhd_scratch/probe_bold.py /private/tmp/adhd-eval-20261014/claude-H12-r2/workspace/output.md",
+      "description": "Probe bold-density computation"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -n \"typo\" /private/tmp/adhd-eval-20261014/claude-H12-r2/workspace/.agents/skills/adhd-md/scripts/adhd_md.py | head -30",
+      "description": "Find typo dimension scoring"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -n \"\\\"typo\\\"\\|'typo'\\|排版一致性\" /private/tmp/adhd-eval-20261014/claude-H12-r2/workspace/.agents/skills/adhd-md/scripts/adhd_md.py | head -20",
+      "description": "Find typo dimension definition"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -rn \"首屏结论力\" /private/tmp/adhd-eval-20261014/claude-H12-r2/workspace/.agents/skills/adhd-md/ | head -10",
+      "description": "Locate dimension labels"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H12-r2/workspace/.agents/skills/adhd-md/references/rubric.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I /tmp/adhd_scratch/run.py python3 /private/tmp/adhd-eval-20261014/claude-H12-r2/workspace/.agents/skills/adhd-md/scripts/adhd_md.py fmt /private/tmp/adhd-eval-20261014/claude-H12-r2/workspace/output.md --check",
+      "description": "Check deterministic format fixes on output.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "diff /private/tmp/adhd-eval-20261014/claude-H12-r2/workspace/input.md /private/tmp/adhd-eval-20261014/claude-H12-r2/workspace/output.md",
+      "description": "Diff input against output"
+    }
+  }
+]

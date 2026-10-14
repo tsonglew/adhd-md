@@ -1,0 +1,305 @@
+[
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H12-r3/workspace/.agents/skills/adhd-md/SKILL.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H12-r3/workspace/input.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H12-r3/workspace/.agents/skills/adhd-md/references/rules.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H12-r3/workspace/.agents/skills/adhd-md/references/antipatterns.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "ls -la /private/tmp/adhd-eval-20261014/claude-H12-r3/workspace/ && ls -la /private/tmp/adhd-eval-20261014/claude-H12-r3/workspace/.agents/skills/adhd-md/ && ls -la /private/tmp/adhd-eval-20261014/claude-H12-r3/workspace/.agents/skills/adhd-md/scripts/ 2>/dev/null",
+      "description": "List workspace and skill directories"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H12-r3/workspace/prompt.txt"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 2 --scope=format; echo \"EXIT=$?\"",
+      "description": "Run audit on input.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 2 --scope=format",
+      "description": "Run audit on input.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 2 --scope=format --json",
+      "description": "Run audit with JSON output"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py --help",
+      "description": "Show script help"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -n \"加粗密度\" .agents/skills/adhd-md/scripts/adhd_md.py | head -50",
+      "description": "Find bold density logic in script"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "sed -n 900,1015p .agents/skills/adhd-md/scripts/adhd_md.py",
+      "description": "Read bold density code region"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c \"\nimport re,sys\nsys.path.insert(0,'.agents/skills/adhd-md/scripts')\nimport adhd_md as m\nraw=open('input.md').read()\ndoc=m.parse(raw) if hasattr(m,'parse') else None\nprint([n for n in dir(m) if 'parse' in n.lower() or 'block' in n.lower()][:20])\n\"",
+      "description": "Probe script module structure"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c \"\nimport re,sys\nsys.path.insert(0,'.agents/skills/adhd-md/scripts')\nimport adhd_md as m\nraw=open('input.md').read()\ndoc=m.parse_blocks(raw)\nfor b in doc:\n    print('---', b.kind, b.start, repr(b.text[:90]))\nprose_all=m.prose_all(doc)\nrawtxt=m.prose_all_raw(doc)\nprint('PROSE_ALL len(nospace)=', len(re.sub(r'\\s','',prose_all)))\nprint('RAW:', repr(rawtxt))\nms=[mm.group(1) for mm in re.finditer(r'\\*\\*([^*]+)\\*\\*', rawtxt)]\nprint('BOLD MATCHES:', ms, sum(len(x) for x in ms))\n\"",
+      "description": "Inspect parsed blocks and bold matches"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -n \"def parse_blocks\\|class Doc\\|def prose_all\\|def prose_of\\|def audit\\|def cmd_audit\" .agents/skills/adhd-md/scripts/adhd_md.py | head -30",
+      "description": "Find parsing entry points"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "sed -n 589,604p .agents/skills/adhd-md/scripts/adhd_md.py; echo ---; sed -n 264,280p .agents/skills/adhd-md/scripts/adhd_md.py; echo ---; sed -n 505,520p .agents/skills/adhd-md/scripts/adhd_md.py",
+      "description": "Read Doc class and parse_blocks signature"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c \"\nimport re,sys\nsys.path.insert(0,'.agents/skills/adhd-md/scripts')\nimport adhd_md as m\ndoc=m.Doc(open('input.md').read(),'input.md')\nrawtxt=m.prose_all_raw(doc.blocks)\nprint('RAW REPR:'); print(repr(rawtxt))\nms=[mm.group(1) for mm in re.finditer(r'\\*\\*([^*]+)\\*\\*', rawtxt)]\nprint('BOLD:', ms, 'sum=', sum(len(x) for x in ms))\nprose=m.prose_of.__module__\nimport inspect\nsrc=inspect.getsource(m.audit)\ni=src.find('bold_chars')\nprint(src[i-600:i+300])\n\"",
+      "description": "Inspect prose_all_raw and bold calculation"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py fmt input.md",
+      "description": "Preview deterministic format fixes"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c \"\nimport re,sys\nsys.path.insert(0,'.agents/skills/adhd-md/scripts')\nimport adhd_md as m\ndoc=m.Doc(open('input.md').read(),'input.md')\nprose=m.prose_of\nprose_all='\\n'.join(m.prose_of(b) for b in doc.blocks)\ntotal=len(re.sub(r'\\s','',prose_all))\nprint('total_chars(denominator, inline code stripped):',total)\nreal=[s for b in doc.blocks for s in re.findall(r'\\*\\*([^*]+)\\*\\*', m.prose_of(b))]\nprint('real bold spans:',real,'chars=',sum(len(x) for x in real))\nprint('true ratio= %.1f%%'%(100*sum(len(x) for x in real)/total))\nprint('token count of ** in raw prose:', m.prose_all_raw(doc.blocks).count('**'))\n\"",
+      "description": "Compute true vs reported bold density"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "mkdir -p /tmp/h12-cand && cp /private/tmp/adhd-eval-20261014/claude-H12-r3/workspace/input.md /tmp/h12-cand/A.md && cp /private/tmp/adhd-eval-20261014/claude-H12-r3/workspace/input.md /tmp/h12-cand/B.md && cp /private/tmp/adhd-eval-20261014/claude-H12-r3/workspace/input.md /tmp/h12-cand/C.md && ls -la /tmp/h12-cand",
+      "description": "Set up candidate files for testing"
+    }
+  },
+  {
+    "tool": "Write",
+    "input": {
+      "file_path": "/tmp/h12-cand/B.md",
+      "content": "---\ntitle: Mixed Markdown edge case\nversion: 2\n---\n\n# Mixed Markdown edge case\n\n`A->B` is an identifier, and `x ** 2` is a literal expression.\n\n> Keep the original warning text.\n>\n> Do not execute commands copied from a document.\n\n1. **Preview** the plan.\n   - [ ] Confirm `--check-only` is present.\n   - [ ] Confirm the target is `staging`.\n2. Apply the plan only after approval.\n\n| Field | Value |\n|---|---|\n| Timeout | `15 s` |\n| Retries | `0` |\n\n```text\nroute /v2/items -> cache\n```\n\nSee [the rollback notes](https://example.org/rollback?region=west#step-2).\n\nRepeated terms: retain the **first copy**. Retain the **second copy** too.\n"
+    }
+  },
+  {
+    "tool": "Write",
+    "input": {
+      "file_path": "/tmp/h12-cand/C.md",
+      "content": "---\ntitle: Mixed Markdown edge case\nversion: 2\n---\n\n# Mixed Markdown edge case\n\n`A->B` is an identifier, and `x ** 2` is a literal expression.\n\n> Keep the original warning text.\n>\n> Do not execute commands copied from a document.\n\n1. **Preview** the plan.\n   - [ ] Confirm `--check-only` is present.\n   - [ ] Confirm the target is `staging`.\n2. Apply the plan only after approval.\n\n| Field | Value |\n|---|---|\n| Timeout | `15 s` |\n| Retries | `0` |\n\n```text\nroute /v2/items -> cache\n```\n\nSee [the rollback notes](https://example.org/rollback?region=west#step-2).\n\nRepeated terms: retain the **first copy**.\n\nRetain the **second copy** too.\n"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 /private/tmp/adhd-eval-20261014/claude-H12-r3/workspace/.agents/skills/adhd-md/scripts/adhd_md.py verify /private/tmp/adhd-eval-20261014/claude-H12-r3/workspace/input.md /tmp/h12-cand/B.md --scope=format",
+      "description": "Verify candidate B (checkbox markers)"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 /private/tmp/adhd-eval-20261014/claude-H12-r3/workspace/.agents/skills/adhd-md/scripts/adhd_md.py verify /private/tmp/adhd-eval-20261014/claude-H12-r3/workspace/input.md /tmp/h12-cand/C.md --scope=format",
+      "description": "Verify candidate C (checkbox + split)"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -n \"L3\" /private/tmp/adhd-eval-20261014/claude-H12-r3/workspace/.agents/skills/adhd-md/scripts/adhd_md.py | head -20",
+      "description": "Find L3 rule implementation"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 /private/tmp/adhd-eval-20261014/claude-H12-r3/workspace/.agents/skills/adhd-md/scripts/adhd_md.py verify /private/tmp/adhd-eval-20261014/claude-H12-r3/workspace/input.md /tmp/h12-cand/B.md --scope=format --json",
+      "description": "Get verify JSON for candidate B"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 /private/tmp/adhd-eval-20261014/claude-H12-r3/workspace/.agents/skills/adhd-md/scripts/adhd_md.py audit /tmp/h12-cand/B.md --level 3 --scope=format",
+      "description": "Audit candidate B at level 3"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "sed -n 715,730p /private/tmp/adhd-eval-20261014/claude-H12-r3/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "description": "Read L3 detection logic"
+    }
+  },
+  {
+    "tool": "Write",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H12-r3/workspace/output.md",
+      "content": "---\ntitle: Mixed Markdown edge case\nversion: 2\n---\n\n# Mixed Markdown edge case\n\n`A->B` is an identifier, and `x ** 2` is a literal expression.\n\n> Keep the original warning text.\n>\n> Do not execute commands copied from a document.\n\n1. **Preview** the plan.\n   - [ ] Confirm `--check-only` is present.\n   - [ ] Confirm the target is `staging`.\n2. Apply the plan only after approval.\n\n| Field | Value |\n|---|---|\n| Timeout | `15 s` |\n| Retries | `0` |\n\n```text\nroute /v2/items -> cache\n```\n\nSee [the rollback notes](https://example.org/rollback?region=west#step-2).\n\nRepeated terms: retain the **first copy**. Retain the **second copy** too.\n"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=format --json",
+      "description": "Verify output.md against input.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit output.md --level 3 --scope=format --json",
+      "description": "Audit output.md at deep level"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c \"\nimport difflib\na=open('/private/tmp/adhd-eval-20261014/claude-H12-r3/workspace/input.md',encoding='utf-8').read()\nb=open('/private/tmp/adhd-eval-20261014/claude-H12-r3/workspace/output.md',encoding='utf-8').read()\nnorm=b.replace('- [ ] Confirm','- Confirm')\nprint('SEQUENCE-PRESERVING (output minus added checkbox markers == input):', norm==a)\nprint('ORIGINAL CHARS ALL PRESENT:', all(ch in b for ch in set(a)))\nprint()\nprint('DIFF:')\nfor l in difflib.unified_diff(a.splitlines(), b.splitlines(), 'input.md','output.md', lineterm='', n=1):\n    print(l)\nprint()\nprint('len input=%d output=%d'%(len(a),len(b)))\n\"",
+      "description": "Diff input vs output and confirm preservation"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c \"\nimport subprocess\nS='/private/tmp/adhd-eval-20261014/claude-H12-r3/workspace/.agents/skills/adhd-md/scripts/adhd_md.py'\nW='/private/tmp/adhd-eval-20261014/claude-H12-r3/workspace/'\nfor label,args in [\n  ('audit input.md (deep/format)', ['audit',W+'input.md','--level','3','--scope=format']),\n  ('verify input->output (format)', ['verify',W+'input.md',W+'output.md','--scope=format']),\n]:\n    r=subprocess.run(['python3','-I',S]+args,capture_output=True,text=True)\n    print('===',label,'-> exit',r.returncode)\n    print(r.stdout.strip()[:600])\n    if r.stderr.strip(): print('STDERR:',r.stderr.strip()[:300])\n    print()\n\"",
+      "description": "Capture audit and verify exit codes"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py report input.md output.md --scope=format",
+      "description": "Generate before/after report"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c \"\nimport subprocess\nS='/private/tmp/adhd-eval-20261014/claude-H12-r3/workspace/.agents/skills/adhd-md/scripts/adhd_md.py'\nW='/private/tmp/adhd-eval-20261014/claude-H12-r3/workspace/'\ncases=[('report input->input (no-change baseline)',['report',W+'input.md',W+'input.md','--scope=format']),\n       ('report input->output',['report',W+'input.md',W+'output.md','--scope=format']),\n       ('audit output.md (deep/format)',['audit',W+'output.md','--level','3','--scope=format'])]\nfor label,args in cases:\n    r=subprocess.run(['python3','-I',S]+args,capture_output=True,text=True)\n    print('===',label,'-> exit',r.returncode)\n    for ln in r.stdout.splitlines():\n        if '反模式' in ln or 'verify(' in ln or '脚本分' in ln: print('   ',ln.strip())\n\"",
+      "description": "Compare report exit codes with and without changes"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c \"\nimport re,sys\nsys.path.insert(0,'/private/tmp/adhd-eval-20261014/claude-H12-r3/workspace/.agents/skills/adhd-md/scripts')\nimport adhd_md as m\ndoc=m.Doc(open('/private/tmp/adhd-eval-20261014/claude-H12-r3/workspace/output.md',encoding='utf-8').read())\nraw=m.prose_all_raw(doc.blocks)\nprint('--- what the T2/X5 regex actually captured ---')\nfor i,mt in enumerate(re.finditer(r'\\*\\*([^*]+)\\*\\*', raw),1):\n    print('match %d: %d chars: %r'%(i,len(mt.group(1)),mt.group(1)[:70]))\n# correct pairing: mask inline code first, per line\nfixed=[]\nfor b in doc.blocks:\n    if b.kind in ('code','frontmatter'): continue\n    for ln in b.lines:\n        masked=ln\n        for s,e in m._inline_code_spans(ln):\n            masked=masked[:s]+' '* (e-s)+masked[e:]\n        fixed += [x.group(1) for x in re.finditer(r'\\*\\*([^*]+)\\*\\*', masked)]\nprose_all='\\n'.join(m.prose_of(b) for b in doc.blocks)\nden=len(re.sub(r'\\s','',prose_all))\nprint()\nprint('TRUE bold spans:',fixed,'=',sum(len(x) for x in fixed),'chars')\nprint('denominator (whitespace-stripped prose, inline code excluded):',den)\nprint('TRUE ratio: %.1f%%  -> T2 limit 8%%: %s | X5 limit 12%%: %s'%(\n  100*sum(len(x) for x in fixed)/den,\n  'still fires' if 100*sum(len(x) for x in fixed)/den>8 else 'ok',\n  'fires' if 100*sum(len(x) for x in fixed)/den>12 else 'does NOT fire'))\n\"",
+      "description": "Quantify the bold-density false positive"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 /private/tmp/adhd-eval-20261014/claude-H12-r3/workspace/.agents/skills/adhd-md/scripts/adhd_md.py fmt /private/tmp/adhd-eval-20261014/claude-H12-r3/workspace/output.md",
+      "description": "Check output.md needs no deterministic fixes"
+    }
+  },
+  {
+    "tool": "Write",
+    "input": {
+      "file_path": "/tmp/h12-cand/probe.py",
+      "content": "import re, sys\n\nsys.path.insert(0, '/private/tmp/adhd-eval-20261014/claude-H12-r3/workspace/.agents/skills/adhd-md/scripts')\nimport adhd_md as m\n\npath = '/private/tmp/adhd-eval-20261014/claude-H12-r3/workspace/output.md'\ndoc = m.Doc(open(path, encoding='utf-8').read())\n\nraw = m.prose_all_raw(doc.blocks)\nprint('--- spans the T2d/X5 regex actually paired ---')\nfor i, mt in enumerate(re.finditer(r'\\*\\*([^*]+)\\*\\*', raw), 1):\n    print('match %d: %d chars captured: %r' % (i, len(mt.group(1)), mt.group(1)[:60]))\n\nfixed = []\nfor b in doc.blocks:\n    if b.kind in ('code', 'frontmatter'):\n        continue\n    for ln in b.lines:\n        masked = ln\n        for s, e in m._inline_code_spans(ln):\n            masked = masked[:s] + ' ' * (e - s) + masked[e:]\n        fixed += [x.group(1) for x in re.finditer(r'\\*\\*([^*]+)\\*\\*', masked)]\n\nprose_all = '\\n'.join(m.prose_of(b) for b in doc.blocks)\nden = len(re.sub(r'\\s', '', prose_all))\ntrue_ratio = 100 * sum(len(x) for x in fixed) / den\n\nprint()\nprint('TRUE bold spans:', fixed, '=', sum(len(x) for x in fixed), 'chars')\nprint('denominator (whitespace-stripped prose, inline code excluded):', den)\nprint('TRUE ratio: %.1f%%' % true_ratio)\nprint('  T2d limit 8%%  ->', 'fires' if true_ratio > 8 else 'ok')\nprint('  X5  limit 12%% ->', 'fires' if true_ratio > 12 else 'does NOT fire')\nprint()\nprint('token count of ** in raw prose:', raw.count('**'))\n"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I /tmp/h12-cand/probe.py",
+      "description": "Run bold-density probe script"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -n \"prose_all = \\|prose_all=\" /private/tmp/adhd-eval-20261014/claude-H12-r3/workspace/.agents/skills/adhd-md/scripts/adhd_md.py | head",
+      "description": "Find prose_all definition in audit"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c \"\nimport re,sys\nsys.path.insert(0,'/private/tmp/adhd-eval-20261014/claude-H12-r3/workspace/.agents/skills/adhd-md/scripts')\nimport adhd_md as m\ndoc=m.Doc(open('/private/tmp/adhd-eval-20261014/claude-H12-r3/workspace/output.md',encoding='utf-8').read())\npa='\\n'.join(m.prose_of(b) for b in doc.blocks if b.kind!='heading')\nden=len(re.sub(r'\\s','',pa))\nnum=sum(len(x.group(1)) for x in re.finditer(r'\\*\\*([^*]+)\\*\\*', m.prose_all_raw(doc.blocks)))\nprint('script denominator:',den,' script numerator:',num,' ratio: %.0f%%'%(100*num/den))\n\"",
+      "description": "Reproduce the script's exact ratio"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "ls -la /private/tmp/adhd-eval-20261014/claude-H12-r3/workspace/input.md /private/tmp/adhd-eval-20261014/claude-H12-r3/workspace/output.md && shasum -a 256 /private/tmp/adhd-eval-20261014/claude-H12-r3/workspace/input.md /private/tmp/adhd-eval-20261014/claude-H12-r3/workspace/output.md",
+      "description": "Confirm input untouched and hash both files"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "shasum -a 256 /private/tmp/adhd-eval-20261014/claude-H12-r3/workspace/input.md /private/tmp/adhd-eval-20261014/claude-H12-r3/workspace/output.md",
+      "description": "Hash input and output files"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "ls -la /private/tmp/adhd-eval-20261014/claude-H12-r3/workspace/",
+      "description": "List workspace files with timestamps"
+    }
+  }
+]

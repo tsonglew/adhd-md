@@ -1,0 +1,16 @@
+{
+  "reviewer": "current coordinating language model using frozen answer key and source; not a human reviewer",
+  "human_review": "pending",
+  "independent_machine_checks": "verify/audit/report rerun by harness, not copied from evaluated model claims",
+  "constraint_key": "中位数 1.8 秒 / 目标低于 2 秒；失败率 1.2% 到 0.7%；观察 7 天；连续 30 分钟高于 1.5% 才暂停 10% 灰度；单次告警不回滚",
+  "format_visible_sequence_equal": true,
+  "byte_identical": false,
+  "semantic_review": "Frozen constraints have supporting sequence-equality evidence; presentation and syntax still require review.",
+  "result": "reviewed supporting checks; not a human signoff",
+  "machine_status": "pass",
+  "issues": [
+    "X2 remains nonzero; format acceptance requires zero anti-pattern deductions. The source already had this finding."
+  ],
+  "verify_and_zero_x_gate": false,
+  "note": "This machine gate excludes semantic, scope, level and unjudged-rule checks; it is not overall acceptance."
+}

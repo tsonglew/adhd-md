@@ -1,0 +1,75 @@
+[
+  {
+    "tool": "read_file",
+    "input": {
+      "target_file": "/Users/liucong03/.grok/skills/adhd-md/SKILL.md"
+    }
+  },
+  {
+    "tool": "list_dir",
+    "input": {
+      "target_directory": "/private/tmp/adhd-reacceptance-20261014/grok-H01-r1/workspace"
+    }
+  },
+  {
+    "tool": "list_dir",
+    "input": {
+      "target_directory": "/Users/liucong03/.grok/skills/adhd-md"
+    }
+  },
+  {
+    "tool": "read_file",
+    "input": {
+      "target_file": "/private/tmp/adhd-reacceptance-20261014/grok-H01-r1/workspace/input.md"
+    }
+  },
+  {
+    "tool": "read_file",
+    "input": {
+      "target_file": "/private/tmp/adhd-reacceptance-20261014/grok-H01-r1/workspace/prompt.txt"
+    }
+  },
+  {
+    "tool": "read_file",
+    "input": {
+      "target_file": "/private/tmp/adhd-reacceptance-20261014/grok-H01-r1/workspace/AGENTS.md"
+    }
+  },
+  {
+    "tool": "read_file",
+    "input": {
+      "target_file": "/private/tmp/adhd-reacceptance-20261014/grok-H01-r1/workspace/CLAUDE.md"
+    }
+  },
+  {
+    "tool": "read_file",
+    "input": {
+      "target_file": "/private/tmp/adhd-reacceptance-20261014/grok-H01-r1/workspace/GEMINI.md"
+    }
+  },
+  {
+    "tool": "read_file",
+    "input": {
+      "target_file": "/Users/liucong03/.grok/skills/adhd-md/references/rules.md"
+    }
+  },
+  {
+    "tool": "read_file",
+    "input": {
+      "target_file": "/Users/liucong03/.grok/skills/adhd-md/references/antipatterns.md"
+    }
+  },
+  {
+    "tool": "read_file",
+    "input": {
+      "target_file": "/Users/liucong03/.grok/skills/adhd-md/references/cjk.md"
+    }
+  },
+  {
+    "tool": "run_terminal_command",
+    "input": {
+      "command": "find /private/tmp/adhd-reacceptance-20261014/grok-H01-r1 -name \"SKILL.md\" -o -name \"adhd_md.py\" -o -name \"*.md\" | head -100; ls -la /private/tmp/adhd-reacceptance-20261014/grok-H01-r1/workspace; ls -la /private/tmp/adhd-reacceptance-20261014/grok-H01-r1/workspace/.agents 2>/dev/null || true",
+      "description": "Locate skill snapshot and workspace files"
+    }
+  }
+]

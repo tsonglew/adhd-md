@@ -1,0 +1,54 @@
+[
+  {
+    "command": "/bin/zsh -lc \"pwd && rg --files -g 'AGENTS.md' -g 'input.md' -g 'SKILL.md' -g '*audit*' -g '*verify*' -g '*adhd*' .agents .codex .\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'cat .agents/skills/adhd-md/SKILL.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'cat .agents/skills/adhd-md/references/rules.md .agents/skills/adhd-md/references/antipatterns.md .agents/skills/adhd-md/references/cjk.md .agents/skills/adhd-md/references/doc-types.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'cat AGENTS.md && nl -ba input.md && git status --porcelain -- input.md output.md'",
+    "exit_code": 128
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 3 --scope=format'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"sed -n '180,310p' .agents/skills/adhd-md/references/rules.md\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"rg -n 'unknown|unchanged|identical|html|HTML|penalt|X3|judge' .agents/skills/adhd-md/scripts/adhd_md.py .agents/skills/adhd-md/references/rubric.md\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py fmt input.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 3 --scope=format --json'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"sed -n '1700,1790p' .agents/skills/adhd-md/scripts/adhd_md.py && sed -n '1995,2035p' .agents/skills/adhd-md/scripts/adhd_md.py && sed -n '2590,2695p' .agents/skills/adhd-md/scripts/adhd_md.py && cat .agents/skills/adhd-md/references/rubric.md\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"python3 - <<'PY'\nfrom pathlib import Path\nimport subprocess, sys, json, difflib\nreview = Path('.adhd-md-review')\nreview.mkdir(exist_ok=True)\nsource = Path('input.md').read_bytes()\nold = source.decode('utf-8')\nlabel = '重复但有区别的提示：'\nassert old.count(label) == 1\ncandidate = old.replace(label, '**' + label + '**')\npath = review / 'candidate.md'\npath.write_bytes(candidate.encode('utf-8'))\n(review / 'candidate.diff').write_text(''.join(difflib.unified_diff(old.splitlines(True), candidate.splitlines(True), fromfile='input.md', tofile='candidate.md (已撤回)')), encoding='utf-8')\nargs = [sys.executable, '.agents/skills/adhd-md/scripts/adhd_md.py', 'verify', 'input.md', str(path), '--scope=format', '--json']\nrun = subprocess.run(args, capture_output=True, text=True)\n(review / 'candidate.verify.json').write_text(run.stdout, encoding='utf-8')\n(review / 'candidate.exit.json').write_text(json.dumps({'command':args, 'exit_code':run.returncode}, ensure_ascii=False, indent=2) + '\\\\n', encoding='utf-8')\nprint(run.stdout)\nprint('candidate_verify_exit_code:', run.returncode)\nassert run.returncode == 4\nassert json.loads(run.stdout)['status'] == 'unknown'\nPath('output.md').write_bytes(source)\npath.unlink()\nassert Path('input.md').read_bytes() == source\nassert Path('output.md').read_bytes() == source\nprint('已撤回候选；output.md 与 input.md 字节完全一致。')\nPY\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"sed -n '1,200p' .agents/skills/adhd-md/references/evidence.md\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"python3 - <<'PY'\nfrom pathlib import Path\nimport subprocess, sys, json, hashlib\nfolder = Path('.adhd-md-review')\nscript = '.agents/skills/adhd-md/scripts/adhd_md.py'\njobs = [\n ('input.audit', ['audit','input.md','--level','3','--scope=format']),\n ('output.audit', ['audit','output.md','--level','3','--scope=format']),\n ('output.verify', ['verify','input.md','output.md','--scope=format']),\n ('report', ['report','input.md','output.md','--scope=format','--level','3']),\n]\nrecords=[]\nfor name, args in jobs:\n for as_json in (False, True):\n  command=[sys.executable, script, *args, *(['--json'] if as_json else [])]\n  run=subprocess.run(command, capture_output=True, text=True)\n  destination=folder / (name + ('.json' if as_json else '.txt'))\n  destination.write_text(run.stdout, encoding='utf-8')\n  records.append({'command':command, 'exit_code':run.returncode,'stdout':str(destination),'stderr':run.stderr})\n  if not as_json:\n   print(name, 'exit_code=', run.returncode)\n   print(run.stdout)\n(folder/'commands.json').write_text(json.dumps(records, ensure_ascii=False, indent=2)+'\\\\n',encoding='utf-8')\na=Path('input.md').read_bytes()\nb=Path('output.md').read_bytes()\nprint(json.dumps({'byte_identical':a==b,'input_sha256':hashlib.sha256(a).hexdigest(),'output_sha256':hashlib.sha256(b).hexdigest()},ensure_ascii=False))\nPY\"",
+    "exit_code": 0
+  }
+]

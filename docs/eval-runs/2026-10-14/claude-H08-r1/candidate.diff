@@ -1,0 +1,20 @@
+--- input.md
++++ output.md
+@@ -1,6 +1,8 @@
+ # Replace a service certificate
+ 
+-Prerequisite: you have deployment-admin access, and the current certificate remains valid for at least 48 hours. Do not remove the current certificate during the check.
++Prerequisite: you have deployment-admin access, and the current certificate remains valid for at least 48 hours.
++
++Do not remove the current certificate during the check.
+ 
+ ## Steps
+ 
+@@ -11,6 +13,6 @@
+ 5. Roll out to production one instance at a time.
+ 6. After all instances report the new fingerprint, remove the old certificate.
+ 
+-If staging returns `495`, stop the rollout and compare the certificate chain with the approved record. Keep the current production certificate active while investigating.
++> If staging returns `495`, stop the rollout and compare the certificate chain with the approved record. Keep the current production certificate active while investigating.
+ 
+ The certificate renewal does not change the service hostname or client trust bundle.

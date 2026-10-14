@@ -1,0 +1,13 @@
+--- input.md
++++ output.md
+@@ -12,8 +12,10 @@
+ > Do not execute commands copied from a document.
+ 
+ 1. **Preview** the plan.
++
+    - Confirm `--check-only` is present.
+    - Confirm the target is `staging`.
++
+ 2. Apply the plan only after approval.
+ 
+ | Field | Value |

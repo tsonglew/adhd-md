@@ -1,0 +1,48 @@
+[
+  {
+    "name": "selftest",
+    "command": [
+      "python3",
+      "skill/scripts/adhd_md.py",
+      "selftest"
+    ],
+    "cwd": "/Users/liucong03/Documents/adhd-md",
+    "exit_code": 0,
+    "log_sha256": "1d2a8326790a1f4c614f55a51060d997f99ad3fa38cd6ecccfb297a2571426ac"
+  },
+  {
+    "name": "standalone",
+    "command": [
+      "python3",
+      "scripts/build_standalone.py",
+      "--check"
+    ],
+    "cwd": "/Users/liucong03/Documents/adhd-md",
+    "exit_code": 0,
+    "log_sha256": "60c71297ab8f84685362d59e7c5cca7d79d74313e4a78b0e698ad0e307ee95d0"
+  },
+  {
+    "name": "frozen-corpus",
+    "command": [
+      "shasum",
+      "-a",
+      "256",
+      "-c",
+      "SHA256SUMS"
+    ],
+    "cwd": "/Users/liucong03/Documents/adhd-md/docs/eval-corpus/held-out",
+    "exit_code": 0,
+    "log_sha256": "b916f1705b967a78d1490451e8341ae0e25373a0fbd37d6438da5a3bc606a184"
+  },
+  {
+    "name": "diff-check",
+    "command": [
+      "git",
+      "diff",
+      "--check"
+    ],
+    "cwd": "/Users/liucong03/Documents/adhd-md",
+    "exit_code": 0,
+    "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+]

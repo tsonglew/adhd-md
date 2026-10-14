@@ -1,0 +1,92 @@
+{
+  "id": "H03",
+  "file": "03-zh-reference.md",
+  "language": "zh",
+  "document_type": "reference",
+  "scope": "format",
+  "level": "deep",
+  "constraints": "`ttlSeconds=30` / `1–300`；`maxEntries=500` / `1–5000`；`retryCount=2` / `0–4`；只重试 503；429 使用 `Retry-After`；两个时间单位不同",
+  "run_id": "codex-H03-r3",
+  "host": "codex",
+  "repeat": 3,
+  "input_sha256": "3d294a0e6e1b3f782b59058fd871628ddf046322fe6f32879ac611dfc9752af1",
+  "corpus_manifest_sha256": "3f14b6c757b911dfc4cbedffff4c31afdce99a9f00ae8f2c735f081176891d2d",
+  "skill_commit": "4fca39df4a2c79f08a62105f6496a44c1f7e4e9c",
+  "skill_tree": "0c8886a4bcd607a15efd5494edfc5c8323e038d2",
+  "command": [
+    "codex",
+    "exec",
+    "-s",
+    "workspace-write",
+    "--skip-git-repo-check",
+    "--json",
+    "--ephemeral",
+    "使用 adhd-md skill 对 `input.md` 做只改格式处理，按本案例的 `scope=format` 和 `level` 执行。把结果写到 `output.md`，不要覆盖输入。保留原有字符、数字、单位、条件、例外、链接目标、代码和信息顺序；不要补充或删除内容。运行 `audit` 与 `verify --scope=format`，报告退出状态、脚本分、反模式扣分和未判定项；`unknown` 不得写成通过。"
+  ],
+  "platform": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+  "started": "2026-10-14T07:20:19.831447+00:00",
+  "timeout_seconds": 600,
+  "discovery": "yes: explicitly requested/local path",
+  "loading": "yes: current snapshot read",
+  "tool_execution": "yes: shell command returned",
+  "independent_review": "pending",
+  "cli_version": "codex-cli 0.162.0",
+  "exit_code": 0,
+  "timed_out": false,
+  "duration_seconds": 127.1,
+  "finished": "2026-10-14T07:22:27.222006+00:00",
+  "input_unchanged": true,
+  "stdout.jsonl_sha256": "fa5a886671a54155e098f67cb608bde033f6a849f337d1a25dad8be94fb15807",
+  "stderr.log_sha256": "67a29b4bb3d81884153b9352fe2d6485e045dad165c1978acc7884098afa4e53",
+  "output_exists": true,
+  "output_sha256": "50c22a9d7021e9ae3b2bd9756cf864aef678a3ffbf7e430278d187fadbe5bddd",
+  "audit-before_exit": 0,
+  "audit-after_exit": 0,
+  "verify_exit": 0,
+  "report_exit": 0,
+  "report_at_case_level_exit": 0,
+  "raw_logs": {
+    "stdout.jsonl": {
+      "path": "raw/codex-H03-r3-stdout.jsonl.gz",
+      "sha256": "fa5a886671a54155e098f67cb608bde033f6a849f337d1a25dad8be94fb15807",
+      "gzip_sha256": "b6558d39d177f12903d01c81b66ea9eff584086a2a32bcc9e0c1760c04dcd07c"
+    },
+    "stderr.log": {
+      "path": "raw/codex-H03-r3-stderr.log.gz",
+      "sha256": "67a29b4bb3d81884153b9352fe2d6485e045dad165c1978acc7884098afa4e53",
+      "gzip_sha256": "453278071a7e5f599876a67b00c6b4652e2469a4b675881c3c59c0b0bf7878a7"
+    }
+  },
+  "model_evidence": {
+    "requested": "gpt-6-astra",
+    "reasoning_effort": "low",
+    "source": "selected config fields observed during this evaluation; JSONL has no response model ID",
+    "response": "unknown"
+  },
+  "tool_calls_count": 10,
+  "observed_level_flags": [
+    "2",
+    "3"
+  ],
+  "expected_level": 3,
+  "snapshot_commit_is_requested": true,
+  "skill_snapshot_unchanged": true,
+  "human_review": "pending",
+  "unjudged_rules_source": "Independent audit judge-only IDs; evaluated model may assess some in assistant-messages.md. No complete judge score is inferred.",
+  "verify_status": "pass",
+  "score_before": 87.8,
+  "score_after": 100.0,
+  "x_deduct": 0,
+  "unjudged_rules": [
+    "S5",
+    "S6",
+    "P2",
+    "P5",
+    "L2",
+    "N4",
+    "T3",
+    "X6",
+    "X7",
+    "X8"
+  ]
+}
