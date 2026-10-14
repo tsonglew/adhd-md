@@ -1,0 +1,13 @@
+{
+  "discovery": "Task context explicitly supplies local snapshot path; this is not an automatic-discovery-only test.",
+  "loading": "not confirmed from captured tool trace",
+  "local_skill_tool_indices": [],
+  "tool_execution": "not confirmed from captured trace",
+  "checker_tool_indices": [],
+  "audit_report_levels": [],
+  "expected_level": 2,
+  "runtime_exit": 41,
+  "output_exists": false,
+  "final_machine_checks": "no output to verify",
+  "note": "CLI exit, loading, tool requests and output validity are distinct. Missing trace evidence is not counted as success."
+}

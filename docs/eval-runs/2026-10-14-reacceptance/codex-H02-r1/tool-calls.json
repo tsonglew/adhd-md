@@ -1,0 +1,54 @@
+[
+  {
+    "command": "/bin/zsh -lc 'cat .agents/skills/adhd-md/SKILL.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"pwd && rg --files -g 'AGENTS.md' -g 'input.md' -g 'SKILL.md' -g '*audit*' -g '*verify*' .agents/skills/adhd-md .codex/skills/adhd-md .\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'cat .agents/skills/adhd-md/references/rules.md .agents/skills/adhd-md/references/antipatterns.md .agents/skills/adhd-md/references/cjk.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'cat AGENTS.md && cat input.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'git status --porcelain && python3 .agents/skills/adhd-md/scripts/adhd_md.py fmt input.md'",
+    "exit_code": 128
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 2 --scope=format'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 2 --scope=format --json'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py fmt input.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'cat .agents/skills/adhd-md/references/rubric.md && python3 .agents/skills/adhd-md/scripts/adhd_md.py report --help && python3 .agents/skills/adhd-md/scripts/adhd_md.py verify --help'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"python3 - <<'PY'\nfrom pathlib import Path\nimport difflib\nbefore = Path('input.md').read_text()\nafter = Path('output.md').read_text()\nexpected = before.replace('适用条件：', '**适用条件**：').replace('不要撤销旧密钥', '**不要撤销旧密钥**')\nassert expected.replace('\\\\n', '') == after.replace('\\\\n', ''), '非换行、指定加粗以外的字符发生变化'\nassert before.count('\"'`'\"') == after.count('\"'`'\"')\nprint('严格字符与顺序比对：通过；仅增加换行和两组加粗标记。')\nprint(''.join(difflib.unified_diff(before.splitlines(True), after.splitlines(True), fromfile='input.md', tofile='output.md')))\nprint('输出行号：')\nfor n, line in enumerate(after.splitlines(), 1):\n    print(f'{n}: {line}')\nPY\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=format'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py audit output.md --level 2 --scope=format'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"python3 - <<'PY'\nfrom pathlib import Path\nimport json\nimport subprocess\nbase = ['python3', '.agents/skills/adhd-md/scripts/adhd_md.py']\ncommands = [\n    ['audit', 'input.md', '--level', '2', '--scope=format', '--json'],\n    ['audit', 'output.md', '--level', '2', '--scope=format', '--json'],\n    ['verify', 'input.md', 'output.md', '--scope=format', '--json'],\n    ['report', 'input.md', 'output.md', '--scope=format', '--level=2'],\n    ['report', 'input.md', 'output.md', '--scope=format', '--level=2', '--json'],\n]\nrecords = []\nfor args in commands:\n    completed = subprocess.run(base + args, text=True, capture_output=True)\n    record = {'command': base + args, 'exit_code': completed.returncode, 'stderr': completed.stderr}\n    record['result' if '--json' in args else 'stdout'] = json.loads(completed.stdout) if '--json' in args else completed.stdout\n    records.append(record)\n    print(' '.join(args), '=> exit', completed.returncode)\n    if args[0] == 'verify' or (args[0] == 'report' and '--json' not in args):\n        print(completed.stdout)\nPath('validation.json').write_text(json.dumps(records, ensure_ascii=False, indent=2) + '\\\\n')\nPY\"",
+    "exit_code": 0
+  }
+]

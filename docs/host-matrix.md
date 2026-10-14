@@ -1,5 +1,11 @@
 # 宿主兼容矩阵（P0 实证结论）
 
+**重新验收（2026-10-14）**：Codex 与 Claude Code 各完成 20 份主回归产物，机器校验全部 pass / X=0；Claude Code 有 3 次约束复核失败，Codex 有 1 次服务容量异常并另记补跑。Cursor、Gemini、opencode、Grok 重试仍无产物，保持未验证。配置模型、精确命令、加载证据与逐次结果见 [重新验收记录](eval-runs/2026-10-14-reacceptance/README.md)，不把 CLI 退出码或文件存在视为完整支持证明。
+
+**当前执行结果（2026-10-14）**：Codex 与 Claude Code 已产生当前 skill 的真实评测产物；发现与加载、工具执行、结果质量分别留证。
+
+Grok 的 headless shell 权限未完成，Gemini 缺少 API key，Cursor 未登录，opencode 请求被服务端拒绝。完整次数和逐例结果见 [EVAL-01 运行记录](eval-runs/2026-10-14/README.md)，不将模型运行成功视为质量验收通过。
+
 本机 2026-08-13 实测，非文档推测。探测方法附在末尾，可复现。
 
 ## 一句话结论

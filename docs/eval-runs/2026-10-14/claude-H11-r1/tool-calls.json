@@ -1,0 +1,331 @@
+[
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H11-r1/workspace/.agents/skills/adhd-md/SKILL.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H11-r1/workspace/input.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "ls -la /private/tmp/adhd-eval-20261014/claude-H11-r1/workspace/ && ls -la /private/tmp/adhd-eval-20261014/claude-H11-r1/workspace/.agents/skills/adhd-md/",
+      "description": "List workspace and skill directory"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "ls -la /private/tmp/adhd-eval-20261014/claude-H11-r1/workspace/.agents/skills/adhd-md/references/ /private/tmp/adhd-eval-20261014/claude-H11-r1/workspace/.agents/skills/adhd-md/scripts/",
+      "description": "List references and scripts"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H11-r1/workspace/.agents/skills/adhd-md/references/rules.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H11-r1/workspace/.agents/skills/adhd-md/references/antipatterns.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "cat prompt.txt && python3 .agents/skills/adhd-md/scripts/adhd_md.py --help 2>&1 | head -60",
+      "description": "Show prompt and script help"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 2 --scope=format; echo \"EXIT=$?\"",
+      "description": "Run audit on input.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 2 --scope=format",
+      "description": "Run audit on input.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 2 --scope=format --json",
+      "description": "Run audit with JSON output"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -n \"X2\\|碎片化\" .agents/skills/adhd-md/scripts/adhd_md.py | head -50",
+      "description": "Find X2 implementation in script"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "sed -n 940,1010p .agents/skills/adhd-md/scripts/adhd_md.py",
+      "description": "Read X2 implementation region"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -n \"def units\\|def prose_of\\|RULE_LIMITS = \\|\\\"frag\\\"\\|min_plain_prose_sections\\|min_lines_per_heading\" .agents/skills/adhd-md/scripts/adhd_md.py | head -30",
+      "description": "Locate helper functions and limits"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "sed -n 505,575p .agents/skills/adhd-md/scripts/adhd_md.py; python3 -c \"\nimport json\nd=json.load(open('.agents/skills/adhd-md/references/rule-definitions.json'))\nprint(json.dumps(d['thresholds'],indent=1)[:3000])\n\"",
+      "description": "Read prose_of/units and thresholds"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -n \"前 15 行\\|H1\\b\" .agents/skills/adhd-md/scripts/adhd_md.py | head -40",
+      "description": "Find H1 rule implementation"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "sed -n 615,700p .agents/skills/adhd-md/scripts/adhd_md.py",
+      "description": "Read H1 rule implementation"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -n \"TLDR_RE\\s*=\\|BG_OPENER\\s*=\\|_is_toc\" .agents/skills/adhd-md/scripts/adhd_md.py | head; sed -n 3590,3700p .agents/skills/adhd-md/scripts/adhd_md.py",
+      "description": "Find TLDR_RE and scoring code"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -n \"^def score\\|DIM_RULES\\|def score(\" .agents/skills/adhd-md/scripts/adhd_md.py | head",
+      "description": "Find score function"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "sed -n 1030,1180p .agents/skills/adhd-md/scripts/adhd_md.py",
+      "description": "Read score function"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -n \"SCORE_COMPONENTS\\|^DIMS\\|DIMS = \" .agents/skills/adhd-md/scripts/adhd_md.py | head; python3 -c \"\nimport json\nd=json.load(open('.agents/skills/adhd-md/references/rule-definitions.json'))\nprint(list(d.keys()))\nprint(json.dumps(d.get('dimensions'),indent=1)[:800])\n\"",
+      "description": "Inspect score components"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -c \"\nimport json\nd=json.load(open('.agents/skills/adhd-md/references/rule-definitions.json'))\nfor r in d['rules']:\n    if r.get('scoring') or r['id'] in ('H1','X2'):\n        print(r['id'], r.get('axis'), r.get('min_level'), r.get('status'), r.get('scoring'))\n\"",
+      "description": "List scoring components per rule"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "mkdir -p /tmp/h11-tools && grep -n \"LATIN_WORD_RE\\s*=\\|CJK_RE\\s*=\\|^UL_RE\\|^OL_RE\" .agents/skills/adhd-md/scripts/adhd_md.py",
+      "description": "Find word regexes"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -c \"\nimport importlib.util, sys\nspec = importlib.util.spec_from_file_location('adhd_md', '.agents/skills/adhd-md/scripts/adhd_md.py')\nm = importlib.util.module_from_spec(spec); spec.loader.exec_module(m)\nprint('LATIN_WORD_RE', m.LATIN_WORD_RE.pattern)\nsrc = open('input.md').read()\ndoc = m.Doc(src)\nlang = m.detect_lang(doc.blocks)\nprint('lang', lang, 'lines', len(doc.lines), 'headings', sum(1 for b in doc.blocks if b.kind=='heading'))\nfor b in doc.blocks:\n    print(b.kind, b.start, repr(b.text[:60]))\nprint('---- sections ----')\ncur, structured, started = 0, False, False\nsecs=[]\nfor b in doc.blocks:\n    if b.kind == 'heading':\n        if started and not structured:\n            secs.append(cur)\n        cur, structured, started = 0, False, True\n        continue\n    if b.kind == 'code' or (b.kind=='list' and m.re.search(r'^\\s*[-*+]\\s+\\[[ xX]\\]', b.text, m.re.M)):\n        structured = True\n    u = m.units(m.prose_of(b), lang)\n    print('  block', b.kind, 'units', u)\n    cur += u\nif started and not structured:\n    secs.append(cur)\nprint('prose_secs', secs, 'avg', sum(secs)/len(secs) if secs else None)\nprint('frag threshold', m.RULE_LIMITS['X2'], m.RULE_DATA['thresholds']['language'][lang])\n\"\n",
+      "description": "Instrument X2 prose-section computation"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -c \"\nimport importlib.util, sys\nspec = importlib.util.spec_from_file_location('adhd_md', '.agents/skills/adhd-md/scripts/adhd_md.py')\nm = importlib.util.module_from_spec(spec); sys.modules['adhd_md']=m; spec.loader.exec_module(m)\nprint('LATIN_WORD_RE', m.LATIN_WORD_RE.pattern)\nsrc = open('input.md').read()\ndoc = m.Doc(src)\nlang = m.detect_lang(doc.blocks)\nprint('lang', lang, 'lines', len(doc.lines), 'headings', sum(1 for b in doc.blocks if b.kind=='heading'))\nfor b in doc.blocks:\n    print(b.kind, b.start, repr(b.text[:70]))\nprint('---- sections ----')\ncur, structured, started = 0, False, False\nsecs=[]\nfor b in doc.blocks:\n    if b.kind == 'heading':\n        if started and not structured:\n            secs.append(cur)\n        cur, structured, started = 0, False, True\n        continue\n    if b.kind == 'code' or (b.kind=='list' and m.re.search(r'^\\s*[-*+]\\s+\\[[ xX]\\]', b.text, m.re.M)):\n        structured = True\n    u = m.units(m.prose_of(b), lang)\n    print('  block', b.kind, 'units', u, '| structured now', structured)\n    cur += u\nif started and not structured:\n    secs.append(cur)\nprint('prose_secs', secs, 'avg', sum(secs)/len(secs) if secs else None)\nprint('X2 limits', m.RULE_LIMITS['X2'], 'frag threshold', m.RULE_DATA['thresholds']['language'][lang]['frag'])\n\"\n",
+      "description": "Instrument X2 prose-section computation"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py fmt input.md",
+      "description": "Preview deterministic format fixes"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -n \"def cmd_verify\\|def verify\\|status.*unknown\\|def _verify\" .agents/skills/adhd-md/scripts/adhd_md.py | head -30",
+      "description": "Locate verify implementation"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "sed -n 1975,2100p .agents/skills/adhd-md/scripts/adhd_md.py",
+      "description": "Read verify implementation part 1"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "sed -n 2100,2260p .agents/skills/adhd-md/scripts/adhd_md.py",
+      "description": "Read verify implementation part 2"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "ls -la .agents/skills/adhd-md/references/examples/ && ls .agents/skills/adhd-md/assets/",
+      "description": "List examples directory"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H11-r1/workspace/.agents/skills/adhd-md/references/examples/03-en-runbook.after.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H11-r1/workspace/.agents/skills/adhd-md/references/examples/README.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "cat .agents/skills/adhd-md/references/examples/02-zh-readme.before.md; echo \"=========== AFTER ===========\"; cat .agents/skills/adhd-md/references/examples/02-zh-readme.after.md",
+      "description": "Read format-only example before/after"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "sed -n 900,945p .agents/skills/adhd-md/scripts/adhd_md.py",
+      "description": "Read T5 and formatting checks region"
+    }
+  },
+  {
+    "tool": "Write",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H11-r1/workspace/output.md",
+      "content": "# Search rollout review · 2026-09-22\n\n## Outcome\n\n- The new search index reached 100% of workspaces.\n- Median query time is 210 ms against a target below 250 ms.\n- The 95th percentile is 680 ms, above the 600 ms target.\n\n---\n\n## Decisions\n\n- Keep the rollout at 100% while the error rate stays below 0.5%.\n- Do not enable fuzzy matching until the 95th percentile is below 600 ms for three consecutive days.\n- Recheck mobile query time separately; desktop data does not cover it.\n\n---\n\n## Actions\n\n- [ ] **Alex**: add mobile latency to the dashboard by Friday.\n- [ ] **Search team**: report three daily percentile values next week.\n\n---\n\n## Rollback trigger\n\nIf the error rate exceeds 1% for 10 consecutive minutes, return to the previous index version.\n\nA single slow query is not a rollback trigger.\n"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=format; echo \"---EXIT=$?\"",
+      "description": "Verify output against input"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -c \"\nimport subprocess\nr = subprocess.run(['python3','.agents/skills/adhd-md/scripts/adhd_md.py','verify','input.md','output.md','--scope=format'], capture_output=True, text=True)\nprint(r.stdout); print(r.stderr)\nprint('EXIT=', r.returncode)\n\"",
+      "description": "Verify output and capture exit code"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -c \"\nimport subprocess\nr = subprocess.run(['python3','.agents/skills/adhd-md/scripts/adhd_md.py','verify','input.md','output.md','--scope=format','--json'], capture_output=True, text=True)\nprint(r.stdout); print(r.stderr); print('EXIT=', r.returncode)\n\"",
+      "description": "Verify with JSON output"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -c \"\nimport subprocess\nr = subprocess.run(['python3','.agents/skills/adhd-md/scripts/adhd_md.py','audit','output.md','--level','2','--scope=format'], capture_output=True, text=True)\nprint(r.stdout); print(r.stderr); print('EXIT=', r.returncode)\n\"",
+      "description": "Audit the candidate output"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -c \"\nimport subprocess\nr = subprocess.run(['python3','.agents/skills/adhd-md/scripts/adhd_md.py','report','input.md','output.md','--scope=format'], capture_output=True, text=True)\nprint(r.stdout); print(r.stderr); print('EXIT=', r.returncode)\n\"",
+      "description": "Run before/after report"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -c \"\nimport subprocess\nr = subprocess.run(['python3','.agents/skills/adhd-md/scripts/adhd_md.py','audit','output.md','--level','2','--scope=format','--json'], capture_output=True, text=True)\nimport json\nd=json.loads(r.stdout)\nprint('total', d['score']['total'], 'x', d['score']['x_deduct'], d['score']['x_hits'])\nprint('dims', {k:v['score'] for k,v in d['score']['dims'].items()})\nprint('findings(all):')\nfor f in d['findings']: print('  ', f['rule'], f['line'], f['axis'], f['msg'], 'advisory' if f.get('advisory') else '')\nprint('shown:', [(f['rule'],f['line']) for f in d['shown_findings']])\nprint('coverage:', {k:v for k,v in d['coverage'].items() if k!='rule_ids'})\nprint('unscored', d['score']['unscored'])\nprint('EXIT=', r.returncode)\n\"",
+      "description": "Full JSON audit of output"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -c \"\nimport re, collections\na = open('input.md').read(); b = open('output.md').read()\ndef words(t):\n    t = re.sub(r'\\`[^\\`]*\\`',' ',t)\n    return [w for w in re.findall(r\\\"[A-Za-z0-9][A-Za-z0-9'’%.:-]*\\\", t)]\nca, cb = collections.Counter(words(a)), collections.Counter(words(b))\nprint('missing from output:', ca-cb)\nprint('added in output   :', cb-ca)\n# exact content lines preserved?\nla = [l.strip() for l in a.splitlines() if l.strip()]\nlb = [l.strip() for l in b.splitlines() if l.strip()]\nimport difflib\nfor line in difflib.unified_diff(la, lb, lineterm='', n=0):\n    print(line)\nprint('input bytes', len(a.encode()), 'output bytes', len(b.encode()))\nprint('output ends with single newline:', b.endswith('\\n') and not b.endswith('\\n\\n'))\n\"",
+      "description": "Token-level diff between input and output"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "diff -u input.md output.md",
+      "description": "Show diff between input and output"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -c \"\nimport subprocess\ndef run(args):\n    r = subprocess.run(['python3','.agents/skills/adhd-md/scripts/adhd_md.py']+args, capture_output=True, text=True)\n    return r.returncode, r.stdout.strip(), r.stderr.strip()\nfor args in (['audit','input.md','--level','2','--scope=format'], ['audit','output.md','--level','2','--scope=format'], ['verify','input.md','output.md','--scope=format'], ['fmt','output.md']):\n    code, out, err = run(args)\n    print('== adhd_md.py', ' '.join(args))\n    print('exit', code)\n    print(out[:400] if args[0]!='fmt' else out)\n    if err: print('STDERR', err)\n    print()\n\"",
+      "description": "Capture exit statuses for audit, verify, fmt"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "sed -n 1,80p .agents/skills/adhd-md/references/doc-types.md",
+      "description": "Read doc-types reference"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -c \"\nimport importlib.util, sys\nspec = importlib.util.spec_from_file_location('adhd_md', '.agents/skills/adhd-md/scripts/adhd_md.py')\nm = importlib.util.module_from_spec(spec); sys.modules['adhd_md']=m; spec.loader.exec_module(m)\nfor rid in ('H1','H4','S5','T3','C4','X3','L2','W2','N7'):\n    r = [x for x in m.RULES if x['id']==rid][0]\n    print(rid, 'axis=', r['axis'], 'min_level=', r['min_level'], 'status=', r['status'], 'scoring=', bool(r.get('scoring')))\n\"",
+      "description": "Inspect rule axis metadata"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -n \"score(\" .agents/skills/adhd-md/scripts/adhd_md.py | sed -n 1,20p; grep -n \"def cmd_audit\" -A 40 .agents/skills/adhd-md/scripts/adhd_md.py | grep -n \"score\\|coverage\\|scope\" | head -20",
+      "description": "Check how cmd_audit calls score"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -c \"\nimport importlib.util, sys\nspec = importlib.util.spec_from_file_location('adhd_md', '.agents/skills/adhd-md/scripts/adhd_md.py')\nm = importlib.util.module_from_spec(spec); sys.modules['adhd_md']=m; spec.loader.exec_module(m)\nids = ['S4','S5','H4','P2','P5','L2','L4','L7','W2','W3','W5','W8','A1','A7','A8','N4','N7','T3','C4','X3','X6','X7','X8']\nF=[];C=[]\nfor rid in ids:\n    r = [x for x in m.RULES if x['id']==rid][0]\n    (F if r['axis']=='F' else C).append(rid)\nprint('F-axis judge:', F)\nprint('C-axis judge:', C)\n\"",
+      "description": "Group judge rules by axis"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H11-r1/workspace/output.md"
+    }
+  }
+]

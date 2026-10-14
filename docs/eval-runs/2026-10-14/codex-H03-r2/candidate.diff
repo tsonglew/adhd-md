@@ -1,0 +1,13 @@
+--- input.md
++++ output.md
+@@ -7,7 +7,9 @@
+ | `retryCount` | 2 | 0–4 | 只对 HTTP `503` 重试 |
+ | `retryDelayMs` | 250 | 50–2000 | 每次重试前等待的毫秒数 |
+ 
+-`retryCount=0` 时不重试。HTTP `429` 使用响应中的 `Retry-After`，不读取 `retryDelayMs`。参数缺失时使用默认值；未知参数会被忽略并写入启动日志。
++- `retryCount=0` 时不重试。
++- HTTP `429` 使用响应中的 `Retry-After`，不读取 `retryDelayMs`。
++- 参数缺失时使用默认值；未知参数会被忽略并写入启动日志。
+ 
+ 示例：
+ 

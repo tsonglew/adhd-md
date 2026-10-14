@@ -1,0 +1,16 @@
+{
+  "reviewer": "current coordinating language model using frozen answer key and source; not a human reviewer",
+  "human_review": "pending",
+  "independent_machine_checks": "verify/audit/report rerun by harness, not copied from evaluated model claims",
+  "constraint_key": "14 days、workspace owners、failed-before-upload exclusion、archive differs from recycle bin、2 GB split、30-minute link、guests excluded",
+  "constraints": "H07 listed numbers, units and restrictions remain; source has no claim that the UI list only shows completed exports.",
+  "scope": "existing list types and heading levels retained; added estimate paragraph",
+  "issues": [
+    "Unsupported UI guarantee: \"Only completed exports appear in it.\" Original only instructs selecting a completed export.",
+    "Final answer says no invented UI behavior despite this addition."
+  ],
+  "new_facts": "unsupported UI list guarantee; coordinator review fail",
+  "result": "constraints reviewed; rule issues recorded; not a human signoff",
+  "verify_and_zero_x_gate": true,
+  "note": "This machine gate excludes semantic, scope, level and unjudged-rule checks; it is not overall acceptance."
+}

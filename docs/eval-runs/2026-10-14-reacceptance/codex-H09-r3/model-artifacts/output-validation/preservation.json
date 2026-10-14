@@ -1,0 +1,47 @@
+{
+  "status": "pass",
+  "method": "Remove only the recorded inserted Markdown characters; recover the original bytes exactly.",
+  "original_sha256": "6374a44faee4d2ec26c2305e45130548a8730bb7adefbb0a4e110372097ca71e",
+  "original_bytes": 783,
+  "candidate_bytes": 801,
+  "original_characters_removed_or_replaced": 0,
+  "original_order_changed": false,
+  "inserted_character_ranges": [
+    [
+      394,
+      396
+    ],
+    [
+      438,
+      440
+    ],
+    [
+      473,
+      475
+    ],
+    [
+      520,
+      522
+    ],
+    [
+      535,
+      537
+    ],
+    [
+      639,
+      641
+    ],
+    [
+      675,
+      677
+    ],
+    [
+      702,
+      704
+    ],
+    [
+      705,
+      707
+    ]
+  ]
+}

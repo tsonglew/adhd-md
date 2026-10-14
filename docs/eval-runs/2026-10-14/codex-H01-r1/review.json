@@ -1,0 +1,15 @@
+{
+  "reviewer": "current coordinating language model using frozen answer key and source; not a human reviewer",
+  "human_review": "pending",
+  "independent_machine_checks": "verify/audit/report rerun by harness, not copied from evaluated model claims",
+  "constraint_key": "静默时段 `21:30–08:00`、系统时区、仅当前设备、通知不收回、日历邀请和安全告警仍显示、校时后重新保存、企业策略只读",
+  "constraints": "Reviewed against H01 and source: quiet hours, OS timezone, manual device scope, account switch, retained notifications, sync, exceptions, clock resave and policy readonly all retained.",
+  "scope": "preserved",
+  "issues": [
+    "A8: step 2 still combines enabling and selecting times; the final answer acknowledges this."
+  ],
+  "new_facts": "none identified",
+  "result": "constraints reviewed; rule issues recorded; not a human signoff",
+  "verify_and_zero_x_gate": true,
+  "note": "This machine gate excludes semantic, scope, level and unjudged-rule checks; it is not overall acceptance."
+}

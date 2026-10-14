@@ -1,0 +1,66 @@
+[
+  {
+    "command": "/bin/zsh -lc \"pwd && rg --files -g 'AGENTS.md' -g 'input.md' -g 'SKILL.md' -g '*audit*' -g '*verify*' .agents/skills/adhd-md .codex/skills/adhd-md . 2>/dev/null\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'cat .agents/skills/adhd-md/SKILL.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'cat .agents/skills/adhd-md/references/rules.md .agents/skills/adhd-md/references/antipatterns.md .agents/skills/adhd-md/references/cjk.md .agents/skills/adhd-md/references/doc-types.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'cat AGENTS.md && cat input.md && git status --short'",
+    "exit_code": 128
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 3 --scope=format'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"sed -n '160,290p' .agents/skills/adhd-md/references/rules.md && cat .agents/skills/adhd-md/references/evidence.md .agents/skills/adhd-md/references/rubric.md\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 3 --scope=format --json'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py fmt input.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"python3 - <<'PY'\nfrom pathlib import Path\nimport hashlib\np = Path('input.md')\nbefore = p.read_bytes()\ns = before.decode('utf-8')\nold = '\"'`retryCount=0` 时不重试。HTTP `429` 使用响应中的 `Retry-After`，不读取 `retryDelayMs`。参数缺失时使用默认值；未知参数会被忽略并写入启动日志。'\"'\nnew = '- \"'`retryCount=0` 时不重试。'\"\\\\n- HTTP \"'`429` 使用响应中的 `Retry-After`，不读取 `retryDelayMs`。'\"\\\\n- 参数缺失时使用默认值；未知参数会被忽略并写入启动日志。'\nassert s.count(old) == 1\ns = s.replace(old, new)\nold_last = '\"'`ttlSeconds` 与 `retryDelayMs` 的单位不同，不能互换。更改参数后重启服务才会生效。'\"'\nnew_last = '\"'`ttlSeconds` 与 `retryDelayMs` 的单位不同，不能互换。'\"\\\\n\\\\n更改参数后重启服务才会生效。'\nassert s.count(old_last) == 1\ns = s.replace(old_last, new_last)\nPath('output.md').write_bytes(s.encode('utf-8'))\nassert p.read_bytes() == before\nprint('input_sha256:', hashlib.sha256(before).hexdigest())\nprint('已写入 output.md；input.md 字节未变。')\nPY\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'diff -u input.md output.md && nl -ba output.md'",
+    "exit_code": 1
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py audit output.md --level 3 --scope=format'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py report input.md output.md --scope=format --level=3'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=format'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"python3 - <<'PY'\nfrom pathlib import Path\nimport subprocess, json, hashlib, re\nfolder = Path('adhd-md-checks')\nfolder.mkdir(exist_ok=True)\nbase = ['python3', '.agents/skills/adhd-md/scripts/adhd_md.py']\ncommands = [\n ('audit-before', ['audit', 'input.md', '--level', '3', '--scope=format', '--json']),\n ('audit-after', ['audit', 'output.md', '--level', '3', '--scope=format', '--json']),\n ('verify', ['verify', 'input.md', 'output.md', '--scope=format', '--json']),\n ('report', ['report', 'input.md', 'output.md', '--scope=format', '--level=3', '--json']),\n]\nstatuses = {}\nfor name, args in commands:\n    r = subprocess.run(base + args, capture_output=True, text=True)\n    (folder / (name + '.json')).write_text(r.stdout, encoding='utf-8')\n    if r.stderr:\n        (folder / (name + '.stderr.txt')).write_text(r.stderr, encoding='utf-8')\n    statuses[name] = {'command': ' '.join(base + args), 'exit_code': r.returncode}\n    print(name, 'exit_code=', r.returncode)\n    if name == 'verify':\n        print(r.stdout)\noriginal = Path('input.md').read_bytes()\noutput = Path('output.md').read_bytes()\nassert hashlib.sha256(original).hexdigest() == '3d294a0e6e1b3f782b59058fd871628ddf046322fe6f32879ac611dfc9752af1'\ns = output.decode('utf-8')\n# 精确逆转本次全部排版操作，比较字节，不归一标点或代码。\ns = s.replace('- \"'`retryCount=0` 时不重试。'\"\\\\n- HTTP \"'`429` 使用响应中的 `Retry-After`，不读取 `retryDelayMs`。'\"\\\\n- 参数缺失时使用默认值；未知参数会被忽略并写入启动日志。', '\"'`retryCount=0` 时不重试。HTTP `429` 使用响应中的 `Retry-After`，不读取 `retryDelayMs`。参数缺失时使用默认值；未知参数会被忽略并写入启动日志。'\"')\ns = s.replace('\"'`ttlSeconds` 与 `retryDelayMs` 的单位不同，不能互换。'\"\\\\n\\\\n更改参数后重启服务才会生效。', '\"'`ttlSeconds` 与 `retryDelayMs` 的单位不同，不能互换。更改参数后重启服务才会生效。'\"')\nassert s.encode('utf-8') == original\nstatuses['strict_preservation'] = {\n 'input_sha256': hashlib.sha256(original).hexdigest(),\n 'output_sha256': hashlib.sha256(output).hexdigest(),\n 'input_unchanged': True,\n 'exact_bytes_after_reversing_only_documented_formatting': True,\n 'exit_code': 0,\n}\n(folder / 'exit-status.json').write_text(json.dumps(statuses, ensure_ascii=False, indent=2) + '\\\\n', encoding='utf-8')\nprint('原文哈希未变；精确逆转列表标记与换行后，全文字节与原文完全一致。')\nPY\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'nl -ba output.md && cat adhd-md-checks/report.json'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"python3 - <<'PY'\nfrom pathlib import Path\nimport json, re, hashlib\nr = Path('output.report.md').read_text()\na = json.loads(Path('adhd-md-checks/audit-after.json').read_text())\nexpected = a['score']['unscored']\nsection = r.split('**脚本未判定项与逐条复核**', 1)[1].split('**其余 X 组复核**', 1)[0]\nactual = re.findall(r'\"'^'\"\\\\| ([A-Z][0-9]+) \\\\|', section, re.M)\nassert actual == expected, (actual, expected)\nv = json.loads(Path('adhd-md-checks/verify.json').read_text())\nassert v['status'] == 'pass' and not v['unknowns']\nassert hashlib.sha256(Path('input.md').read_bytes()).hexdigest() == '3d294a0e6e1b3f782b59058fd871628ddf046322fe6f32879ac611dfc9752af1'\nprint('报告覆盖全部 32 个 judge ID；verify=pass，unknowns=0；输入哈希未变。')\nprint('产物：output.md、output.report.md、adhd-md-checks/。')\nPY\"",
+    "exit_code": 0
+  }
+]

@@ -1,0 +1,1 @@
+使用 adhd-md skill 改写 `input.md`，按本案例的 `scope=content` 和 `level` 执行，以清楚、简短、可扫读为目标。把结果写到 `output.md`，不要覆盖输入。必须保留本案例列出的所有数值、单位、条件、例外、先决条件、代码和链接目标；不要编造事实。运行 `audit` 与 `report --scope=content`，报告脚本分、反模式扣分、verify 状态和未判定项；`unknown` 不得写成通过。

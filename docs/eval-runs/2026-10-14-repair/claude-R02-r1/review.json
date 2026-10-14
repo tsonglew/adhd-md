@@ -1,0 +1,8 @@
+{
+  "reviewer": "coordinating agent; not independent human",
+  "human_review": "pending",
+  "identical_bytes": true,
+  "punctuation_comment_boundary_preserved": true,
+  "verify_status": "pass",
+  "fallback": "original copied without accepting edits"
+}

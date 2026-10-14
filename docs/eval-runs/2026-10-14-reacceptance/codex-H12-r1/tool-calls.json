@@ -1,0 +1,78 @@
+[
+  {
+    "command": "/bin/zsh -lc \"pwd && rg --files -g 'AGENTS.md' -g 'input.md' -g 'SKILL.md' -g '*audit*' -g '*verify*' -g '*format*' . .agents .codex\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'cat .agents/skills/adhd-md/SKILL.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'cat AGENTS.md && cat input.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'cat .agents/skills/adhd-md/references/rules.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'cat .agents/skills/adhd-md/references/antipatterns.md && cat .agents/skills/adhd-md/references/evidence.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 3 --scope=format'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'cat .agents/skills/adhd-md/references/antipatterns.md && cat .agents/skills/adhd-md/references/doc-types.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"rg -n 'unknown|complex|nested|indent|unsupported|identical|unchanged' .agents/skills/adhd-md/scripts/adhd_md.py && git status --short && nl -ba input.md\"",
+    "exit_code": 128
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 3 --scope=format --json'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py fmt input.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"sed -n '230,520p' .agents/skills/adhd-md/references/rules.md\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"sed -n '1720,1805p' .agents/skills/adhd-md/scripts/adhd_md.py && sed -n '1990,2045p' .agents/skills/adhd-md/scripts/adhd_md.py && nl -ba input.md\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"python3 - <<'PY'\nfrom pathlib import Path\nsource = Path('input.md').read_bytes()\nold = b'1. **Preview** the plan.\\\\n   - Confirm \"'`--check-only` is present.'\"\\\\n   - Confirm the target is \"'`staging`.'\"\\\\n2. Apply the plan only after approval.\\\\n'\nnew = b'1. **Preview** the plan.\\\\n\\\\n   - Confirm \"'`--check-only` is present.'\"\\\\n   - Confirm the target is \"'`staging`.'\"\\\\n\\\\n2. Apply the plan only after approval.\\\\n'\nassert source.count(old) == 1\ncandidate = source.replace(old, new, 1)\nassert candidate.replace(new, old, 1) == source\nPath('output.md').write_bytes(candidate)\nprint('Wrote output.md: inserted two blank lines within the ordered list; all original bytes retained in order.')\nPY\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=format'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'diff -u input.md output.md && nl -ba output.md'",
+    "exit_code": 1
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py report input.md output.md --scope=format --level 3'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py audit output.md --level 3 --scope=format'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py report input.md output.md --scope=format --level 3 --json'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"python3 - <<'PY'\nfrom pathlib import Path\nimport json\nimport subprocess\n\nscript = '.agents/skills/adhd-md/scripts/adhd_md.py'\nresult = subprocess.run(['python3', script, 'report', 'input.md', 'output.md', '--scope=format', '--level', '3', '--json'], capture_output=True, text=True)\npayload = json.loads(result.stdout)\nPath('output.validation.json').write_text(result.stdout, encoding='utf-8')\nassert result.returncode == 0\nassert payload['verify']['status'] == 'pass'\nassert not payload['verify']['unknowns']\nsource = Path('input.md').read_bytes()\noutput = Path('output.md').read_bytes()\nexpected = source.replace(b'1. **Preview** the plan.\\\\n', b'1. **Preview** the plan.\\\\n\\\\n', 1).replace(b'   - Confirm the target is \"'`staging`.'\"\\\\n', b'   - Confirm the target is \"'`staging`.'\"\\\\n\\\\n', 1)\nassert output == expected\nassert len(output) == len(source) + 2\nprint(json.dumps({'report_exit_status': result.returncode, 'verify': payload['verify'], 'script_score': payload['after']['score']['total'], 'anti_pattern_deductions': payload['after']['score']['x_deduct'], 'source_bytes': len(source), 'output_bytes': len(output), 'only_changes': 'two inserted LF bytes', 'evidence': 'output.validation.json'}, indent=2))\nPY\"",
+    "exit_code": 0
+  }
+]

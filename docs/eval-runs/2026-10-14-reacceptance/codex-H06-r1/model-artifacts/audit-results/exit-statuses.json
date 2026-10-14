@@ -1,0 +1,38 @@
+{
+  "candidate-verify": {
+    "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md /var/folders/ps/vckz32h11ljbdhbvtm92mlp40000gp/T/adhd-h06-nbgh19hf/candidate.withdrawn.md --scope=format --json",
+    "exit_code": 4
+  },
+  "input-audit": {
+    "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 3 --scope=format --json",
+    "exit_code": 0
+  },
+  "output-audit": {
+    "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit output.md --level 3 --scope=format --json",
+    "exit_code": 0
+  },
+  "final-verify": {
+    "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=format --json",
+    "exit_code": 0
+  },
+  "report": {
+    "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py report input.md output.md --scope=format --level 3",
+    "exit_code": 0
+  },
+  "report-json": {
+    "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py report input.md output.md --scope=format --level 3 --json",
+    "exit_code": 0
+  },
+  "byte_comparison": {
+    "identical": true,
+    "input_unchanged": true,
+    "bytes": 618,
+    "input_sha256": "0e55b3fd3fcc1bcd4c9c39222b76670410508702e2b04438ad1a70a6070b7cdf",
+    "output_sha256": "0e55b3fd3fcc1bcd4c9c39222b76670410508702e2b04438ad1a70a6070b7cdf"
+  },
+  "fmt-preview": {
+    "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py fmt input.md",
+    "exit_code": 0,
+    "stdout": "格式已规范，无需修改。\n"
+  }
+}

@@ -1,0 +1,78 @@
+[
+  {
+    "command": "/bin/zsh -lc \"pwd && rg --files -g 'AGENTS.md' -g 'input.md' -g 'SKILL.md' -g '\"'!node_modules'\"' -g '\"'!'\"\\\\.git' -g '\"'!'\"\\\\.aws' .agents .codex .\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'cat .agents/skills/adhd-md/SKILL.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'cat .agents/skills/adhd-md/references/rules.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'cat AGENTS.md && cat input.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'cat .agents/skills/adhd-md/references/antipatterns.md && cat .agents/skills/adhd-md/references/cjk.md && cat .agents/skills/adhd-md/references/doc-types.md && cat .agents/skills/adhd-md/references/evidence.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'git status --porcelain && python3 .agents/skills/adhd-md/scripts/adhd_md.py fmt input.md'",
+    "exit_code": 128
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 3 --scope=format'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"cat .agents/skills/adhd-md/references/doc-types.md && sed -n '1,70p' .agents/skills/adhd-md/references/evidence.md\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"cat .agents/skills/adhd-md/references/antipatterns.md && cat .agents/skills/adhd-md/references/cjk.md && sed -n '250,330p' .agents/skills/adhd-md/references/rules.md\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --scope=format --level=3 --json'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py fmt input.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"python3 - <<'PY'\nfrom pathlib import Path\nimport tempfile\nsrc = Path('input.md').read_bytes()\ntext = src.decode('utf-8')\nold = '使用 \"'`n ** 3` 表示公式；默认间隔为 8 秒；日志中的单位为毫秒。'\"'\nnew = '- 使用 \"'`n ** 3` 表示公式；'\"\\\\n- 默认间隔为 8 秒；\\\\n- 日志中的单位为毫秒。'\nassert text.count(old) == 1\ncandidate = text.replace(old, new)\nassert candidate.replace(new, old).encode('utf-8') == src\nwith tempfile.NamedTemporaryFile(prefix='adhd-r02-candidate-', suffix='.md', delete=False) as f:\n    f.write(candidate.encode('utf-8'))\n    path = f.name\nPath('/private/tmp/adhd-r02-candidate-path.txt').write_text(path)\nprint(path)\nPY\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"python3 - <<'PY'\nfrom pathlib import Path\nimport subprocess\np = Path('/private/tmp/adhd-r02-candidate-path.txt').read_text()\nr = subprocess.run(['python3', '.agents/skills/adhd-md/scripts/adhd_md.py', 'verify', 'input.md', p, '--scope=format'], text=True, capture_output=True)\nprint(r.stdout)\nprint(r.stderr)\nprint('exit_code:', r.returncode)\nPY\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"python3 - <<'PY'\nfrom pathlib import Path\nsrc = Path('input.md').read_bytes()\nPath('output.md').write_bytes(src)\nassert Path('output.md').read_bytes() == src\nprint(f'字节比较通过：input.md 与 output.md 完全一致（{len(src)} 字节）。')\nPY\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=format'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py report input.md output.md --scope=format --level=3 --json'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py report input.md output.md --scope=format --level=3'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"nl -ba input.md && rg -n 'HTML 注释等造成|原始 HTML|identical' .agents/skills/adhd-md/SKILL.md .agents/skills/adhd-md/scripts/adhd_md.py\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"python3 - <<'PY'\nfrom pathlib import Path\nimport re\nsrc = Path('input.md').read_bytes()\nout = Path('output.md').read_bytes()\nassert src == out\nreport = Path('output.report.md').read_text()\nsection = report.split('## 需判断规则逐项结论\\\\n', 1)[1].split('## X 组补充复核\\\\n', 1)[0]\nrows = re.findall(r'\"'^'\"\\\\| ([A-Z]\\\\d+) ', section, re.M)\nexpected = 'S4 S5 S6 S8 H3 H4 P2 P5 L2 L4 L7 W2 W3 W5 W7 W8 W9 A1 A2 A3 A5 A6 A7 A8 N4 N7 T3 C4 X3 X6 X7 X8'.split()\nassert len(rows) == len(expected) == 32 and set(rows) == set(expected)\nprint('最终核对：output.md 与 input.md 逐字节一致；报告已覆盖全部 32 条 judge 规则。')\nPY\"",
+    "exit_code": 0
+  }
+]

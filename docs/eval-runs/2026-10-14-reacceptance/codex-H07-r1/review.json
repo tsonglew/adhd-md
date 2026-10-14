@@ -1,0 +1,16 @@
+{
+  "reviewer": "coordinator inspected source/output against preannotated constraints; not evaluated model self-report",
+  "human_review": "not performed",
+  "information_preserved": true,
+  "scope_preserved": true,
+  "unsupported_facts_found": false,
+  "evidence": [
+    "14-day completed-export retention moved into existing H1; owner-only and failed-before-upload exclusion retained in first paragraph.",
+    "Recycle-bin distinction and no deletion of source records retained.",
+    "Existing bold UI path, completed-export selection, date/row-count check before download and approved-folder/customer-data warning preserved in original four-item list.",
+    "2 GB numbered ZIP split, 30-minute expiry after creation, guest exclusion and empty-archive workspace check retained.",
+    "H4 count in first-screen title and N7 progress on all four steps present; A7 source gap/A8 scope limitation explicitly not met. No claim that the list only displays completed exports."
+  ],
+  "judge_review": "Scoped constraints and key judge decisions supported; stylistic gaps explicitly reported.",
+  "result": "pass under declared constraint and reporting criteria"
+}

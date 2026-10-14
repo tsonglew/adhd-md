@@ -1,0 +1,210 @@
+[
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H04-r1/workspace/.agents/skills/adhd-md/SKILL.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H04-r1/workspace/input.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "ls -la /private/tmp/adhd-eval-20261014/claude-H04-r1/workspace/ && echo \"---SKILL DIR---\" && find /private/tmp/adhd-eval-20261014/claude-H04-r1/workspace/.agents/skills/adhd-md -type f | sort",
+      "description": "List workspace and skill files"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H04-r1/workspace/.agents/skills/adhd-md/references/rules.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H04-r1/workspace/.agents/skills/adhd-md/references/antipatterns.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H04-r1/workspace/.agents/skills/adhd-md/references/cjk.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H04-r1/workspace/prompt.txt"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 2 2>&1 | head -100",
+      "description": "Run audit on input.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H04-r1/workspace/.agents/skills/adhd-md/references/rubric.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H04-r1/workspace/.agents/skills/adhd-md/references/doc-types.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 2 --scope=content 2>&1 | head -60",
+      "description": "Run audit with content scope"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 2 --scope=content --json 2>&1 | python3 -I -c \"\nimport json,sys\nd=json.load(sys.stdin)\nprint('TOP KEYS:', list(d.keys()))\nprint(json.dumps({k:v for k,v in d.items() if k not in ('findings','shown_findings','rules','rule_status')}, ensure_ascii=False, indent=1)[:3000])\n\"",
+      "description": "Inspect audit JSON structure"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H04-r1/workspace/.agents/skills/adhd-md/references/evidence.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "cat -A input.md | sed -n '1,25p' && echo \"=== git? ===\" && git status --porcelain input.md 2>&1 | head -3",
+      "description": "Show input.md exact bytes and git state"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c \"\np='input.md'\nb=open(p,'rb').read()\nprint('bytes:',len(b))\nprint('CRLF:', b.count(b'\\r\\n'), 'LF:', b.count(b'\\n'))\nfor i,l in enumerate(b.decode('utf-8').split('\\n'),1):\n    print(i, repr(l))\n\"",
+      "description": "Dump input lines with exact characters"
+    }
+  },
+  {
+    "tool": "Write",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H04-r1/workspace/output.md",
+      "content": "# 导出任务没有完成\n\n范围：本文处理控制台中的 CSV 导出任务。API 导出和超过 100,000 行的后台导出不适用。\n\n共 5 步，约 1 分钟读完。\n\n## 先确认\n\n以下三条要同时成立，才走恢复步骤：\n\n- 页面显示「正在准备」超过 2 分钟。\n- 用户仍能打开同一工作区中的其他页面。\n- 导出队列没有处于维护窗口。\n\n如果页面显示「权限不足」，转到权限排查流程，不要重复提交任务。\n\n## 恢复步骤\n\n1. **第 1 步，共 5 步** —— 在任务列表复制任务 ID 和创建时间。\n2. **第 2 步，共 5 步** —— 刷新任务列表一次，确认状态仍未变化。\n3. **第 3 步，共 5 步** —— 取消该任务。\n4. **第 4 步，共 5 步** —— 等到状态变为「已取消」；还是「正在取消」就再刷新一次列表。\n5. **第 5 步，共 5 步** —— 重新选择相同的 CSV 列和筛选条件，只提交一次。\n6. **第 6 步，共 5 步** —— 若新任务超过 2 分钟仍在准备，附上任务 ID 联系值班人。\n\n不要删除原始数据，也不要在维护窗口中重启导出 worker。已经下载的 CSV 不会随任务取消而删除。\n"
+    }
+  },
+  {
+    "tool": "Write",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H04-r1/workspace/output.md",
+      "content": "# 导出任务没有完成\n\n范围：本文处理控制台中的 CSV 导出任务。API 导出和超过 100,000 行的后台导出不适用。\n\n正文约 1 分钟读完，恢复步骤共 5 步。\n\n## 先确认\n\n以下三条同时成立，才走恢复步骤：\n\n- 页面显示「正在准备」超过 2 分钟（这是本次故障的判定条件）。\n- 用户仍能打开同一工作区中的其他页面。\n- 导出队列没有处于维护窗口。\n\n如果页面显示「权限不足」，转到权限排查流程，不要重复提交任务。\n\n## 恢复步骤\n\n1. **第 1 步，共 5 步** —— 在任务列表复制任务 ID 和创建时间。\n2. **第 2 步，共 5 步** —— 刷新任务列表一次，确认状态仍未变化。\n3. **第 3 步，共 5 步** —— 取消该任务并等待状态变为「已取消」。\n4. **第 4 步，共 5 步** —— 重新选择相同的 CSV 列和筛选条件，只提交一次。\n5. **第 5 步，共 5 步** —— 若新任务超过 2 分钟仍在准备，附上任务 ID 联系值班人。\n\n不要删除原始数据，也不要在维护窗口中重启导出 worker。已经下载的 CSV 不会随任务取消而删除。\n"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "echo \"=== verify --scope=content ===\" && python3 -I .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=content; echo \"exit=$?\"; echo \"=== verify --scope=format ===\" && python3 -I .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=format; echo \"exit=$?\"",
+      "description": "Verify output against input"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=content",
+      "description": "Verify output with content scope"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=format",
+      "description": "Verify format invariants between input and output"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I .agents/skills/adhd-md/scripts/adhd_md.py report input.md output.md --scope=content",
+      "description": "Generate before/after report"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I .agents/skills/adhd-md/scripts/adhd_md.py audit output.md --level 2 --scope=content",
+      "description": "Audit the output draft"
+    }
+  },
+  {
+    "tool": "Write",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H04-r1/workspace/output.md",
+      "content": "# 导出任务没有完成\n\n范围：本文处理控制台中的 CSV 导出任务。API 导出和超过 100,000 行的后台导出不适用。\n\n正文约 1 分钟读完，恢复步骤共 5 步。\n\n## 先确认\n\n以下三条同时成立，才走恢复步骤：\n\n- 页面显示「正在准备」超过 2 分钟（这是本次故障的判定条件）。\n- 用户仍能打开同一工作区中的其他页面。\n- 导出队列没有处于维护窗口。\n\n如果页面显示「权限不足」，转到权限排查流程，不要重复提交任务。\n\n## 恢复步骤\n\n1. 第 1 步，共 5 步 —— 在任务列表复制任务 ID 和创建时间。\n2. 第 2 步，共 5 步 —— 刷新任务列表一次，确认状态仍未变化。\n3. 第 3 步，共 5 步 —— 取消该任务并等待状态变为「已取消」。\n4. 第 4 步，共 5 步 —— 重新选择相同的 CSV 列和筛选条件，只提交一次。\n5. 第 5 步，共 5 步 —— 若新任务超过 2 分钟仍在准备，附上任务 ID 联系值班人。\n\n不要删除原始数据，也不要在维护窗口中重启导出 worker。已经下载的 CSV 不会随任务取消而删除。\n"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I .agents/skills/adhd-md/scripts/adhd_md.py report input.md output.md --scope=content",
+      "description": "Re-run report after removing bold"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I .agents/skills/adhd-md/scripts/adhd_md.py report input.md output.md --scope=content --json",
+      "description": "Get JSON report for full detail"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=content; echo \"--- format scope ---\"; python3 -I .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=format | head -5",
+      "description": "Check verify status for both scopes"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "cat > /tmp/adhd_probe.py <<'PY'\nimport sys, json, subprocess\nsrc = open(sys.argv[1], encoding='utf-8').read()\nbold = src.replace('\\n1. ', '\\n1. **第 1 步，共 5 步** —— ').replace('\\n2. ', '\\n2. **第 2 步，共 5 步** —— ').replace('\\n3. ', '\\n3. **第 3 步，共 5 步** —— ').replace('\\n4. ', '\\n4. **第 4 步，共 5 步** —— ').replace('\\n5. ', '\\n5. **第 5 步，共 5 步** —— ')\nopen('/tmp/adhd_bold.md','w',encoding='utf-8').write(bold)\nout = subprocess.run([sys.executable,'-I','.agents/skills/adhd-md/scripts/adhd_md.py','report',sys.argv[1],'/tmp/adhd_bold.md','--scope=content','--json'],capture_output=True,text=True)\nd = json.loads(out.stdout)\na = d['after']\nprint('bold-variant total:', a['score']['total'], 'x_deduct:', a['score']['x_deduct'], 'x_hits:', a['score']['x_hits'])\nprint('typo dim:', a['score']['dims']['typo']['score'])\nprint('findings:', json.dumps(a['findings'], ensure_ascii=False))\nPY\npython3 -I /tmp/adhd_probe.py input.md",
+      "description": "Measure the bold variant that caused X5"
+    }
+  },
+  {
+    "tool": "Write",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H04-r1/workspace/.probe/probe.py",
+      "content": "import sys, json, subprocess\n\nsrc = open(sys.argv[1], encoding=\"utf-8\").read()\nbold = src\nfor n in \"12345\":\n    bold = bold.replace(\n        \"\\n%s. \" % n, \"\\n%s. **第 %s 步，共 5 步** —— \" % (n, n)\n    )\nopen(\".probe/bold.md\", \"w\", encoding=\"utf-8\").write(bold)\nout = subprocess.run(\n    [sys.executable, \"-I\", \".agents/skills/adhd-md/scripts/adhd_md.py\", \"report\",\n     sys.argv[1], \".probe/bold.md\", \"--scope=content\", \"--json\"],\n    capture_output=True, text=True)\nd = json.loads(out.stdout)\na = d[\"after\"]\nprint(\"bold-variant total:\", a[\"score\"][\"total\"])\nprint(\"x_deduct:\", a[\"score\"][\"x_deduct\"], \"x_hits:\", a[\"score\"][\"x_hits\"])\nprint(\"typo dim:\", a[\"score\"][\"dims\"][\"typo\"][\"score\"])\nprint(\"findings:\", json.dumps(a[\"findings\"], ensure_ascii=False))\n"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I .probe/probe.py input.md",
+      "description": "Measure bold variant score and findings"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "rm -rf .probe && ls -la",
+      "description": "Remove probe directory"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c \"\nimport re\na=open('input.md',encoding='utf-8').read()\nb=open('output.md',encoding='utf-8').read()\nprint('--- tokens in INPUT missing from OUTPUT ---')\nfor t in ['100,000','CSV','API','ID','2 分钟','worker','控制台','工作区','维护窗口','权限不足','正在准备','已取消','值班人','筛选条件','原始数据','创建时间','任务列表']:\n    print(('OK  ' if t in b else 'MISS'), repr(t), '| in_input:', t in a)\nprint()\nprint('--- numbers ---')\nprint('input  nums:', sorted(set(re.findall(r'\\d[\\d,]*', a))))\nprint('output nums:', sorted(set(re.findall(r'\\d[\\d,]*', b))))\nprint()\nprint('--- headings ---')\nprint('in :', re.findall(r'^#+ .*', a, re.M))\nprint('out:', re.findall(r'^#+ .*', b, re.M))\nprint()\nprint('--- links/code/emoji ---')\nprint('links in/out:', re.findall(r'\\[[^\\]]*\\]\\([^)]*\\)', a), re.findall(r'\\[[^\\]]*\\]\\([^)]*\\)', b))\nprint('inline code in/out:', re.findall(r'\\`[^\\`]*\\`', a), re.findall(r'\\`[^\\`]*\\`', b))\nimport unicodedata\nemo=[c for c in b if ord(c)>0x2190 and unicodedata.category(c)=='So']\nprint('emoji-ish in output:', emo)\n\"",
+      "description": "Check token, number, heading preservation"
+    }
+  }
+]

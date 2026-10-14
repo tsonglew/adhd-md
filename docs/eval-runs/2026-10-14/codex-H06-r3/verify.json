@@ -1,0 +1,21 @@
+{
+  "scope": "format",
+  "status": "unknown",
+  "hard_failures": [],
+  "warnings": [],
+  "unknowns": [
+    {
+      "side": "old",
+      "kind": "raw_html",
+      "line": 8,
+      "hint": "原始 HTML 的显示与结构不由 Markdown 校验器解析；保留原样并人工核对。"
+    },
+    {
+      "side": "new",
+      "kind": "raw_html",
+      "line": 8,
+      "hint": "原始 HTML 的显示与结构不由 Markdown 校验器解析；保留原样并人工核对。"
+    }
+  ],
+  "ok": false
+}

@@ -1,0 +1,7 @@
+............................................................................................................................................../opt/homebrew/Cellar/python@3.14/3.14.5/Frameworks/Python.framework/Versions/3.14/lib/python3.14/tempfile.py:484: ResourceWarning: Implicitly cleaning up <HTTPError 403: 'Forbidden'>
+  _warnings.warn(self.warn_message, ResourceWarning)
+...............................................................................
+----------------------------------------------------------------------
+Ran 221 tests in 127.200s
+
+OK

@@ -1,0 +1,27 @@
+{
+  "reviewer": "coordinator inspected source/output and report against frozen source constraints",
+  "human_review": "not performed",
+  "information_preserved": true,
+  "scope_preserved": false,
+  "unsupported_facts_found": true,
+  "issues": [
+    {
+      "type": "unsupported factual strengthening",
+      "source": "The record is visible in the primary database.",
+      "output": "The primary database already has the new value.",
+      "assessment": "Record presence is weaker than confirmation that the database has the updated value; the input does not provide this guarantee."
+    },
+    {
+      "type": "scope boundary",
+      "source": "Final paragraph contains the two operational cautions.",
+      "output": "The identical paragraph is moved above the numbered recovery steps.",
+      "assessment": "The skill explicitly classifies moving an existing block as format. The run declares content only; model acknowledges the move but claims to avoid format changes."
+    }
+  ],
+  "positive_evidence": [
+    "Queue-nonzero still governs both waiting and subsequent refresh in one list item; old unconditional-refresh failure did not recur.",
+    "All source scope exclusions, prerequisites, IDs/metric, workspace-only requeue, closing confirmation, business-hours prohibition and unchanged-primary-DB caveat retained.",
+    "H4 count and per-step N7 labels supplied; A7/A8 limitations reported."
+  ],
+  "result": "fail despite verify pass and X=0"
+}

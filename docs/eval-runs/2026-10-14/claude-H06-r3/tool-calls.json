@@ -1,0 +1,285 @@
+[
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H06-r3/workspace/.agents/skills/adhd-md/SKILL.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H06-r3/workspace/input.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "ls -la && echo \"--- git ---\" && git status --porcelain 2>&1 | head -20; echo \"exit=$?\"",
+      "description": "List workspace files and check git status"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "find .agents/skills/adhd-md -type f | sort",
+      "description": "List skill files"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "ls -la; echo \"--- git ---\"; git status --porcelain; echo \"git_exit=$?\"",
+      "description": "List files and check git repository status"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "ls -la",
+      "description": "List workspace files"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "git status --porcelain",
+      "description": "Check git working tree status"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 2 --scope=format; echo \"AUDIT_EXIT=$?\"",
+      "description": "Run adhd-md audit on input.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H06-r3/workspace/.agents/skills/adhd-md/references/rules.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 2 --scope=format",
+      "description": "Run adhd-md audit on input.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H06-r3/workspace/.agents/skills/adhd-md/references/antipatterns.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H06-r3/workspace/.agents/skills/adhd-md/references/cjk.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py --help",
+      "description": "Show adhd_md.py CLI help"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py fmt --help",
+      "description": "Show fmt subcommand help"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py verify --help",
+      "description": "Show verify subcommand help"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py fmt input.md",
+      "description": "Preview deterministic format fixes"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H06-r3/workspace/.agents/skills/adhd-md/references/examples/README.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H06-r3/workspace/.agents/skills/adhd-md/references/examples/04-en-reference.before.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H06-r3/workspace/.agents/skills/adhd-md/references/examples/02-zh-readme.before.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H06-r3/workspace/.agents/skills/adhd-md/references/examples/02-zh-readme.after.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "cp input.md output.md; ls -l input.md output.md",
+      "description": "Copy input to output.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=format",
+      "description": "Verify output against input at format scope"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit output.md --level 2 --scope=format",
+      "description": "Audit output.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=format; print \"verify exit: $?\"",
+      "description": "Run verify and print exit code"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=format --json",
+      "description": "Verify with JSON output"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=format > /dev/null; echo \"verify_exit=$?\"",
+      "description": "Capture verify exit code"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py report input.md output.md --scope=format",
+      "description": "Generate before/after report"
+    }
+  },
+  {
+    "tool": "Write",
+    "input": {
+      "file_path": "/tmp/adhd-h06-run.sh",
+      "content": "#!/bin/sh\ncd /private/tmp/adhd-eval-20261014/claude-H06-r3/workspace\npython3 .agents/skills/adhd-md/scripts/adhd_md.py audit output.md --level 2 --scope=format > /tmp/adhd-h06-audit.txt 2>&1\necho \"audit_exit=$?\" >> /tmp/adhd-h06-codes.txt\npython3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=format > /tmp/adhd-h06-verify.txt 2>&1\necho \"verify_exit=$?\" >> /tmp/adhd-h06-codes.txt\npython3 .agents/skills/adhd-md/scripts/adhd_md.py fmt output.md --check > /tmp/adhd-h06-fmt.txt 2>&1\necho \"fmt_exit=$?\" >> /tmp/adhd-h06-codes.txt\ncmp input.md output.md > /tmp/adhd-h06-cmp.txt 2>&1\necho \"cmp_exit=$?\" >> /tmp/adhd-h06-codes.txt\n"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "sh /tmp/adhd-h06-run.sh",
+      "description": "Run audit, verify, fmt check and compare"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=format > /tmp/adhd-h06-verify.txt 2>&1; echo \"verify_exit=$?\"; python3 .agents/skills/adhd-md/scripts/adhd_md.py audit output.md --level 2 --scope=format > /tmp/adhd-h06-audit.txt 2>&1; echo \"audit_exit=$?\"; cmp input.md output.md; echo \"cmp_exit=$?\"",
+      "description": "Capture exit codes for verify, audit, and byte comparison"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=format",
+      "description": "Run verify to observe its exit status"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "cmp input.md output.md",
+      "description": "Byte-compare input and output"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit output.md --level 2 --scope=format --json",
+      "description": "Audit output.md with JSON schema v2"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H06-r3/workspace/.agents/skills/adhd-md/references/rubric.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py fmt output.md --check",
+      "description": "Check output has no deterministic format fixes pending"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py report input.md output.md --scope=format --json",
+      "description": "Generate JSON before/after report"
+    }
+  },
+  {
+    "tool": "Write",
+    "input": {
+      "file_path": "/tmp/adhd-h06/run.sh",
+      "content": "#!/bin/sh\ncd /private/tmp/adhd-eval-20261014/claude-H06-r3/workspace\nP=.agents/skills/adhd-md/scripts/adhd_md.py\n\npython3 $P audit output.md --level 2 --scope=format > /tmp/adhd-h06/audit.out 2>&1\nprintf 'audit_exit=%s\\n' \"$?\" >> /tmp/adhd-h06/codes.txt\n\npython3 $P verify input.md output.md --scope=format > /tmp/adhd-h06/verify.out 2>&1\nprintf 'verify_exit=%s\\n' \"$?\" >> /tmp/adhd-h06/codes.txt\n\npython3 $P fmt output.md --check > /tmp/adhd-h06/fmt.out 2>&1\nprintf 'fmt_check_exit=%s\\n' \"$?\" >> /tmp/adhd-h06/codes.txt\n\ncmp input.md output.md > /tmp/adhd-h06/cmp.out 2>&1\nprintf 'cmp_exit=%s\\n' \"$?\" >> /tmp/adhd-h06/codes.txt\n"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "sh /tmp/adhd-h06/run.sh",
+      "description": "Run audit, verify, fmt check, and compare"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit output.md --level 2 --scope=format",
+      "description": "Run final audit on output.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=format",
+      "description": "Run final verify on output.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H06-r3/workspace/output.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=format --json",
+      "description": "Final verify in JSON for the record"
+    }
+  }
+]

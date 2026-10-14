@@ -940,14 +940,15 @@ def audit(doc, level=2, emoji="none"):
                     f.append(Finding("T5", b.start + off, "提示/警告标签应统一为 `> **注意**` 或 `> **警告**`", "F", advisory=True))
                     break
 
-    bold_chars = sum(len(m.group(1)) for m in re.finditer(r"\*\*([^*]+)\*\*", prose_all_raw(blocks)))
-    total_chars = max(1, len(re.sub(r"\s", "", prose_all)))
+    bold_stats = [bold_metrics(b) for b in blocks]
+    bold_chars = sum(item[0] for item in bold_stats)
+    total_chars = max(1, sum(item[1] for item in bold_stats))
     ratio = bold_chars / total_chars
     if ratio > RULE_LIMITS["T2"]["max_bold_ratio"]:
-        f.append(Finding("T2d", 1, f"加粗密度 {ratio:.0%}，上限 {RULE_LIMITS['T2']['max_bold_ratio']:.0%}", "F"))
+        f.append(Finding("T2d", 1, f"加粗密度 {ratio:.1%}，上限 {RULE_LIMITS['T2']['max_bold_ratio']:.0%}", "F"))
     for b in blocks:
         if b.kind in ("para", "quote"):
-            c = len(re.findall(r"\*\*[^*]+\*\*", b.text))
+            c = bold_metrics(b)[2]
             if c > RULE_LIMITS["T2"]["max_bold_per_paragraph"]:
                 f.append(Finding("T2p", b.start, f"单段加粗 {c} 处，上限 {RULE_LIMITS['T2']['max_bold_per_paragraph']} 处", "F"))
 
@@ -1002,9 +1003,37 @@ def audit(doc, level=2, emoji="none"):
         f.append(Finding("X2", 1, f"纯正文章节平均 {sum(prose_secs) / len(prose_secs):.0f} 单位，"
                                   f"低于 {th['frag']}，碎片化", "F"))
     if ratio > RULE_LIMITS["X5"]["max_bold_ratio"]:
-        f.append(Finding("X5", 1, f"加粗密度 {ratio:.0%} 超过 {RULE_LIMITS['X5']['max_bold_ratio']:.0%}", "F"))
+        f.append(Finding("X5", 1, f"加粗密度 {ratio:.1%} 超过 {RULE_LIMITS['X5']['max_bold_ratio']:.0%}", "F"))
 
     return [x for x in f if MIN_LEVEL.get(x.rule, 1) <= level]
+
+
+def bold_metrics(block):
+    """Count strong emphasis and visible prose in the same block-local domain.
+
+    Code, link destinations and escaped delimiters cannot open emphasis. Headings
+    are excluded on both sides of the density ratio, as they are not body prose.
+    This is a conservative Markdown subset, not a complete delimiter parser.
+    """
+    if block.kind in ("heading", "code", "frontmatter", "hr", "html"):
+        return 0, 0, 0
+    text = _mask_ranges(block.text, _inline_code_spans(block.text))
+    links = _markdown_links_for_lint(text)
+    for start, end in sorted([(a, b) for x in links for a, b in
+                              ((x["start"], x["label_start"]), (x["label_end"], x["end"]))],
+                             reverse=True):
+        text = text[:start] + text[end:]
+    text = AUTOLINK_RE.sub(" ", text)
+    text = HTML_TAG_RE.sub("", text)
+    # Retain escaped punctuation as visible characters without making it syntax.
+    text = "".join(("Ａ" if char == "*" else "Ｂ")
+                   if char in "*_" and _is_escaped(text, index) else char
+                   for index, char in enumerate(text))
+    matches = list(re.finditer(r"(?<!\*)\*\*(?!\s)(.+?)(?<!\s)\*\*(?!\*)|"
+                               r"(?<![\w_])__(?!\s)(.+?)(?<!\s)__(?![\w_])", text, re.S))
+    def visible(value):
+        return len(re.sub(r"\s", "", strip_inline(value)))
+    return sum(visible(m[1] or m[2]) for m in matches), visible(text), len(matches)
 
 
 def prose_all_raw(blocks):
@@ -2739,6 +2768,36 @@ import unittest  # noqa: E402  自检用，放末尾避免影响启动
 
 
 class SelfTest(unittest.TestCase):
+    def test_bold_ignores_code_and_destinations(self):
+        for literal in ("`x ** 2`", "``x ** 2 ` y``", r"\*\*literal\*\*",
+                        "[label](https://example.test/**path**)"):
+            with self.subTest(literal=literal):
+                doc = Doc("# Title\n\n" + literal + " ordinary prose.\n\nMore prose.\n")
+                self.assertFalse({"T2d", "T2p", "X5"} & {f.rule for f in audit(doc)})
+
+    def test_bold_metrics_same_visible_domain(self):
+        for text in ("**alpha beta**", "__alpha beta__", "**[alpha beta](https://example.test)**"):
+            block = Doc(text + "\n").blocks[0]
+            bold, total, count = bold_metrics(block)
+            self.assertEqual(bold, 9)
+            self.assertLessEqual(bold, total)
+            self.assertEqual(count, 1)
+        doc = Doc("# **Heading**\n\nplain body\n")
+        self.assertFalse({"T2d", "X5"} & {f.rule for f in audit(doc)})
+
+    def test_bold_does_not_pair_across_blocks(self):
+        doc = Doc("# Title\n\n**unclosed paragraph\n\nother paragraph**\n")
+        self.assertFalse({"T2d", "X5"} & {f.rule for f in audit(doc)})
+
+    def test_bold_paragraph_count_ignores_literals(self):
+        block = Doc("`x ** 2` then **real** prose.\n").blocks[0]
+        self.assertEqual(bold_metrics(block)[0], 4)
+        self.assertEqual(bold_metrics(block)[2], 1)
+        doc = Doc("# Title\n\n`**a** **b** **c**` **real**\n")
+        self.assertNotIn("T2p", {f.rule for f in audit(doc)})
+        doc = Doc("# Title\n\n**a** **b** **c**\n")
+        self.assertIn("T2p", {f.rule for f in audit(doc)})
+
     def test_lang(self):
         self.assertEqual(Doc("# Hello\n\nplain english text here\n").lang, "en")
         self.assertEqual(Doc("# 标题\n\n这是一段中文正文\n").lang, "zh")

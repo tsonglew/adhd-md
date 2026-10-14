@@ -1,0 +1,38 @@
+[
+  {
+    "command": "/bin/zsh -lc 'cat .agents/skills/adhd-md/SKILL.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'cat input.md; git status --porcelain; python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level deep --scope=format'",
+    "exit_code": 2
+  },
+  {
+    "command": "/bin/zsh -lc 'cat .agents/skills/adhd-md/references/{rules,antipatterns,cjk,doc-types}.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 3 --scope=format --json'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py fmt input.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"python3 - <<'PY'\nfrom pathlib import Path\np=Path('input.md').read_bytes()\ns=p.decode()\ns=s.replace('- 只在测试环境重试。','- 只在**测试环境**重试。').replace('- 生产环境不要自动重试。','- **生产环境**不要自动重试。')\nPath('output.md').write_bytes(s.encode())\nassert Path('output.md').read_bytes().replace(b'**',b'') == p\nPY\npython3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=format\"",
+    "exit_code": 4
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py audit output.md --level 3 --scope=format --json'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py report --help'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py report input.md output.md --scope=format --level 3'",
+    "exit_code": 4
+  }
+]

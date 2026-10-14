@@ -1,0 +1,178 @@
+[
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H10-r1/workspace/.agents/skills/adhd-md/SKILL.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H10-r1/workspace/input.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H10-r1/workspace/.agents/skills/adhd-md/references/rules.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H10-r1/workspace/.agents/skills/adhd-md/references/antipatterns.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "ls -la /private/tmp/adhd-reacceptance-20261014/claude-H10-r1/workspace/ /private/tmp/adhd-reacceptance-20261014/claude-H10-r1/workspace/.agents/skills/adhd-md/ /private/tmp/adhd-reacceptance-20261014/claude-H10-r1/workspace/.agents/skills/adhd-md/scripts/ /private/tmp/adhd-reacceptance-20261014/claude-H10-r1/workspace/.agents/skills/adhd-md/references/",
+      "description": "List workspace and skill directories"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H10-r1/workspace/prompt.txt"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 2 --scope=content 2>&1",
+      "description": "Run audit on input.md at level 2, content scope"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H10-r1/workspace/.agents/skills/adhd-md/references/rubric.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "ls -R .agents/skills/adhd-md/scripts/tests .agents/skills/adhd-md/references/examples | head -60",
+      "description": "List tests and examples directories"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H10-r1/workspace/.agents/skills/adhd-md/references/examples/03-en-runbook.before.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H10-r1/workspace/.agents/skills/adhd-md/references/examples/03-en-runbook.after.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H10-r1/workspace/.agents/skills/adhd-md/references/examples/README.md"
+    }
+  },
+  {
+    "tool": "Write",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H10-r1/workspace/output.md",
+      "content": "# Search results are stale\n\nA record changed more than 5 minutes ago, but the dashboard still shows its previous value while the primary database already has the new value. Confirm the issue with 3 checks, then recover in 5 steps.\n\nScope: this runbook covers the dashboard search index. It does not cover billing exports or direct database queries.\n\n## Confirm the issue: 3 checks\n\nAll three must be true:\n\n- A record changed more than 5 minutes ago, but the dashboard shows its previous value.\n- The record is visible in the primary database.\n- No index maintenance is in progress.\n\nIf the primary database does not contain the record, follow the write-failure runbook instead.\n\n## Recovery: 5 steps\n\nDo not rebuild the global index during business hours. Requeueing does not modify the primary database.\n\n1. Step 1 of 5 — Record the workspace ID, record ID, and last update time.\n2. Step 2 of 5 — Check the indexer queue depth. Save the metric value.\n3. Step 3 of 5 — If the queue is nonzero, wait 3 minutes. When the wait ends, refresh the dashboard once.\n4. Step 4 of 5 — If the value is still stale, requeue only the affected workspace.\n5. Step 5 of 5 — Confirm the updated value appears, then close the incident.\n"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit output.md --level 2 --scope=content 2>&1",
+      "description": "Audit the rewritten output.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=content; echo \"EXIT=$?\"",
+      "description": "Verify output.md against input.md (content scope)"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=content",
+      "description": "Verify output.md against input.md (content scope)"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py report input.md output.md --scope=content --level=2",
+      "description": "Run before/after report, content scope, level 2"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py report input.md output.md --scope=content --level=2 --json",
+      "description": "Run report with JSON output"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=content --json",
+      "description": "Verify with JSON output"
+    }
+  },
+  {
+    "tool": "Edit",
+    "input": {
+      "replace_all": false,
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H10-r1/workspace/output.md",
+      "old_string": "A record changed more than 5 minutes ago, but the dashboard still shows its previous value while the primary database already has the new value. Confirm the issue with 3 checks, then recover in 5 steps.",
+      "new_string": "A record changed more than 5 minutes ago, but the dashboard still shows its previous value. The primary database already has the new value. Confirm the issue with 3 checks, then recover in 5 steps."
+    }
+  },
+  {
+    "tool": "Edit",
+    "input": {
+      "replace_all": false,
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H10-r1/workspace/output.md",
+      "old_string": "5. Step 5 of 5 — Confirm the updated value appears, then close the incident.",
+      "new_string": "5. Step 5 of 5 — Confirm the updated value appears. Then close the incident."
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=content --json",
+      "description": "Re-verify final output"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit output.md --level 2 --scope=content",
+      "description": "Re-audit final output"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py report input.md output.md --scope=content --level=2",
+      "description": "Final before/after report"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H10-r1/workspace/output.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -nE '^#|^[-*] |^[0-9]+\\. |^$' output.md | head -40 && printf 'trailing-space lines: ' && grep -c ' $' output.md; printf 'h1 count: '; grep -c '^# ' output.md",
+      "description": "Check output structure, trailing whitespace, H1 count"
+    }
+  }
+]

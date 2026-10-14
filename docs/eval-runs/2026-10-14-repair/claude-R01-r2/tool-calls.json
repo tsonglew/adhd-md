@@ -1,0 +1,305 @@
+[
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-repair-validation/claude-R01-r2/workspace/.agents/skills/adhd-md/SKILL.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-repair-validation/claude-R01-r2/workspace/input.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "ls -la /private/tmp/adhd-repair-validation/claude-R01-r2/workspace/ && echo \"---SKILL DIR---\" && ls -R /private/tmp/adhd-repair-validation/claude-R01-r2/workspace/.agents/skills/adhd-md/",
+      "description": "List workspace and skill directory contents"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-repair-validation/claude-R01-r2/workspace/.agents/skills/adhd-md/references/rules.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-repair-validation/claude-R01-r2/workspace/.agents/skills/adhd-md/references/antipatterns.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-repair-validation/claude-R01-r2/workspace/.agents/skills/adhd-md/references/doc-types.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-repair-validation/claude-R01-r2/workspace/.agents/skills/adhd-md/references/examples/03-en-runbook.before.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-repair-validation/claude-R01-r2/workspace/.agents/skills/adhd-md/references/examples/03-en-runbook.after.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-repair-validation/claude-R01-r2/workspace/prompt.txt"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py --help 2>&1 | head -60",
+      "description": "Show adhd_md CLI help"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 3 --scope=content 2>&1",
+      "description": "Audit input.md at level 3 scope content"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 3 --scope=content --json 2>&1",
+      "description": "Audit JSON output"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -c \"\nimport json\nd=json.load(open('.agents/skills/adhd-md/references/rule-definitions.json'))\nprint(type(d), list(d)[:10] if isinstance(d,dict) else len(d))\n\" 2>&1 | head -20",
+      "description": "Inspect rule definitions JSON top-level"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -c \"\nimport json\nd=json.load(open('.agents/skills/adhd-md/references/rule-definitions.json'))\nprint(json.dumps(d['thresholds'], ensure_ascii=False, indent=1))\nrules=d['rules']\nprint(type(rules))\nitems = rules.items() if isinstance(rules,dict) else [(r['id'],r) for r in rules]\nfor k,v in items:\n    if k in ('P1','H1','H2','H4','A7','A8','N7','S8','A2','A1','A5','S4','H3','W7','L2','N4','X3','S5','S6'):\n        print(k, json.dumps(v, ensure_ascii=False))\n\"",
+      "description": "Print thresholds and selected rule definitions"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py verify --help; echo \"=== fmt help ===\"; python3 .agents/skills/adhd-md/scripts/adhd_md.py fmt --help; echo \"=== report help ===\"; python3 .agents/skills/adhd-md/scripts/adhd_md.py report --help",
+      "description": "Show verify/fmt/report help"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "wc -l .agents/skills/adhd-md/scripts/adhd_md.py; grep -n \"def cmd_verify\\|def cmd_fmt\\|def cmd_audit\\|def cmd_report\\|def verify_\\|def _verify\" .agents/skills/adhd-md/scripts/adhd_md.py | head -40",
+      "description": "Locate verify/fmt implementations"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -n \"H1\\b\" .agents/skills/adhd-md/scripts/adhd_md.py | head -40",
+      "description": "Find H1 rule implementation in script"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -n \"def check_h1\\|def _h1\\|tldr\\|TL;DR\" .agents/skills/adhd-md/scripts/adhd_md.py | head -40",
+      "description": "Find TLDR detection logic"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-repair-validation/claude-R01-r2/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "limit": 60,
+      "offset": 640
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -n \"TLDR_RE\" .agents/skills/adhd-md/scripts/adhd_md.py | head; echo \"---\"; grep -n -A8 \"^TLDR_RE\" .agents/skills/adhd-md/scripts/adhd_md.py",
+      "description": "Show TLDR_RE definition"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-repair-validation/claude-R01-r2/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "limit": 120,
+      "offset": 2598
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -n \"def verify\\|def _verify\\|def compare\\|status.*unknown\\|def invariant\" .agents/skills/adhd-md/scripts/adhd_md.py | head -30",
+      "description": "Find verify internals"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-repair-validation/claude-R01-r2/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "limit": 130,
+      "offset": 2004
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "sed -n '2135,2270p' .agents/skills/adhd-md/scripts/adhd_md.py",
+      "description": "Read rest of verify()"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -n \"def _inline_literal_losses\" -A 40 .agents/skills/adhd-md/scripts/adhd_md.py",
+      "description": "Show inline literal loss checker"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -n \"def extract_invariants\" -A 45 .agents/skills/adhd-md/scripts/adhd_md.py",
+      "description": "Show extract_invariants"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -n \"def verification_uncertainties\" -A 45 .agents/skills/adhd-md/scripts/adhd_md.py",
+      "description": "Show verification_uncertainties"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "cd .agents/skills/adhd-md/scripts && python3 -I -c \"\nimport sys, json\nsys.path.insert(0,'.')\nimport adhd_md as m\nold = open('../../../input.md').read()\ninv = m.extract_invariants(old)\nfor k,v in inv.items():\n    print('##',k, json.dumps(v, ensure_ascii=False)[:1500])\n\"",
+      "description": "Print invariants extracted from input.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c \"\nimport sys, json\nsys.path.insert(0,'.agents/skills/adhd-md/scripts')\nimport adhd_md as m\nold = open('input.md').read()\ninv = m.extract_invariants(old)\nfor k,v in inv.items():\n    print('##',k, json.dumps(v, ensure_ascii=False)[:2000])\nprint('## uncertainties', m.verification_uncertainties(old))\n\"",
+      "description": "Print invariants for input.md"
+    }
+  },
+  {
+    "tool": "Write",
+    "input": {
+      "file_path": "/private/tmp/adhd-repair-validation/claude-R01-r2/workspace/output.md",
+      "content": "# Thumbnail recovery\n\nRetry a failed thumbnail job in four steps. Manual retry settings apply only to this browser session. Do not retry jobs marked archived.\n\nSigning in elsewhere does not copy those manual settings.\n\n1. Step 1 of 4 — Open the job panel and select a failed job. Check that it is not marked archived.\n2. Step 2 of 4 — If its lock is active, wait 7 minutes. Then reload the panel once.\n3. Step 3 of 4 — Copy the job key into the incident note.\n4. Step 4 of 4 — Submit the retry request.\n\nA successful request shows status accepted. Accepted does not mean the thumbnail has finished rendering.\n"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=content; echo \"exit=$?\"; echo \"=== AUDIT ===\"; python3 .agents/skills/adhd-md/scripts/adhd_md.py audit output.md --level 3 --scope=content",
+      "description": "Verify and audit the candidate output"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=content",
+      "description": "Verify output against input"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit output.md --level 3 --scope=content",
+      "description": "Audit the candidate output"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c \"\nimport sys, json\nsys.path.insert(0,'.agents/skills/adhd-md/scripts')\nimport adhd_md as m\nnew = open('output.md').read()\ninv = m.extract_invariants(new, include_code=True)\nprint('numbers(new):', json.dumps(inv['numbers'], ensure_ascii=False))\nprint('uncertainties:', m.verification_uncertainties(new))\nprint('dash count in prose paras:', new.count('—'))\n\"",
+      "description": "Check invariants and uncertainties of candidate"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-repair-validation/claude-R01-r2/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "limit": 40,
+      "offset": 232
+    }
+  },
+  {
+    "tool": "Write",
+    "input": {
+      "file_path": "/private/tmp/adhd-repair-validation/claude-R01-r2/workspace/output.md",
+      "content": "# Thumbnail recovery\n\nRetry a failed thumbnail job in four steps. Do not retry jobs marked archived.\n\nManual retry settings apply only to this browser session. Signing in elsewhere does not copy those manual settings.\n\n1. Step 1 of 4 — Open the job panel and select a failed job. Check that it is not marked archived.\n2. Step 2 of 4 — If its lock is active, wait 7 minutes and reload the panel once.\n3. Step 3 of 4 — Copy the job key into the incident note.\n4. Step 4 of 4 — Submit the retry request.\n\nA successful request shows status accepted. Accepted does not mean the thumbnail has finished rendering.\n"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=content --json",
+      "description": "Verify final output (JSON)"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py report input.md output.md --scope=content --level=3",
+      "description": "Generate before/after report"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py fmt output.md --check",
+      "description": "Check whether output needs format fixes"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit output.md --level 3 --scope=content --json",
+      "description": "Final audit JSON"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-repair-validation/claude-R01-r2/workspace/output.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c \"\nimport sys, json\nsys.path.insert(0,'.agents/skills/adhd-md/scripts')\nimport adhd_md as m\nnew = open('output.md').read()\nold = open('input.md').read()\ninv_new = m.extract_invariants(new, include_code=True)\ninv_old = m.extract_invariants(old)\nmn, an = m._diff_records(inv_old['numbers'], inv_new['numbers'], ('value',))\nprint('numbers missing:', mn, 'added:', an)\nd = m.Doc(new)\nfor b in d.blocks:\n    print(b.kind, b.start, repr(b.text[:90]))\n\"",
+      "description": "Check numeric diff and block structure"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 3 --scope=content --json | python3 -I -c \"\nimport sys,json\nd=json.load(sys.stdin)\nprint('before total', d['score']['total'])\nfor k,v in d['score']['dims'].items(): print(k, v['score'])\nprint('x_deduct', d['score']['x_deduct'], 'findings', len(d['findings']), 'shown', len(d['shown_findings']))\n\"",
+      "description": "Summarize before-state scores"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit output.md --level 3 --scope=both --json | python3 -I -c \"\nimport sys,json\nd=json.load(sys.stdin)\nprint('after both-scope findings:', json.dumps(d['findings'], ensure_ascii=False))\nprint('x_deduct:', d['score']['x_deduct'], 'x_hits:', d['score']['x_hits'])\nprint('total:', d['score']['total'])\n\"",
+      "description": "Full-axis audit of output (both scope)"
+    }
+  }
+]

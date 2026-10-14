@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "updated": "2026-10-14",
+  "corpus": "held-out",
+  "corpus_kind": "regression",
+  "active_cases": ["H01", "H02", "H03", "H04", "H05", "H06", "H08", "H11", "H12"],
+  "excluded_cases": {
+    "H07": "用户要求移出当前验收集；claude-H07-r1 存在 UI 事实推断和 N7 误判。",
+    "H09": "用户要求移出当前验收集；claude-H09-r3 改写分号，违反逐字约束。",
+    "H10": "用户要求移出当前验收集；claude-H10-r1 存在事实强化和 scope 越界。"
+  },
+  "historical_evidence": "../eval-runs/2026-10-14-reacceptance/README.md"
+}

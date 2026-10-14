@@ -1,0 +1,70 @@
+[
+  {
+    "command": "/bin/zsh -lc 'cat .agents/skills/adhd-md/SKILL.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"pwd && rg --files -g 'AGENTS.md' -g 'input.md' -g '*adhd*' -g '\"'!node_modules'\"' -g '\"'!.git'\"'\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'cat .agents/skills/adhd-md/references/antipatterns.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'cat input.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'cat .agents/skills/adhd-md/references/rules.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'git status --short && cat AGENTS.md'",
+    "exit_code": 128
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 2 --scope=format'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'cat .agents/skills/adhd-md/references/evidence.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py --help'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py fmt input.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'cat AGENTS.md && python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 2 --scope=format --json'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"python3 - <<'PY'\nfrom pathlib import Path\nimport difflib\nbefore = Path('input.md').read_bytes()\nafter = Path('output.md').read_bytes()\nrestored = after.replace(b'> ', b'').replace(b'**', b'')\nfor number in range(2, 7):\n    restored = restored.replace(b'\\\\n\\\\n' + str(number).encode() + b'. ', b'\\\\n' + str(number).encode() + b'. ')\nassert restored == before, 'Exact restoration failed'\nprint('Strict character/order check: PASS. Removing only added formatting restores input.md byte for byte.')\nprint(''.join(difflib.unified_diff(before.decode().splitlines(True), after.decode().splitlines(True), fromfile='input.md', tofile='output.md')))\nPY\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=format'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py audit output.md --level 2 --scope=format'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py report input.md output.md --scope=format --level=2'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py report input.md output.md --scope=format --level=2 --json'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"python3 - <<'PY'\nfrom pathlib import Path\nimport json\nimport subprocess\nimport sys\nbase = [sys.executable, '.agents/skills/adhd-md/scripts/adhd_md.py']\nchecks = [\n    ('audit-before', ['audit', 'input.md', '--level', '2', '--scope=format', '--json']),\n    ('audit-after', ['audit', 'output.md', '--level', '2', '--scope=format', '--json']),\n    ('verify', ['verify', 'input.md', 'output.md', '--scope=format', '--json']),\n    ('report', ['report', 'input.md', 'output.md', '--scope=format', '--level=2', '--json']),\n]\nevidence = {}\nfor name, args in checks:\n    result = subprocess.run(base + args, capture_output=True, text=True)\n    evidence[name] = {'command': ' '.join(['python3'] + base[1:] + args), 'exit_status': result.returncode, 'result': json.loads(result.stdout)}\n    if result.stderr:\n        evidence[name]['stderr'] = result.stderr\n    print(f'{name}: exit {result.returncode}')\nPath('validation.json').write_text(json.dumps(evidence, indent=2, ensure_ascii=False) + '\\\\n')\nPY\"",
+    "exit_code": 0
+  }
+]

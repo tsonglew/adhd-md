@@ -1,0 +1,70 @@
+{
+  "id": "H01",
+  "file": "01-zh-readme.md",
+  "language": "zh",
+  "document_type": "README",
+  "scope": "content",
+  "level": "standard",
+  "constraints": "静默时段 `21:30–08:00`、系统时区、仅当前设备、通知不收回、日历邀请和安全告警仍显示、校时后重新保存、企业策略只读",
+  "run_id": "grok-H01-r1",
+  "host": "grok",
+  "repeat": 1,
+  "input_sha256": "dfd35ce2ebacf7a1f5ec4cb15aa2b502b61ee67b92dfb391bfebd656ecfb409a",
+  "corpus_manifest_sha256": "3f14b6c757b911dfc4cbedffff4c31afdce99a9f00ae8f2c735f081176891d2d",
+  "skill_commit": "4fca39df4a2c79f08a62105f6496a44c1f7e4e9c",
+  "skill_tree": "0c8886a4bcd607a15efd5494edfc5c8323e038d2",
+  "command": [
+    "grok",
+    "--prompt-file",
+    "prompt.txt",
+    "--output-format",
+    "streaming-json",
+    "--permission-mode",
+    "acceptEdits",
+    "--no-subagents",
+    "--max-turns",
+    "60"
+  ],
+  "platform": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+  "started": "2026-10-14T07:08:25.613707+00:00",
+  "timeout_seconds": 180,
+  "discovery": "yes: user-level skill",
+  "loading": "old user-level skill read; current snapshot not confirmed",
+  "tool_execution": "reads succeeded; shell permission cancelled in headless mode",
+  "independent_review": "pending",
+  "cli_version": "grok 1.0.46 (2765805b9442)",
+  "exit_code": 0,
+  "timed_out": false,
+  "duration_seconds": 44.97,
+  "finished": "2026-10-14T07:09:10.635615+00:00",
+  "input_unchanged": true,
+  "stdout.jsonl_sha256": "4ae141ef25f2e014921dddafc68a7d68d70bf6fa16391b17d3cbde77fdd67aa4",
+  "stderr.log_sha256": "f24c16f91d32430853ce3bea523f4b1e775c79bad6a56f1d5c7412b05f1d18ec",
+  "output_exists": false,
+  "raw_logs": {
+    "stdout.jsonl": {
+      "path": "raw/grok-H01-r1-stdout.jsonl.gz",
+      "sha256": "4ae141ef25f2e014921dddafc68a7d68d70bf6fa16391b17d3cbde77fdd67aa4",
+      "gzip_sha256": "c7ec2ac797029786aa26d4a41f9509da61f9162e04b408d1b4ada485dec4662c"
+    },
+    "stderr.log": {
+      "path": "raw/grok-H01-r1-stderr.log.gz",
+      "sha256": "f24c16f91d32430853ce3bea523f4b1e775c79bad6a56f1d5c7412b05f1d18ec",
+      "gzip_sha256": "9e16829147e1c5681eb33e92e4e1e98132995ee42be4658b931e2e8908b843f7"
+    }
+  },
+  "model_evidence": {
+    "requested": "unknown",
+    "response": [
+      "grok-4.7-build"
+    ]
+  },
+  "tool_calls_count": 9,
+  "observed_level_flags": [],
+  "expected_level": 2,
+  "snapshot_commit_is_requested": true,
+  "skill_snapshot_unchanged": true,
+  "human_review": "pending",
+  "unjudged_rules_source": "Independent audit judge-only IDs; evaluated model may assess some in assistant-messages.md. No complete judge score is inferred.",
+  "verify_status": "not-run"
+}

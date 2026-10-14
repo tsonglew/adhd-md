@@ -1,0 +1,25 @@
+# Search results are stale
+
+A record changed more than 5 minutes ago, but the dashboard still shows its previous value. The primary database already has the new value. Confirm the issue with 3 checks, then recover in 5 steps.
+
+Scope: this runbook covers the dashboard search index. It does not cover billing exports or direct database queries.
+
+## Confirm the issue: 3 checks
+
+All three must be true:
+
+- A record changed more than 5 minutes ago, but the dashboard shows its previous value.
+- The record is visible in the primary database.
+- No index maintenance is in progress.
+
+If the primary database does not contain the record, follow the write-failure runbook instead.
+
+## Recovery: 5 steps
+
+Do not rebuild the global index during business hours. Requeueing does not modify the primary database.
+
+1. Step 1 of 5 — Record the workspace ID, record ID, and last update time.
+2. Step 2 of 5 — Check the indexer queue depth. Save the metric value.
+3. Step 3 of 5 — If the queue is nonzero, wait 3 minutes. When the wait ends, refresh the dashboard once.
+4. Step 4 of 5 — If the value is still stale, requeue only the affected workspace.
+5. Step 5 of 5 — Confirm the updated value appears. Then close the incident.

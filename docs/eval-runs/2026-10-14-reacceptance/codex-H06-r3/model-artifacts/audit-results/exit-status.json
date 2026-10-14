@@ -1,0 +1,105 @@
+[
+  {
+    "artifact": "audit-results/audit-before.txt",
+    "command": [
+      "python3",
+      ".agents/skills/adhd-md/scripts/adhd_md.py",
+      "audit",
+      "input.md",
+      "--level",
+      "3",
+      "--scope=format"
+    ],
+    "exit_code": 0,
+    "stderr": ""
+  },
+  {
+    "artifact": "audit-results/audit-before.json",
+    "command": [
+      "python3",
+      ".agents/skills/adhd-md/scripts/adhd_md.py",
+      "audit",
+      "input.md",
+      "--level",
+      "3",
+      "--scope=format",
+      "--json"
+    ],
+    "exit_code": 0,
+    "stderr": ""
+  },
+  {
+    "artifact": "audit-results/audit-after.txt",
+    "command": [
+      "python3",
+      ".agents/skills/adhd-md/scripts/adhd_md.py",
+      "audit",
+      "output.md",
+      "--level",
+      "3",
+      "--scope=format"
+    ],
+    "exit_code": 0,
+    "stderr": ""
+  },
+  {
+    "artifact": "audit-results/audit-after.json",
+    "command": [
+      "python3",
+      ".agents/skills/adhd-md/scripts/adhd_md.py",
+      "audit",
+      "output.md",
+      "--level",
+      "3",
+      "--scope=format",
+      "--json"
+    ],
+    "exit_code": 0,
+    "stderr": ""
+  },
+  {
+    "artifact": "audit-results/verify-output.json",
+    "command": [
+      "python3",
+      ".agents/skills/adhd-md/scripts/adhd_md.py",
+      "verify",
+      "input.md",
+      "output.md",
+      "--scope=format",
+      "--json"
+    ],
+    "exit_code": 0,
+    "stderr": ""
+  },
+  {
+    "artifact": "audit-results/report.txt",
+    "command": [
+      "python3",
+      ".agents/skills/adhd-md/scripts/adhd_md.py",
+      "report",
+      "input.md",
+      "output.md",
+      "--scope=format",
+      "--level",
+      "3"
+    ],
+    "exit_code": 0,
+    "stderr": ""
+  },
+  {
+    "artifact": "audit-results/report.json",
+    "command": [
+      "python3",
+      ".agents/skills/adhd-md/scripts/adhd_md.py",
+      "report",
+      "input.md",
+      "output.md",
+      "--scope=format",
+      "--level",
+      "3",
+      "--json"
+    ],
+    "exit_code": 0,
+    "stderr": ""
+  }
+]

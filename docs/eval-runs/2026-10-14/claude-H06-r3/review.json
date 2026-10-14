@@ -1,0 +1,16 @@
+{
+  "reviewer": "current coordinating language model using frozen answer key and source; not a human reviewer",
+  "human_review": "pending",
+  "independent_machine_checks": "verify/audit/report rerun by harness, not copied from evaluated model claims",
+  "constraint_key": "frontmatter、引用层级、列表次序、409 / 503 表格、代码 `tool sync --dry-run --timeout 12`、链接 query 和 fragment、两条环境不同的重试规则",
+  "format_visible_sequence_equal": true,
+  "byte_identical": true,
+  "semantic_review": "Frozen constraints have supporting sequence-equality evidence; presentation and syntax still require review.",
+  "result": "reviewed supporting checks; not a human signoff",
+  "machine_status": "pass",
+  "issues": [
+    "Actual audit uses level 2 although the case requires deep/level 3. Independent audit was run at level 3."
+  ],
+  "verify_and_zero_x_gate": true,
+  "note": "This machine gate excludes semantic, scope, level and unjudged-rule checks; it is not overall acceptance."
+}

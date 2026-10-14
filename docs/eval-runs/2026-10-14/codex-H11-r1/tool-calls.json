@@ -1,0 +1,62 @@
+[
+  {
+    "command": "/bin/zsh -lc 'cat .agents/skills/adhd-md/SKILL.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'cat input.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'cat .agents/skills/adhd-md/references/rules.md .agents/skills/adhd-md/references/antipatterns.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py fmt input.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 2 --scope=format'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"python3 - <<'PY'\nfrom pathlib import Path\nsrc = Path('input.md').read_text()\nout = src.replace('workspaces. Median', 'workspaces.\\\\n\\\\nMedian').replace('250 ms. The', '250 ms.\\\\n\\\\nThe').replace('version. A single', 'version.\\\\n\\\\nA single')\nPath('output.md').write_text(out)\nassert ''.join(src.split()) == ''.join(out.split())\nprint('Content and order preserved: only sentence-boundary whitespace changed.')\nPY\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py audit output.md --level 2 --scope=format'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=format'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py report input.md output.md --scope=format'",
+    "exit_code": 1
+  },
+  {
+    "command": "/bin/zsh -lc \"rg -n 'prose|X2|section_lengths|avg_section' .agents/skills/adhd-md/scripts/adhd_md.py\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"sed -n '980,1005p' .agents/skills/adhd-md/scripts/adhd_md.py\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"python3 - <<'PY'\nfrom pathlib import Path\np = Path('output.md')\np.write_text(p.read_text().replace('## Outcome', '**Outcome**'))\nPY\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=format'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py report input.md output.md --scope=format'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py audit output.md --level 2 --scope=format'",
+    "exit_code": 0
+  }
+]

@@ -1,0 +1,261 @@
+[
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H07-r1/workspace/.agents/skills/adhd-md/SKILL.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H07-r1/workspace/input.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "ls -la /private/tmp/adhd-reacceptance-20261014/claude-H07-r1/workspace/.agents/skills/adhd-md/ /private/tmp/adhd-reacceptance-20261014/claude-H07-r1/workspace/.agents/skills/adhd-md/references/ /private/tmp/adhd-reacceptance-20261014/claude-H07-r1/workspace/.agents/skills/adhd-md/scripts/ 2>&1",
+      "description": "List skill directory contents"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H07-r1/workspace/.agents/skills/adhd-md/references/rules.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H07-r1/workspace/.agents/skills/adhd-md/references/antipatterns.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 2 --scope=content 2>&1",
+      "description": "Run audit on input.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py --help 2>&1 | head -60",
+      "description": "Show script help"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 2 --scope=content --json 2>&1 | head -80",
+      "description": "Run audit with JSON output"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 2 --scope=content --json 2>&1 | tail -60",
+      "description": "Show remaining audit JSON output"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c \"\nimport json\nd=json.load(open('.agents/skills/adhd-md/references/rule-definitions.json'))\nprint(type(d), list(d)[:20] if isinstance(d,dict) else len(d))\n\" 2>&1",
+      "description": "Inspect rule-definitions.json structure"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c \"\nimport json\nd=json.load(open('.agents/skills/adhd-md/references/rule-definitions.json'))\nrules=d['rules']\nprint('total rules', len(rules))\nk=rules[0] if isinstance(rules,list) else list(rules.items())[0]\nprint(json.dumps(k, ensure_ascii=False, indent=2)[:2000])\n\" 2>&1",
+      "description": "Inspect rule definition schema"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c \"\nimport json\nd=json.load(open('.agents/skills/adhd-md/references/rule-definitions.json'))\nfor r in d['rules']:\n    if r['id'] in ('S4','S5','H1','H2','H3','H4','P2','L2','L4','L7','W2','W3','W5','W8','A1','A2','A3','A5','A6','A7','A8','N4','N7','T3','X3','X6','X7','X8'):\n        print(r['id'], r['axis'], 'min_level',r['min_level'], r['automation'], r['status'], '|', r['name'], '|', r['threshold'])\n        if r['scoring']: print('    scoring:', [(s['id'],s['dimension'],s['points'],s.get('mode')) for s in r['scoring']])\n\" 2>&1",
+      "description": "Dump judge rule definitions"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -n \"H1\\b\" .agents/skills/adhd-md/scripts/adhd_md.py | head -40",
+      "description": "Find H1 rule implementation"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -n \"def .*tldr\\|TLDR\\|tldr\\|def .*_h1\\|def check_h\" .agents/skills/adhd-md/scripts/adhd_md.py | head -40",
+      "description": "Find TLDR logic in script"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H07-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "limit": 110,
+      "offset": 600
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -n \"RULE_LIMITS = \\|^RULE_LIMITS\" -A 60 .agents/skills/adhd-md/scripts/adhd_md.py | head -80",
+      "description": "Show RULE_LIMITS table"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c \"\nimport json\nd=json.load(open('.agents/skills/adhd-md/references/rule-definitions.json'))\nprint(json.dumps(d['thresholds'], ensure_ascii=False, indent=1))\nprint('global cap', d['global_score_cap'])\n\" 2>&1",
+      "description": "Print thresholds from rule definitions"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -n \"def verify\\|def cmd_verify\\|--scope\" .agents/skills/adhd-md/scripts/adhd_md.py | head -50",
+      "description": "Find verify implementation and scope flags"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H07-r1/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "limit": 180,
+      "offset": 2004
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -n \"def extract_invariants\" -A 80 .agents/skills/adhd-md/scripts/adhd_md.py | head -110",
+      "description": "Show extract_invariants implementation"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -n \"^NUM_RE\\|^IDENT_RE\\|^PATH_RE\\|^OPTION_RE\\|^PERMISSION_RE\\|^CHMOD_RE\\|^URL_RE\\|^INLINE_SPAN_RE\\|^PRESENCE_ONLY_IDENTIFIERS\" -A 12 .agents/skills/adhd-md/scripts/adhd_md.py | head -70",
+      "description": "Show invariant regexes"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c \"\nimport sys, json, collections\nsys.path.insert(0,'/private/tmp/adhd-reacceptance-20261014/claude-H07-r1/workspace/.agents/skills/adhd-md/scripts')\nimport adhd_md as m\nt=open('input.md',encoding='utf-8').read()\ninv=m.extract_invariants(t)\nfor k in ('code','links','inline'):\n    print(k, inv[k])\nprint('literals:')\nc=collections.Counter((r['type'],r['value']) for r in inv['literals'])\nfor k,v in c.items(): print('  ',k,v)\nprint('numbers:')\nc=collections.Counter(r['value'] for r in inv['numbers'])\nfor k,v in c.items(): print('  ',repr(k),v)\n\" 2>&1",
+      "description": "Dump protected invariants of input.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "sed -n '106,240p' .agents/skills/adhd-md/scripts/adhd_md.py",
+      "description": "Show M-group regex patterns"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -n \"X2\" -B 5 -A 30 .agents/skills/adhd-md/scripts/adhd_md.py | sed -n '1,80p'",
+      "description": "Inspect X2 fragmentation check"
+    }
+  },
+  {
+    "tool": "Write",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H07-r1/workspace/output.md",
+      "content": "# Local export archive\n\nThe archive stores completed exports for 14 days. Only workspace owners can view it, and it excludes files that failed before upload.\n\nReading time: about 2 minutes.\n\nThe archive is separate from the recycle bin. Deleting an export from the archive does not delete the source records.\n\n## Download an export in 4 steps\n\n1. Open **Workspace settings → Exports**.\n2. Select a completed export from the list. Exports that failed before upload, or that are older than 14 days, do not appear in the list.\n3. Check the date and row count before you download the ZIP file.\n4. Keep the ZIP in an approved project folder; it may contain customer data.\n\n## Limits: 2 GB splits, 30-minute links, owners only\n\n- The archive splits exports larger than 2 GB into numbered ZIP files.\n- A link expires 30 minutes after creation.\n- Workspace guests cannot view the archive.\n- If the archive is empty, check the selected workspace before you request a new export.\n"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=content 2>&1; echo \"---exit=$?\"",
+      "description": "Verify output against input"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit output.md --level 2 --scope=content 2>&1",
+      "description": "Audit the rewritten output"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=content 2>&1",
+      "description": "Verify output against input"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py report input.md output.md --scope=content --level=2 2>&1",
+      "description": "Run before/after report"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=content --json 2>&1",
+      "description": "Show verify JSON detail"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c \"\nimport sys, collections\nsys.path.insert(0,'/private/tmp/adhd-reacceptance-20261014/claude-H07-r1/workspace/.agents/skills/adhd-md/scripts')\nimport adhd_md as m\nnew=open('output.md',encoding='utf-8').read()\ndoc=m.Doc(new)\nlang=doc.lang\ntot=0\nfor b in doc.blocks:\n    if b.kind in ('para','quote'):\n        s=m.split_sentences(m.prose_of(b), lang)\n        print(f'[{b.kind} L{b.start}] sents={len(s)} words={m.units(m.prose_of(b),lang)}')\n        for x in s: print('    -', x, '|', len(x.split()))\n    if b.kind=='list':\n        for i in b.info.get('items',[]):\n            print(f'[list item L{i+1}]', b.lines[i])\n            tot+=1\nprint('total words body:', m.units(m.prose_of(doc.blocks[0]) if False else '\\n'.join(m.prose_of(b) for b in doc.blocks if b.kind!=\\\"heading\\\"), lang))\n\" 2>&1",
+      "description": "Check sentence and word metrics of output"
+    }
+  },
+  {
+    "tool": "Edit",
+    "input": {
+      "replace_all": false,
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H07-r1/workspace/output.md",
+      "old_string": "Reading time: about 2 minutes.",
+      "new_string": "Reading time: about 1 minute."
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c \"\nimport re\nnew=open('output.md',encoding='utf-8').read()\nchecks={\n '14-day retention':'14 days',\n 'owners only':'workspace owners',\n 'pre-upload failures excluded':'failed before upload',\n 'recycle bin separation':'separate from the recycle bin',\n 'delete does not touch source records':'does not delete the source records',\n 'UI path (bold preserved)':'**Workspace settings → Exports**',\n 'completed export from list':'completed export from the list',\n 'date + row count check':'date and row count',\n 'approved project folder':'approved project folder',\n 'customer data warning':'customer data',\n '2 GB split threshold':'2 GB',\n 'numbered ZIP files':'numbered ZIP files',\n '30-minute link expiry':'30 minutes',\n 'guests cannot view':'guests cannot view',\n 'empty archive -> check workspace':'archive is empty',\n 'check workspace before new request':'check the selected workspace before you request a new export',\n}\nfor k,v in checks.items():\n    print(('OK  ' if v in new else 'MISS'), k)\nprint()\nprint('ZIP occurrences:', len(re.findall(r'\\bZIP\\b', new)), '(input had 3)')\nprint('word count:', len(new.split()))\n\" 2>&1",
+      "description": "Run fact-preservation boundary check"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=content --json 2>&1",
+      "description": "Re-verify final output"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py report input.md output.md --scope=content --level=2 --json 2>&1",
+      "description": "Final report JSON"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c \"\nraw=open('output.md','rb').read()\nt=raw.decode('utf-8')\nprint('ends with single newline:', t.endswith('\\n') and not t.endswith('\\n\\n'))\nprint('trailing spaces:', [i+1 for i,l in enumerate(t.split('\\n')) if l != l.rstrip()])\nimport unicodedata\nemo=[c for c in t if ord(c)>0x2000 and unicodedata.category(c)=='So']\nprint('emoji-like symbols:', em)\nprint('tab chars:', '\\t' in t)\nprint()\nprint(t)\n\" 2>&1",
+      "description": "Check file hygiene and print final output"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c \"\nimport unicodedata\nt=open('output.md',encoding='utf-8').read()\nprint('emoji-like symbols:', [c for c in t if unicodedata.category(c)=='So'])\nprint('tab chars:', '\\t' in t)\nprint()\nprint(t)\n\" 2>&1",
+      "description": "Check emoji and print final output"
+    }
+  }
+]

@@ -1,0 +1,7 @@
+{
+  "reviewer": "coordinator inspected runtime logs and tool trace",
+  "human_review": "not performed",
+  "result": "unverified: no output",
+  "reason": "HTTP 403: gateway forbids calling claude-sonnet-4-6 through /v1/chat/completions.",
+  "not_counted_as_skill_success": true
+}

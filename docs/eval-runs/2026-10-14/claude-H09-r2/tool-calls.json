@@ -1,0 +1,192 @@
+[
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H09-r2/workspace/.agents/skills/adhd-md/SKILL.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H09-r2/workspace/input.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "ls -la /private/tmp/adhd-eval-20261014/claude-H09-r2/workspace/ /private/tmp/adhd-eval-20261014/claude-H09-r2/workspace/.agents/skills/adhd-md/ 2>&1",
+      "description": "List workspace and skill directories"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H09-r2/workspace/.agents/skills/adhd-md/references/rules.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H09-r2/workspace/.agents/skills/adhd-md/references/antipatterns.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "ls -la /private/tmp/adhd-eval-20261014/claude-H09-r2/workspace/.agents/skills/adhd-md/scripts/ /private/tmp/adhd-eval-20261014/claude-H09-r2/workspace/.agents/skills/adhd-md/references/; cat /private/tmp/adhd-eval-20261014/claude-H09-r2/workspace/prompt.txt",
+      "description": "List scripts and references, show prompt.txt"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 3 2>&1; echo \"EXIT=$?\"",
+      "description": "Run audit on input.md at level 3"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H09-r2/workspace/.agents/skills/adhd-md/references/doc-types.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 3",
+      "description": "Run audit at level 3 (deep)"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 3 --scope=format --json > /tmp/h09_audit_before.json; echo \"exit=$?\"; python3 -c \"\nimport json\nd=json.load(open('/tmp/h09_audit_before.json'))\nprint(list(d.keys()))\nprint(json.dumps({k:v for k,v in d.items() if k not in ('findings','shown_findings')}, ensure_ascii=False, indent=1)[:4000])\n\"",
+      "description": "Run audit with scope=format as JSON"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 3 --scope=format",
+      "description": "Run audit with scope=format"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py fmt input.md",
+      "description": "Preview deterministic format fixes"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py --help",
+      "description": "Show CLI help"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "tail -c 120 input.md | od -c | tail -6",
+      "description": "Inspect trailing bytes of input.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c \"\nimport json\nd=json.load(open('.agents/skills/adhd-md/references/rule-definitions.json'))\nprint(type(d), list(d)[:10] if isinstance(d,dict) else len(d))\n\"",
+      "description": "Inspect rule-definitions.json top-level structure"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c \"\nimport json\nd=json.load(open('.agents/skills/adhd-md/references/rule-definitions.json'))\nrules=d['rules']\nprint(type(rules))\nif isinstance(rules, dict):\n    for k in ['L2','L5','P1','P2','S5','X2','X3','H1','N5','T2','X5']:\n        print('==',k, json.dumps(rules.get(k), ensure_ascii=False)[:600])\nelse:\n    for r in rules:\n        if r.get('id') in ['L2','L5','P1','P2','S5','X2','X3','H1','N5','T2','X5']:\n            print('==', json.dumps(r, ensure_ascii=False)[:700])\n\"",
+      "description": "Print selected rule definitions"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H09-r2/workspace/.agents/skills/adhd-md/references/rubric.md"
+    }
+  },
+  {
+    "tool": "Write",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H09-r2/workspace/output.md",
+      "content": "# Queue configuration\n\n| Setting | Default | Valid range | Behavior |\n|---|---:|---:|---|\n| `visibilitySeconds` | 45 | 5–600 | Time before an unacknowledged job is visible again |\n| `maxAttempts` | 3 | 1–8 | Includes the first delivery attempt |\n| `backoffMs` | 400 | 100–5000 | Base delay between retry attempts |\n| `deadLetterAfter` | 8 | 1–20 | Failed jobs moved to the dead-letter queue |\n\n- `maxAttempts` counts the initial delivery.\n- A value of `1` disables retries.\n- Authentication errors (`401` and `403`) are never retried, even when `maxAttempts` is greater than one.\n\n```yaml\nqueue:\n  maxAttempts: 4\n  backoffMs: 800\n```\n\n- Configuration changes take effect after the worker restarts.\n- `visibilitySeconds` is measured in seconds.\n- `backoffMs` is measured in milliseconds.\n"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=format",
+      "description": "Verify format-scope invariants"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=format --json",
+      "description": "Verify JSON details"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit output.md --level 3 --scope=format",
+      "description": "Audit output.md at level 3, scope format"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py report input.md output.md --scope=format",
+      "description": "Before/after report"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c \"\nimport subprocess\nfor args in (['audit','output.md','--level','3','--scope=format'],['verify','input.md','output.md','--scope=format']):\n    r=subprocess.run(['python3','.agents/skills/adhd-md/scripts/adhd_md.py']+args, capture_output=True, text=True)\n    print(args[0], '-> exit', r.returncode)\n\"",
+      "description": "Capture audit and verify exit codes"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py report input.md output.md --scope=format --level 3",
+      "description": "Before/after report at level deep"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "diff input.md output.md",
+      "description": "Diff input vs output"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c \"\nimport re\ndef toks(p):\n    out=[]\n    for line in open(p, encoding='utf-8'):\n        s=line.rstrip('\\n')\n        s=re.sub(r'^-\\s+','',s) if s.startswith('- ') else s\n        if s.strip(): out.extend(s.split())\n    return out\na=toks('input.md'); b=toks('output.md')\nfrom collections import Counter\nca,cb=Counter(a),Counter(b)\nprint('only in input :', ca-cb)\nprint('only in output:', cb-ca)\nprint('same order (ignoring the semicolon token):', [t for t in a if t!='seconds;'] == [t for t in b if t!='seconds.'])\n\"",
+      "description": "Token-level preservation check"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c \"\nimport json\nd=json.load(open('.agents/skills/adhd-md/references/rule-definitions.json'))\nrules={r['id']:r for r in d['rules']}\ndef scope_ok(r, scope):\n    ax=r.get('axis','')\n    return scope in ax.split('/')\nsel=[]\nfor rid,r in rules.items():\n    if r.get('min_level',1)>3: continue\n    if not (scope_ok(r,'F')): continue\n    sel.append((rid, r.get('group'), r.get('name'), r.get('axis'), r.get('min_level'), r.get('automation'), r.get('status')))\nprint(len(sel))\nfor s in sorted(sel, key=lambda x:(x[0][0], x[0])):\n    print(s)\n\"",
+      "description": "List format-applicable rules at deep level"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c \"\nimport subprocess, hashlib\nfor p in ('input.md','output.md'):\n    b=open(p,'rb').read()\n    print(p, len(b), 'bytes', hashlib.md5(b).hexdigest(), 'ends-with-single-nl:', b.endswith(b'\\n') and not b.endswith(b'\\n\\n'), 'crlf:', b'\\r' in b)\nr=subprocess.run(['python3','.agents/skills/adhd-md/scripts/adhd_md.py','fmt','output.md'],capture_output=True,text=True)\nprint('fmt output.md -> exit', r.returncode, '|', r.stdout.strip())\n\"",
+      "description": "Hash files, check line endings, run fmt check on output"
+    }
+  }
+]

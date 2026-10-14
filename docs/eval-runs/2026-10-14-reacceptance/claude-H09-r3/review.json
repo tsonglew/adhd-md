@@ -1,0 +1,21 @@
+{
+  "reviewer": "coordinator inspected full diff/source and report; independent harness supplies checks",
+  "human_review": "not performed",
+  "information_preserved": true,
+  "strict_character_preservation": false,
+  "evidence": "Parameter table and YAML unchanged; includes-first-delivery, 1-disables-retries, never-retry 401/403, restart prerequisite and seconds-vs-milliseconds values remain in order.",
+  "issues": [
+    {
+      "type": "explicit constraint violation",
+      "change": "Original semicolon after seconds replaced by period when split into list items.",
+      "source_requirement": "Preserve every original character; the skill explicitly gives stricter user punctuation constraints priority.",
+      "model_report": "Acknowledges ; → . but calls it allowed format normalization and accepts output."
+    },
+    {
+      "type": "judge coverage gap",
+      "change": "X8 absent from actual rule decision table despite being in in-scope judge IDs."
+    }
+  ],
+  "diff_review": "candidate.diff provides exact punctuation substitution; verifier pass does not cover stricter requirement.",
+  "result": "fail despite verify pass and X=0"
+}

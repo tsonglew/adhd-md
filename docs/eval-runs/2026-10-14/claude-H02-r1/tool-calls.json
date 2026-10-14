@@ -1,0 +1,191 @@
+[
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H02-r1/workspace/.agents/skills/adhd-md/SKILL.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H02-r1/workspace/input.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "find /private/tmp/adhd-eval-20261014/claude-H02-r1/workspace/.agents/skills/adhd-md -type f | head -50; echo \"---\"; ls -la /private/tmp/adhd-eval-20261014/claude-H02-r1/workspace",
+      "description": "List skill files and workspace"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H02-r1/workspace/.agents/skills/adhd-md/references/rules.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H02-r1/workspace/.agents/skills/adhd-md/references/antipatterns.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H02-r1/workspace/.agents/skills/adhd-md/references/cjk.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py --help 2>&1 | head -60",
+      "description": "Show script help"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit --help; echo \"=== verify ===\"; python3 .agents/skills/adhd-md/scripts/adhd_md.py verify --help; echo \"=== fmt ===\"; python3 .agents/skills/adhd-md/scripts/adhd_md.py fmt --help",
+      "description": "Show audit/verify/fmt subcommand help"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 2 --scope=format; echo \"EXIT=$?\"",
+      "description": "Run audit on input.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 2 --scope=format",
+      "description": "Run audit on input.md with format scope"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py fmt input.md",
+      "description": "Preview deterministic format fixes"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H02-r1/workspace/.agents/skills/adhd-md/references/rubric.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H02-r1/workspace/.agents/skills/adhd-md/references/examples/README.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H02-r1/workspace/.agents/skills/adhd-md/references/examples/02-zh-readme.before.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H02-r1/workspace/.agents/skills/adhd-md/references/examples/02-zh-readme.after.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "cp input.md output.md && ls -l input.md output.md",
+      "description": "Copy input.md to output.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H02-r1/workspace/output.md"
+    }
+  },
+  {
+    "tool": "Edit",
+    "input": {
+      "replace_all": false,
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H02-r1/workspace/output.md",
+      "old_string": "并且旧密钥至少还有 24 小时才过期。新密钥创建后不会自动替换运行中的部署。",
+      "new_string": "并且旧密钥至少还有 24 小时才过期。\n\n新密钥创建后不会自动替换运行中的部署。"
+    }
+  },
+  {
+    "tool": "Edit",
+    "input": {
+      "replace_all": false,
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H02-r1/workspace/output.md",
+      "old_string": "再重新部署测试环境。生产更新失败时恢复旧密钥并重启两个 worker。",
+      "new_string": "再重新部署测试环境。\n\n生产更新失败时恢复旧密钥并重启两个 worker。"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "diff <(sed 's/[[:space:]]*$//' input.md) <(sed 's/[[:space:]]*$//' output.md)",
+      "description": "Diff input vs output ignoring trailing whitespace"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "diff input.md output.md",
+      "description": "Show line diff between input and output"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c \"\nimport re\na=open('input.md',encoding='utf-8').read()\nb=open('output.md',encoding='utf-8').read()\nstrip=lambda s: re.sub(r'\\s+','',s)\nprint('non-whitespace identical:', strip(a)==strip(b))\nprint('input chars:',len(strip(a)),'output chars:',len(strip(b)))\nprint('input lines:',len(a.splitlines()),'output lines:',len(b.splitlines()))\nprint('ends with single newline:', b.endswith('\\n') and not b.endswith('\\n\\n'))\n\"",
+      "description": "Compare non-whitespace content of input and output"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=format; echo \"verify_exit=$?\"",
+      "description": "Run format-scope verify"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c \"\nimport subprocess\ndef run(*a):\n    r = subprocess.run(['python3','.agents/skills/adhd-md/scripts/adhd_md.py',*a], capture_output=True, text=True)\n    print(r.stdout, end='')\n    if r.stderr.strip(): print('STDERR:', r.stderr, end='')\n    print('>>> exit code:', r.returncode)\n    print('='*60)\nrun('verify','input.md','output.md','--scope=format')\n\"",
+      "description": "Run verify and capture exit code"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c \"\nimport subprocess\ndef run(*a):\n    r = subprocess.run(['python3','.agents/skills/adhd-md/scripts/adhd_md.py',*a], capture_output=True, text=True)\n    print(r.stdout, end='')\n    if r.stderr.strip(): print('STDERR:', r.stderr, end='')\n    print('>>> exit code:', r.returncode)\n    print('='*60)\nrun('audit','output.md','--level','2','--scope=format')\nrun('report','input.md','output.md','--scope=format')\n\"",
+      "description": "Audit output.md and run before/after report"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H02-r1/workspace/output.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c \"\nimport subprocess, json\nr = subprocess.run(['python3','.agents/skills/adhd-md/scripts/adhd_md.py','verify','input.md','output.md','--scope=format','--json'], capture_output=True, text=True)\nprint('exit', r.returncode)\nd = json.loads(r.stdout)\nprint(json.dumps(d, ensure_ascii=False, indent=2)[:2000])\n\"",
+      "description": "Inspect verify JSON output"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c \"\nimport subprocess, json\nfor f in ['input.md','output.md']:\n    r = subprocess.run(['python3','.agents/skills/adhd-md/scripts/adhd_md.py','audit',f,'--level','2','--scope=format','--json'], capture_output=True, text=True)\n    d = json.loads(r.stdout)\n    print(f, 'exit', r.returncode)\n    print(' score:', json.dumps(d.get('score'), ensure_ascii=False))\n    print(' antipattern/keys:', [k for k in d.keys()])\n    print()\n\"",
+      "description": "Inspect audit JSON score fields for both files"
+    }
+  }
+]

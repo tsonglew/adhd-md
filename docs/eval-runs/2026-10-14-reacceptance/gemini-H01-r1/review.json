@@ -1,0 +1,7 @@
+{
+  "reviewer": "coordinator inspected runtime logs and tool trace",
+  "human_review": "not performed",
+  "result": "unverified: no output",
+  "reason": "GEMINI_API_KEY missing; workspace is also untrusted, so requested auto_edit reverted to default.",
+  "not_counted_as_skill_success": true
+}

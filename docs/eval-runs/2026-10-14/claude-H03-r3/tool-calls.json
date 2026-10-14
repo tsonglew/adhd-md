@@ -1,0 +1,326 @@
+[
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H03-r3/workspace/.agents/skills/adhd-md/SKILL.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H03-r3/workspace/input.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "find /private/tmp/adhd-eval-20261014/claude-H03-r3/workspace/.agents/skills/adhd-md -type f | sort",
+      "description": "List skill files"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "ls -la /private/tmp/adhd-eval-20261014/claude-H03-r3/workspace/",
+      "description": "List workspace files"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H03-r3/workspace/.agents/skills/adhd-md/references/rules.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H03-r3/workspace/.agents/skills/adhd-md/references/antipatterns.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H03-r3/workspace/.agents/skills/adhd-md/references/cjk.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H03-r3/workspace/.agents/skills/adhd-md/references/doc-types.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H03-r3/workspace/prompt.txt"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py --help 2>&1 | head -60",
+      "description": "Show adhd_md CLI help"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit --help 2>&1 | head -40",
+      "description": "Show audit subcommand help"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "cp input.md /tmp/adhd-h03-orig.md && python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 3 --scope=format; echo \"EXIT=$?\"",
+      "description": "Run audit on input.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "cp input.md /tmp/adhd-h03-orig.md",
+      "description": "Copy original to temp for verify"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 3 --scope=format",
+      "description": "Run audit on input.md at level 3"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "wc -l .agents/skills/adhd-md/scripts/adhd_md.py",
+      "description": "Count lines in main script"
+    }
+  },
+  {
+    "tool": "Grep",
+    "input": {
+      "-n": true,
+      "head_limit": 80,
+      "output_mode": "content",
+      "path": "/private/tmp/adhd-eval-20261014/claude-H03-r3/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "pattern": "首屏结论力|first_screen|def _score|DIMENSIONS|WEIGHTS"
+    }
+  },
+  {
+    "tool": "Grep",
+    "input": {
+      "-n": true,
+      "head_limit": 60,
+      "output_mode": "content",
+      "path": "/private/tmp/adhd-eval-20261014/claude-H03-r3/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "pattern": "首屏|分块粒度|扫读性"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H03-r3/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "limit": 120,
+      "offset": 200
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H03-r3/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "limit": 120,
+      "offset": 630
+    }
+  },
+  {
+    "tool": "Grep",
+    "input": {
+      "-A": 60,
+      "-n": true,
+      "output_mode": "content",
+      "path": "/private/tmp/adhd-eval-20261014/claude-H03-r3/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "pattern": "RULE_LIMITS = \\{"
+    }
+  },
+  {
+    "tool": "Grep",
+    "input": {
+      "-n": true,
+      "head_limit": 30,
+      "output_mode": "content",
+      "path": "/private/tmp/adhd-eval-20261014/claude-H03-r3/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "pattern": "RULE_LIMITS"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -c \"\nimport json\nd=json.load(open('.agents/skills/adhd-md/references/rule-definitions.json'))\nprint(list(d.keys()))\nprint(json.dumps(d.get('thresholds',{}), ensure_ascii=False, indent=1)[:3000])\n\"",
+      "description": "Inspect rule thresholds JSON"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -c \"\nimport json\nd=json.load(open('.agents/skills/adhd-md/references/rule-definitions.json'))\nprint(json.dumps(d['dimensions'], ensure_ascii=False, indent=1))\nprint('global_score_cap', json.dumps(d['global_score_cap'], ensure_ascii=False))\n\"",
+      "description": "Inspect scoring dimensions"
+    }
+  },
+  {
+    "tool": "Grep",
+    "input": {
+      "-n": true,
+      "head_limit": 40,
+      "output_mode": "content",
+      "path": "/private/tmp/adhd-eval-20261014/claude-H03-r3/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "pattern": "hook|chunk|scan|human"
+    }
+  },
+  {
+    "tool": "Grep",
+    "input": {
+      "-n": true,
+      "head_limit": 40,
+      "output_mode": "content",
+      "path": "/private/tmp/adhd-eval-20261014/claude-H03-r3/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "pattern": "dims|def score|_dim_scores|axis_penalty"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H03-r3/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "limit": 80,
+      "offset": 1040
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -c \"\nimport json\nd=json.load(open('.agents/skills/adhd-md/references/rule-definitions.json'))\nfor r in d['rules']:\n    if r.get('scoring'):\n        print(r['id'], r['axis'], r['min_level'], r['status'], r['scoring'])\n\" | head -60",
+      "description": "List scoring components per rule"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py fmt --help",
+      "description": "Show fmt subcommand help"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py verify --help; python3 .agents/skills/adhd-md/scripts/adhd_md.py report --help",
+      "description": "Show verify and report help"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py fmt input.md",
+      "description": "Preview deterministic format fixes"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c 'import io; s=io.open(\"input.md\",encoding=\"utf-8\",newline=\"\").read(); print(repr(s))'",
+      "description": "Show exact input bytes as repr"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c 'import io; s=io.open(\"input.md\",encoding=\"utf-8\",newline=\"\").read(); old=\"不读取 `retryDelayMs`。参数缺失时\"; new=\"不读取 `retryDelayMs`。\\n\\n参数缺失时\"; assert s.count(old)==1, s.count(old); io.open(\"output.md\",\"w\",encoding=\"utf-8\",newline=\"\").write(s.replace(old,new))'",
+      "description": "Write output.md with one paragraph split"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-eval-20261014/claude-H03-r3/workspace/output.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=format; echo \"verify exit=$?\"",
+      "description": "Verify output against input for format scope"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=format",
+      "description": "Verify output against input for format scope"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c '\nimport subprocess, sys\ncmd = [sys.executable, \".agents/skills/adhd-md/scripts/adhd_md.py\"]\nfor args in ([\"verify\",\"input.md\",\"output.md\",\"--scope=format\"], [\"verify\",\"input.md\",\"output.md\",\"--scope=format\",\"--json\"]):\n    p = subprocess.run(cmd+args, capture_output=True, text=True)\n    print(\"ARGS:\", \" \".join(args), \"-> exit\", p.returncode)\n    print(p.stdout.strip()[:2000])\n    print(\"STDERR:\", p.stderr.strip()[:500])\n    print(\"-\"*60)\n'",
+      "description": "Run verify and capture exit status"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit output.md --level 3 --scope=format",
+      "description": "Audit the output file"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py report input.md output.md --scope=format --level 3",
+      "description": "Before/after report"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c '\nimport subprocess, sys, json\ncmd = [sys.executable, \".agents/skills/adhd-md/scripts/adhd_md.py\"]\nfor f in (\"input.md\",\"output.md\"):\n    p = subprocess.run(cmd+[\"audit\",f,\"--level\",\"3\",\"--scope=format\",\"--json\"], capture_output=True, text=True)\n    d = json.loads(p.stdout)\n    print(\"==\", f, \"exit\", p.returncode)\n    print(\"schema\", d.get(\"schema_version\"))\n    print(\"score\", json.dumps(d.get(\"score\",{}), ensure_ascii=False)[:600])\n    print(\"findings:\", json.dumps(d.get(\"findings\"), ensure_ascii=False))\n    print(\"shown:\", json.dumps(d.get(\"shown_findings\"), ensure_ascii=False))\n    print(\"coverage:\", json.dumps(d.get(\"coverage\"), ensure_ascii=False)[:900])\n    print()\n'",
+      "description": "Dump audit JSON for both files"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c '\nimport subprocess, sys\ncmd = [sys.executable, \".agents/skills/adhd-md/scripts/adhd_md.py\"]\nruns = [\n  [\"audit\",\"input.md\",\"--level\",\"3\",\"--scope=format\"],\n  [\"audit\",\"output.md\",\"--level\",\"3\",\"--scope=format\"],\n  [\"fmt\",\"--check\",\"output.md\"],\n  [\"verify\",\"input.md\",\"output.md\",\"--scope=format\"],\n  [\"report\",\"input.md\",\"output.md\",\"--scope=format\",\"--level\",\"3\"],\n]\nfor args in runs:\n    p = subprocess.run(cmd+args, capture_output=True, text=True)\n    print(\"$\", \" \".join(args), \"-> exit\", p.returncode)\n    if p.stderr.strip(): print(\"   stderr:\", p.stderr.strip()[:300])\n'",
+      "description": "Capture exit codes for audit, fmt, verify, report"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c '\nimport io, difflib\na=io.open(\"input.md\",encoding=\"utf-8\",newline=\"\").read().splitlines(keepends=True)\nb=io.open(\"output.md\",encoding=\"utf-8\",newline=\"\").read().splitlines(keepends=True)\nprint(\"\".join(difflib.unified_diff(a,b,\"input.md\",\"output.md\",n=2)))\nprint(\"chars in :\", len(io.open(\"input.md\",encoding=\"utf-8\").read()))\nprint(\"chars out:\", len(io.open(\"output.md\",encoding=\"utf-8\").read()))\n'",
+      "description": "Show unified diff and character counts"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -I -c '\nimport json\nd=json.load(open(\".agents/skills/adhd-md/references/rule-definitions.json\"))\nfor r in d[\"rules\"]:\n    if r[\"status\"]==\"judge\" and r[\"min_level\"]<=3:\n        print(r[\"id\"], \"axis=\",r[\"axis\"], \"min_level=\",r[\"min_level\"])\n'",
+      "description": "List judge rules with axes"
+    }
+  },
+  {
+    "tool": "Grep",
+    "input": {
+      "-A": 25,
+      "-n": true,
+      "output_mode": "content",
+      "path": "/private/tmp/adhd-eval-20261014/claude-H03-r3/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "pattern": "def cmd_audit|def audit\\("
+    }
+  },
+  {
+    "tool": "Skill",
+    "input": {
+      "args": "mode=edit scope=format level=deep input.md → output.md（快照已在 .agents/skills/adhd-md/ 读过）",
+      "skill": "adhd-md"
+    }
+  }
+]

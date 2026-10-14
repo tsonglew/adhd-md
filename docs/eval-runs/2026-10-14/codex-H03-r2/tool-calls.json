@@ -1,0 +1,46 @@
+[
+  {
+    "command": "/bin/zsh -lc 'cat .agents/skills/adhd-md/SKILL.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'cat input.md .agents/skills/adhd-md/references/rules.md .agents/skills/adhd-md/references/antipatterns.md .agents/skills/adhd-md/references/cjk.md .agents/skills/adhd-md/references/doc-types.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 2 --scope=format'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py fmt input.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 3 --scope=format'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"sed -n '240,330p' .agents/skills/adhd-md/references/rules.md\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"python3 - <<'PY'\nfrom pathlib import Path\ns=Path('input.md').read_text()\na='\"'`retryCount=0` 时不重试。HTTP `429` 使用响应中的 `Retry-After`，不读取 `retryDelayMs`。参数缺失时使用默认值；未知参数会被忽略并写入启动日志。'\"'\nb='- \"'`retryCount=0` 时不重试。'\"\\\\n- HTTP \"'`429` 使用响应中的 `Retry-After`，不读取 `retryDelayMs`。'\"\\\\n- 参数缺失时使用默认值；未知参数会被忽略并写入启动日志。'\nassert a in s\nout=s.replace(a,b)\nPath('output.md').write_text(out)\nassert out.replace(b,a)==s\nprint('原文字符及顺序核对：仅增加列表标记、替换句间空白；输入未覆盖。')\nPY\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py audit output.md --level 3 --scope=format'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=format'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py report --help'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py report input.md output.md --scope=format --level 3'",
+    "exit_code": 0
+  }
+]

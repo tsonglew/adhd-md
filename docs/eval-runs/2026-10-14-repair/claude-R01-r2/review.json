@@ -1,0 +1,8 @@
+{
+  "reviewer": "coordinating agent; not independent human",
+  "human_review": "pending",
+  "facts_and_guards": "preserved",
+  "invented_ui_results": false,
+  "A8_reporting": "correct: unmet due to scope",
+  "residual_judge_error": "S4 marked out of scope on mistaken belief that content cannot change title text; final skill explicitly clarifies title wording vs heading level. This final clarification has not been model-retested."
+}

@@ -1,0 +1,58 @@
+[
+  {
+    "command": "/bin/zsh -lc 'cat .agents/skills/adhd-md/SKILL.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"pwd; rg --files -g 'input.md' -g 'AGENTS.md' -g '*adhd*'\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'cat .agents/skills/adhd-md/references/rules.md .agents/skills/adhd-md/references/antipatterns.md .agents/skills/adhd-md/references/doc-types.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'cat input.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py fmt input.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 2 --scope=format'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 3 --scope=format'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py report --help'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"python3 - <<'PY'\nfrom pathlib import Path\ns = Path('input.md').read_text()\nt = s.replace(' Authentication errors', '\\\\n\\\\nAuthentication errors').replace('are never retried', 'are **never retried**').replace('after the worker restarts.', '**after the worker restarts**.').replace(' \"'`visibilitySeconds` is measured'\"', '\\\\n\\\\n\"'`visibilitySeconds` is measured'\"')\nPath('output.md').write_text(t)\nassert ''.join(s.split()) == ''.join(t.replace('**', '').split())\nprint('Exact ordered non-whitespace characters preserved after removing added emphasis; table and code unchanged.')\nPY\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py audit output.md --level 3 --scope=format'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=format'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py report input.md output.md --scope=format --level 3 --json'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"python3 - <<'PY'\nfrom pathlib import Path\np=Path('output.md')\ns=p.read_text().replace('**after the worker restarts**', 'after the **worker restarts**')\np.write_text(s)\noriginal=Path('input.md').read_text()\nassert ''.join(original.split()) == ''.join(s.replace('**','').split())\nPY\npython3 .agents/skills/adhd-md/scripts/adhd_md.py audit output.md --level 3 --scope=format\npython3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=format\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"python3 .agents/skills/adhd-md/scripts/adhd_md.py report input.md output.md --scope=format --level 3 --json > /tmp/h09-report.json\npython3 - <<'PY'\nimport json\nr=json.load(open('/tmp/h09-report.json'))\nfor k in ['before','after']:\n print(k, r[k]['score'])\nprint('verify',r['verify'])\nPY\"",
+    "exit_code": 0
+  }
+]

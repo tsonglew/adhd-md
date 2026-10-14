@@ -1,0 +1,58 @@
+[
+  {
+    "command": "/bin/zsh -lc \"pwd && rg --files -g 'AGENTS.md' -g 'SKILL.md' -g 'input.md' -g '*judge*' -g '*check*' .agents/skills/adhd-md .codex/skills/adhd-md . 2>/dev/null\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'cat .agents/skills/adhd-md/SKILL.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'cat .agents/skills/adhd-md/references/rules.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'cat .agents/skills/adhd-md/references/antipatterns.md && cat .agents/skills/adhd-md/references/evidence.md && cat .agents/skills/adhd-md/references/doc-types.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'cat AGENTS.md && nl -ba input.md && git status --porcelain -- input.md output.md && rg --files .agents/skills/adhd-md'",
+    "exit_code": 128
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 3 --scope=content'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'cat .agents/skills/adhd-md/references/antipatterns.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"rg --files .agents/skills/adhd-md && rg -n 'H1|numeric|numbers|number|def verify|def report|judge' .agents/skills/adhd-md/scripts/adhd_md.py\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"sed -n '640,685p' .agents/skills/adhd-md/scripts/adhd_md.py && sed -n '2320,2385p' .agents/skills/adhd-md/scripts/adhd_md.py && sed -n '2610,2685p' .agents/skills/adhd-md/scripts/adhd_md.py\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 3 --scope=content --json'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=content && python3 .agents/skills/adhd-md/scripts/adhd_md.py report input.md output.md --scope=content --level=3'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py report input.md output.md --scope=content --level=3 --json > output.checks.json'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"python3 - <<'PY'\nimport importlib.util\nimport json\nimport re\nimport sys\nfrom pathlib import Path\np = Path('.agents/skills/adhd-md/scripts/adhd_md.py')\nspec = importlib.util.spec_from_file_location('adhd_md', p)\nmodule = importlib.util.module_from_spec(spec)\nsys.modules[spec.name] = module\nspec.loader.exec_module(module)\nsource = Path('input.md').read_text()\noutput = Path('output.md').read_text()\nold = module.Doc(source)\nnew = module.Doc(output)\nshape = lambda doc: [(b.kind, b.start, b.end, b.info.get('level')) for b in doc.blocks]\nassert shape(old) == shape(new), (shape(old), shape(new))\nassert re.findall(r'\"'^'\"\\\\d+\\\\. ', source, re.M) == re.findall(r'\"'^'\"\\\\d+\\\\. ', output, re.M)\nassert [i for i, line in enumerate(source.splitlines()) if not line] == [i for i, line in enumerate(output.splitlines()) if not line]\nassert not re.search(r'[*_\"'`<>'\"\\\\[\\\\]]', output)\nassert len(re.findall(r'\"'^'\"\\\\d+\\\\. Step \\\\d of 4:', output, re.M)) == 4\nassert output.endswith('\\\\n') and not output.endswith('\\\\n\\\\n')\nreport = json.loads(Path('output.checks.json').read_text())\nassert report['verify']['status'] == 'pass', report['verify']\nassert report['after']['score']['x_deduct'] == 0\nprint('Layout check: PASS; same 10 lines, blank lines, four block types, one H1, and ordered items 1–4; no emphasis or folding introduced.')\nprint('Progress check: PASS; all four original list items have Step X of 4 labels.')\nprint('Verify:', json.dumps(report['verify']))\nprint('Script score:', report['before']['score']['total'], '->', report['after']['score']['total'])\nprint('M findings:', sum(f['rule'].startswith('M') for f in report['before']['findings']), '->', sum(f['rule'].startswith('M') for f in report['after']['findings']))\nprint('X deductions:', report['before']['score']['x_deduct'], '->', report['after']['score']['x_deduct'])\nPY\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"python3 - <<'PY'\nimport json\nimport re\nfrom pathlib import Path\nchecks = json.loads(Path('output.checks.json').read_text())\nreport = Path('output.report.md').read_text()\nexpected = set(checks['after']['score']['unscored'])\nrecorded = set(re.findall(r'\"'^'\"\\\\| ([A-Z]\\\\d+) \\\\|', report, re.M))\nassert expected <= recorded, sorted(expected - recorded)\nassert {f'X{i}' for i in range(1, 9)} <= recorded\nprint(f'Report coverage: all {len(expected)} returned judge rules and X1–X8 recorded.')\nprint(Path('output.md').read_text())\nPY\"",
+    "exit_code": 0
+  }
+]

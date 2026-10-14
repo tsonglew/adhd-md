@@ -1,0 +1,26 @@
+[
+  {
+    "command": "/bin/zsh -lc 'cat .agents/skills/adhd-md/SKILL.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'cat input.md; cat .agents/skills/adhd-md/references/rules.md; cat .agents/skills/adhd-md/references/antipatterns.md; cat .agents/skills/adhd-md/references/doc-types.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 2; python3 .agents/skills/adhd-md/scripts/adhd_md.py fmt input.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"rg -n 'bold|T2d|X5' .agents/skills/adhd-md/scripts/adhd_md.py; python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 3 --scope=format --json\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"python3 - <<'PY'\nfrom pathlib import Path\np=Path('input.md').read_bytes()\nq=p.replace(b'2. Apply the plan', b'\\\\n2. Apply the plan').replace(b'**first copy**. Retain', b'**first copy**. \\\\n\\\\nRetain')\nPath('output.md').write_bytes(q)\nassert q.replace(b'\\\\n2. Apply',b'2. Apply').replace(b'. \\\\n\\\\nRetain',b'. Retain') == p\nPY\npython3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=format\npython3 .agents/skills/adhd-md/scripts/adhd_md.py audit output.md --level 3 --scope=format\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"python3 - <<'PY'\nfrom pathlib import Path\nimport subprocess\np=Path('input.md').read_bytes()\nq=p.replace(b'2. Apply the plan', b'\\\\n2. Apply the plan')\nPath('output.md').write_bytes(q)\nassert q.replace(b'\\\\n2. Apply the plan', b'2. Apply the plan') == p\nfor args in [('audit','input.md','--level','3','--scope=format'),('audit','output.md','--level','3','--scope=format'),('verify','input.md','output.md','--scope=format'),('report','input.md','output.md','--scope=format')]:\n    r=subprocess.run(['python3','.agents/skills/adhd-md/scripts/adhd_md.py',*args],capture_output=True,text=True)\n    print(r.stdout)\n    print('EXIT STATUS:',r.returncode, 'COMMAND:', ' '.join(args))\nPY\"",
+    "exit_code": 0
+  }
+]

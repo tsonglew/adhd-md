@@ -1,0 +1,62 @@
+[
+  {
+    "command": "/bin/zsh -lc \"pwd && rg --files -g 'AGENTS.md' -g 'input.md' -g 'SKILL.md' -g '*audit*' -g '*verify*' -g '*format*' .agents .codex . 2>/dev/null\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'cat .agents/skills/adhd-md/SKILL.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'cat .agents/skills/adhd-md/references/rules.md && cat .agents/skills/adhd-md/references/antipatterns.md && cat .agents/skills/adhd-md/references/doc-types.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'cat AGENTS.md && cat input.md && git status --short'",
+    "exit_code": 128
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 3 --scope=format'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'cat .agents/skills/adhd-md/references/rubric.md && cat .agents/skills/adhd-md/references/evidence.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 3 --scope=format --json'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py fmt input.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"python3 - <<'PY'\nfrom pathlib import Path\nimport hashlib, json\nsrc = Path('input.md').read_bytes()\ntext = src.decode('utf-8')\ninsertions = []\ndef add_before(needle, value):\n    assert text.count(needle) == 1, needle\n    insertions.append((text.index(needle), value))\nadd_before('\"'`maxAttempts` counts'\"', '- ')\nadd_before(' A value of \"'`1`'\"', '\\\\n-')\nadd_before(' Authentication errors', '\\\\n-')\nadd_before('never retried', '**')\nadd_before(', even when', '**')\nadd_before('Configuration changes', '- ')\nadd_before('after the worker restarts', '**')\nadd_before('. \"'`visibilitySeconds` is measured'\"', '**')\nadd_before(' \"'`visibilitySeconds` is measured'\"', '\\\\n-')\nparts = []\nadded_ranges = []\nprevious = 0\nlength = 0\nfor position, markup in sorted(insertions):\n    chunk = text[previous:position]\n    parts.extend([chunk, markup])\n    length += len(chunk)\n    added_ranges.append((length, length + len(markup)))\n    length += len(markup)\n    previous = position\nparts.append(text[previous:])\ncandidate = ''.join(parts)\nrecovered = candidate\nfor start, end in reversed(added_ranges):\n    recovered = recovered[:start] + recovered[end:]\nassert recovered.encode('utf-8') == src\nassert Path('input.md').read_bytes() == src\nPath('output.candidate.md').write_bytes(candidate.encode('utf-8'))\nPath('output-validation').mkdir(exist_ok=True)\nPath('output-validation/preservation.json').write_text(json.dumps({\n    'status': 'pass',\n    'method': 'Remove only the recorded inserted Markdown characters; recover the original bytes exactly.',\n    'original_sha256': hashlib.sha256(src).hexdigest(),\n    'original_bytes': len(src),\n    'candidate_bytes': len(candidate.encode('utf-8')),\n    'original_characters_removed_or_replaced': 0,\n    'original_order_changed': False,\n    'inserted_character_ranges': added_ranges\n}, indent=2) + '\\\\n')\nprint(candidate)\nprint('Insertion-only recovery: PASS; every original byte retained in order.')\nPY\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.candidate.md --scope=format'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"python3 - <<'PY'\nfrom pathlib import Path\nimport hashlib, json\ncandidate = Path('output.candidate.md')\noriginal = Path('input.md').read_bytes()\npreservation = json.loads(Path('output-validation/preservation.json').read_text())\nassert hashlib.sha256(original).hexdigest() == preservation['original_sha256']\nPath('output.md').write_bytes(candidate.read_bytes())\ncandidate.unlink()\nprint('Created output.md; input.md unchanged.')\nPY\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'nl -ba output.md && diff -u input.md output.md'",
+    "exit_code": 1
+  },
+  {
+    "command": "/bin/zsh -lc \"python3 - <<'PY'\nfrom pathlib import Path\nimport subprocess, json\nbase = ['python3', '.agents/skills/adhd-md/scripts/adhd_md.py']\nstatuses = {}\nfor label, args in [('audit-before', ['audit', 'input.md', '--level', '3', '--scope=format']), ('audit-after', ['audit', 'output.md', '--level', '3', '--scope=format']), ('verify', ['verify', 'input.md', 'output.md', '--scope=format']), ('report', ['report', 'input.md', 'output.md', '--scope=format', '--level=3'])]:\n    result = subprocess.run(base + args + ['--json'], capture_output=True, text=True)\n    Path(f'output-validation/{label}.json').write_text(result.stdout)\n    statuses[label] = {'exit_status': result.returncode, 'command': ' '.join(base + args + ['--json'])}\n    print(label + ': exit=' + str(result.returncode))\n    if result.stderr:\n        print(result.stderr)\nPath('output-validation/exit-statuses.json').write_text(json.dumps(statuses, indent=2) + '\\\\n')\nPY\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'cat output-validation/audit-after.json && cat output-validation/verify.json && cat output-validation/report.json'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"python3 - <<'PY'\nfrom pathlib import Path\nimport hashlib, json\np = Path('output-validation')\nproof = json.loads((p/'preservation.json').read_text())\noriginal = Path('input.md').read_bytes()\noutput = Path('output.md').read_bytes()\nrecovered = output.decode('utf-8')\nfor start, end in reversed(proof['inserted_character_ranges']):\n    recovered = recovered[:start] + recovered[end:]\nassert recovered.encode('utf-8') == original\nassert hashlib.sha256(original).hexdigest() == proof['original_sha256']\nassert b'\\\\n'.join(original.splitlines()[2:8]) == b'\\\\n'.join(output.splitlines()[2:8])\nassert original.split(b'\"'```yaml'\"\\\\n')[1].split(b'\"'```'\"')[0] == output.split(b'\"'```yaml'\"\\\\n')[1].split(b'\"'```'\"')[0]\nfor name in ['audit-before', 'audit-after', 'verify', 'report']:\n    assert json.loads((p/'exit-statuses.json').read_text())[name]['exit_status'] == 0\nverify = json.loads((p/'verify.json').read_text())\nassert verify['status'] == 'pass' and not verify['unknowns'] and not verify['warnings']\nreport = (p/'report.md').read_text()\nunjudged = json.loads((p/'audit-after.json').read_text())['score']['unscored']\nassert all(f'| {rule} |' in report for rule in unjudged)\nprint('Final checks passed: unchanged input; exact byte recovery; identical table and YAML; all 32 script-unjudged rules documented.')\nPY\"",
+    "exit_code": 0
+  }
+]

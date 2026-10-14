@@ -1,0 +1,14 @@
+{
+  "reviewer": "coordinator inspected source/output and judgment table",
+  "human_review": "not performed",
+  "information_preserved": true,
+  "scope_preserved": true,
+  "unsupported_facts_found": false,
+  "evidence": [
+    "Manual settings remain browser-session only, signing in elsewhere does not copy them, archived exclusion retained.",
+    "Active-lock guard covers wait 7 minutes and reload once after that wait; job key and retry request retained.",
+    "Accepted remains distinct from rendering finished.",
+    "S4 title wording updated while heading level unchanged; A8 explicitly unmet due to retained multi-action items; N7 plain-text labels on every step."
+  ],
+  "result": "pass"
+}

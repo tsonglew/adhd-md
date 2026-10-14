@@ -1,0 +1,1368 @@
+{
+  "scope": "content",
+  "level": "light",
+  "changed": "Append dated evidence links and mark completed recording steps; retain EVAL-01 acceptance as incomplete.",
+  "preserved": "All previous historical records, code examples, links, release prerequisites, and frozen evaluation fixtures retained.",
+  "documents": {
+    "eval.md": {
+      "exit_code": 0,
+      "report": {
+        "schema_version": 2,
+        "scope": "content",
+        "level": 1,
+        "scope_behavior": "findings 和 coverage 按 scope 展示；score 始终覆盖全文所有适用轴",
+        "before": {
+          "path": "/tmp/adhd-eval-20261014/original-docs/eval.md",
+          "lang": "zh",
+          "lines": 187,
+          "score": {
+            "total": 91.4,
+            "band": null,
+            "dims": {
+              "hook": {
+                "label": "首屏结论力",
+                "weight": 18,
+                "score": 100.0
+              },
+              "chunk": {
+                "label": "分块粒度",
+                "weight": 18,
+                "score": 52.0
+              },
+              "scan": {
+                "label": "扫读性",
+                "weight": 13,
+                "score": 100.0
+              },
+              "sentence": {
+                "label": "句子负荷",
+                "weight": 13,
+                "score": 100.0
+              },
+              "action": {
+                "label": "行动性",
+                "weight": 12,
+                "score": 100.0
+              },
+              "typo": {
+                "label": "排版一致性",
+                "weight": 13,
+                "score": 100.0
+              },
+              "human": {
+                "label": "活人感",
+                "weight": 13,
+                "score": 100.0
+              }
+            },
+            "x_deduct": 0,
+            "x_hits": {},
+            "unscored": [
+              "X3",
+              "X6",
+              "X7",
+              "X8"
+            ],
+            "det_only": true
+          },
+          "coverage": {
+            "applicable": 2,
+            "script_checked": 0,
+            "hint_only": 0,
+            "judge_only": 1,
+            "format_only": 0,
+            "hard_gate": 1,
+            "unimplemented": 0,
+            "rule_ids": {
+              "script_checked": [],
+              "hint_only": [],
+              "judge_only": [
+                "X3"
+              ],
+              "format_only": [],
+              "hard_gate": [
+                "X4"
+              ],
+              "unimplemented": []
+            },
+            "script_scored": 0,
+            "findings": 0,
+            "advisory_findings": 0,
+            "scope": "content",
+            "level": 1
+          },
+          "findings": [
+            {
+              "rule": "N3",
+              "line": 146,
+              "msg": "两个大节之间没有分割线，可按文档节奏添加",
+              "axis": "F",
+              "advisory": true
+            },
+            {
+              "rule": "N3",
+              "line": 179,
+              "msg": "两个大节之间没有分割线，可按文档节奏添加",
+              "axis": "F",
+              "advisory": true
+            },
+            {
+              "rule": "P1",
+              "line": 3,
+              "msg": "段落 5 句 / 94 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 60,
+              "msg": "段落 4 句 / 118 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 144,
+              "msg": "段落 4 句 / 72 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 150,
+              "msg": "段落 4 句 / 79 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 171,
+              "msg": "段落 4 句 / 101 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 177,
+              "msg": "段落 5 句 / 97 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            }
+          ],
+          "shown_findings": []
+        },
+        "after": {
+          "path": "docs/eval.md",
+          "lang": "zh",
+          "lines": 189,
+          "score": {
+            "total": 91.4,
+            "band": null,
+            "dims": {
+              "hook": {
+                "label": "首屏结论力",
+                "weight": 18,
+                "score": 100.0
+              },
+              "chunk": {
+                "label": "分块粒度",
+                "weight": 18,
+                "score": 52.0
+              },
+              "scan": {
+                "label": "扫读性",
+                "weight": 13,
+                "score": 100.0
+              },
+              "sentence": {
+                "label": "句子负荷",
+                "weight": 13,
+                "score": 100.0
+              },
+              "action": {
+                "label": "行动性",
+                "weight": 12,
+                "score": 100.0
+              },
+              "typo": {
+                "label": "排版一致性",
+                "weight": 13,
+                "score": 100.0
+              },
+              "human": {
+                "label": "活人感",
+                "weight": 13,
+                "score": 100.0
+              }
+            },
+            "x_deduct": 0,
+            "x_hits": {},
+            "unscored": [
+              "X3",
+              "X6",
+              "X7",
+              "X8"
+            ],
+            "det_only": true
+          },
+          "coverage": {
+            "applicable": 2,
+            "script_checked": 0,
+            "hint_only": 0,
+            "judge_only": 1,
+            "format_only": 0,
+            "hard_gate": 1,
+            "unimplemented": 0,
+            "rule_ids": {
+              "script_checked": [],
+              "hint_only": [],
+              "judge_only": [
+                "X3"
+              ],
+              "format_only": [],
+              "hard_gate": [
+                "X4"
+              ],
+              "unimplemented": []
+            },
+            "script_scored": 0,
+            "findings": 0,
+            "advisory_findings": 0,
+            "scope": "content",
+            "level": 1
+          },
+          "findings": [
+            {
+              "rule": "N3",
+              "line": 148,
+              "msg": "两个大节之间没有分割线，可按文档节奏添加",
+              "axis": "F",
+              "advisory": true
+            },
+            {
+              "rule": "N3",
+              "line": 181,
+              "msg": "两个大节之间没有分割线，可按文档节奏添加",
+              "axis": "F",
+              "advisory": true
+            },
+            {
+              "rule": "P1",
+              "line": 5,
+              "msg": "段落 5 句 / 94 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 62,
+              "msg": "段落 4 句 / 118 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 146,
+              "msg": "段落 4 句 / 72 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 152,
+              "msg": "段落 4 句 / 79 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 173,
+              "msg": "段落 4 句 / 101 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 179,
+              "msg": "段落 5 句 / 97 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            }
+          ],
+          "shown_findings": []
+        },
+        "verify": {
+          "scope": "content",
+          "status": "pass",
+          "hard_failures": [],
+          "warnings": [],
+          "unknowns": [],
+          "ok": true
+        }
+      }
+    },
+    "host-matrix.md": {
+      "exit_code": 0,
+      "report": {
+        "schema_version": 2,
+        "scope": "content",
+        "level": 1,
+        "scope_behavior": "findings 和 coverage 按 scope 展示；score 始终覆盖全文所有适用轴",
+        "before": {
+          "path": "/tmp/adhd-eval-20261014/original-docs/host-matrix.md",
+          "lang": "zh",
+          "lines": 120,
+          "score": {
+            "total": 98.6,
+            "band": null,
+            "dims": {
+              "hook": {
+                "label": "首屏结论力",
+                "weight": 18,
+                "score": 100.0
+              },
+              "chunk": {
+                "label": "分块粒度",
+                "weight": 18,
+                "score": 92.0
+              },
+              "scan": {
+                "label": "扫读性",
+                "weight": 13,
+                "score": 100.0
+              },
+              "sentence": {
+                "label": "句子负荷",
+                "weight": 13,
+                "score": 100.0
+              },
+              "action": {
+                "label": "行动性",
+                "weight": 12,
+                "score": 100.0
+              },
+              "typo": {
+                "label": "排版一致性",
+                "weight": 13,
+                "score": 100.0
+              },
+              "human": {
+                "label": "活人感",
+                "weight": 13,
+                "score": 100.0
+              }
+            },
+            "x_deduct": 0,
+            "x_hits": {},
+            "unscored": [
+              "X3",
+              "X6",
+              "X7",
+              "X8"
+            ],
+            "det_only": true
+          },
+          "coverage": {
+            "applicable": 2,
+            "script_checked": 0,
+            "hint_only": 0,
+            "judge_only": 1,
+            "format_only": 0,
+            "hard_gate": 1,
+            "unimplemented": 0,
+            "rule_ids": {
+              "script_checked": [],
+              "hint_only": [],
+              "judge_only": [
+                "X3"
+              ],
+              "format_only": [],
+              "hard_gate": [
+                "X4"
+              ],
+              "unimplemented": []
+            },
+            "script_scored": 0,
+            "findings": 0,
+            "advisory_findings": 0,
+            "scope": "content",
+            "level": 1
+          },
+          "findings": [
+            {
+              "rule": "N3",
+              "line": 9,
+              "msg": "两个大节之间没有分割线，可按文档节奏添加",
+              "axis": "F",
+              "advisory": true
+            },
+            {
+              "rule": "N3",
+              "line": 20,
+              "msg": "两个大节之间没有分割线，可按文档节奏添加",
+              "axis": "F",
+              "advisory": true
+            },
+            {
+              "rule": "N3",
+              "line": 35,
+              "msg": "两个大节之间没有分割线，可按文档节奏添加",
+              "axis": "F",
+              "advisory": true
+            },
+            {
+              "rule": "N3",
+              "line": 56,
+              "msg": "两个大节之间没有分割线，可按文档节奏添加",
+              "axis": "F",
+              "advisory": true
+            },
+            {
+              "rule": "N3",
+              "line": 100,
+              "msg": "两个大节之间没有分割线，可按文档节奏添加",
+              "axis": "F",
+              "advisory": true
+            },
+            {
+              "rule": "P1",
+              "line": 54,
+              "msg": "段落 5 句 / 102 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            }
+          ],
+          "shown_findings": []
+        },
+        "after": {
+          "path": "docs/host-matrix.md",
+          "lang": "zh",
+          "lines": 124,
+          "score": {
+            "total": 98.6,
+            "band": null,
+            "dims": {
+              "hook": {
+                "label": "首屏结论力",
+                "weight": 18,
+                "score": 100.0
+              },
+              "chunk": {
+                "label": "分块粒度",
+                "weight": 18,
+                "score": 92.0
+              },
+              "scan": {
+                "label": "扫读性",
+                "weight": 13,
+                "score": 100.0
+              },
+              "sentence": {
+                "label": "句子负荷",
+                "weight": 13,
+                "score": 100.0
+              },
+              "action": {
+                "label": "行动性",
+                "weight": 12,
+                "score": 100.0
+              },
+              "typo": {
+                "label": "排版一致性",
+                "weight": 13,
+                "score": 100.0
+              },
+              "human": {
+                "label": "活人感",
+                "weight": 13,
+                "score": 100.0
+              }
+            },
+            "x_deduct": 0,
+            "x_hits": {},
+            "unscored": [
+              "X3",
+              "X6",
+              "X7",
+              "X8"
+            ],
+            "det_only": true
+          },
+          "coverage": {
+            "applicable": 2,
+            "script_checked": 0,
+            "hint_only": 0,
+            "judge_only": 1,
+            "format_only": 0,
+            "hard_gate": 1,
+            "unimplemented": 0,
+            "rule_ids": {
+              "script_checked": [],
+              "hint_only": [],
+              "judge_only": [
+                "X3"
+              ],
+              "format_only": [],
+              "hard_gate": [
+                "X4"
+              ],
+              "unimplemented": []
+            },
+            "script_scored": 0,
+            "findings": 0,
+            "advisory_findings": 0,
+            "scope": "content",
+            "level": 1
+          },
+          "findings": [
+            {
+              "rule": "N3",
+              "line": 13,
+              "msg": "两个大节之间没有分割线，可按文档节奏添加",
+              "axis": "F",
+              "advisory": true
+            },
+            {
+              "rule": "N3",
+              "line": 24,
+              "msg": "两个大节之间没有分割线，可按文档节奏添加",
+              "axis": "F",
+              "advisory": true
+            },
+            {
+              "rule": "N3",
+              "line": 39,
+              "msg": "两个大节之间没有分割线，可按文档节奏添加",
+              "axis": "F",
+              "advisory": true
+            },
+            {
+              "rule": "N3",
+              "line": 60,
+              "msg": "两个大节之间没有分割线，可按文档节奏添加",
+              "axis": "F",
+              "advisory": true
+            },
+            {
+              "rule": "N3",
+              "line": 104,
+              "msg": "两个大节之间没有分割线，可按文档节奏添加",
+              "axis": "F",
+              "advisory": true
+            },
+            {
+              "rule": "P1",
+              "line": 58,
+              "msg": "段落 5 句 / 102 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            }
+          ],
+          "shown_findings": []
+        },
+        "verify": {
+          "scope": "content",
+          "status": "pass",
+          "hard_failures": [],
+          "warnings": [],
+          "unknowns": [],
+          "ok": true
+        }
+      }
+    },
+    "implementation-checklist.md": {
+      "exit_code": 0,
+      "report": {
+        "schema_version": 2,
+        "scope": "content",
+        "level": 1,
+        "scope_behavior": "findings 和 coverage 按 scope 展示；score 始终覆盖全文所有适用轴",
+        "before": {
+          "path": "/tmp/adhd-eval-20261014/original-docs/implementation-checklist.md",
+          "lang": "zh",
+          "lines": 546,
+          "score": {
+            "total": 89.2,
+            "band": null,
+            "dims": {
+              "hook": {
+                "label": "首屏结论力",
+                "weight": 18,
+                "score": 100.0
+              },
+              "chunk": {
+                "label": "分块粒度",
+                "weight": 18,
+                "score": 40.0
+              },
+              "scan": {
+                "label": "扫读性",
+                "weight": 13,
+                "score": 100.0
+              },
+              "sentence": {
+                "label": "句子负荷",
+                "weight": 13,
+                "score": 100.0
+              },
+              "action": {
+                "label": "行动性",
+                "weight": 12,
+                "score": 100.0
+              },
+              "typo": {
+                "label": "排版一致性",
+                "weight": 13,
+                "score": 100.0
+              },
+              "human": {
+                "label": "活人感",
+                "weight": 13,
+                "score": 100.0
+              }
+            },
+            "x_deduct": 0,
+            "x_hits": {},
+            "unscored": [
+              "X3",
+              "X6",
+              "X7",
+              "X8"
+            ],
+            "det_only": true
+          },
+          "coverage": {
+            "applicable": 2,
+            "script_checked": 0,
+            "hint_only": 0,
+            "judge_only": 1,
+            "format_only": 0,
+            "hard_gate": 1,
+            "unimplemented": 0,
+            "rule_ids": {
+              "script_checked": [],
+              "hint_only": [],
+              "judge_only": [
+                "X3"
+              ],
+              "format_only": [],
+              "hard_gate": [
+                "X4"
+              ],
+              "unimplemented": []
+            },
+            "script_scored": 0,
+            "findings": 0,
+            "advisory_findings": 0,
+            "scope": "content",
+            "level": 1
+          },
+          "findings": [
+            {
+              "rule": "N3",
+              "line": 29,
+              "msg": "两个大节之间没有分割线，可按文档节奏添加",
+              "axis": "F",
+              "advisory": true
+            },
+            {
+              "rule": "N3",
+              "line": 87,
+              "msg": "两个大节之间没有分割线，可按文档节奏添加",
+              "axis": "F",
+              "advisory": true
+            },
+            {
+              "rule": "N3",
+              "line": 189,
+              "msg": "两个大节之间没有分割线，可按文档节奏添加",
+              "axis": "F",
+              "advisory": true
+            },
+            {
+              "rule": "N3",
+              "line": 285,
+              "msg": "两个大节之间没有分割线，可按文档节奏添加",
+              "axis": "F",
+              "advisory": true
+            },
+            {
+              "rule": "N3",
+              "line": 376,
+              "msg": "两个大节之间没有分割线，可按文档节奏添加",
+              "axis": "F",
+              "advisory": true
+            },
+            {
+              "rule": "N3",
+              "line": 442,
+              "msg": "两个大节之间没有分割线，可按文档节奏添加",
+              "axis": "F",
+              "advisory": true
+            },
+            {
+              "rule": "N3",
+              "line": 502,
+              "msg": "两个大节之间没有分割线，可按文档节奏添加",
+              "axis": "F",
+              "advisory": true
+            },
+            {
+              "rule": "N3",
+              "line": 529,
+              "msg": "两个大节之间没有分割线，可按文档节奏添加",
+              "axis": "F",
+              "advisory": true
+            },
+            {
+              "rule": "P1",
+              "line": 5,
+              "msg": "段落 4 句 / 51 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 49,
+              "msg": "段落 5 句 / 71 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 51,
+              "msg": "段落 4 句 / 91 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 57,
+              "msg": "段落 5 句 / 65 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 59,
+              "msg": "段落 5 句 / 85 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 63,
+              "msg": "段落 5 句 / 70 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 83,
+              "msg": "段落 5 句 / 105 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 103,
+              "msg": "段落 4 句 / 76 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 119,
+              "msg": "段落 6 句 / 121 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 121,
+              "msg": "段落 8 句 / 126 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 139,
+              "msg": "段落 5 句 / 123 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 157,
+              "msg": "段落 6 句 / 156 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 185,
+              "msg": "段落 5 句 / 138 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 204,
+              "msg": "段落 4 句 / 129 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 221,
+              "msg": "段落 8 句 / 143 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 249,
+              "msg": "段落 7 句 / 127 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 273,
+              "msg": "段落 17 句 / 337 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 281,
+              "msg": "段落 6 句 / 76 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 300,
+              "msg": "段落 7 句 / 192 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 315,
+              "msg": "段落 8 句 / 174 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 317,
+              "msg": "段落 5 句 / 90 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 339,
+              "msg": "段落 8 句 / 138 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 341,
+              "msg": "段落 5 句 / 64 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 358,
+              "msg": "段落 10 句 / 180 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 374,
+              "msg": "段落 12 句 / 213 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 392,
+              "msg": "段落 8 句 / 217 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 410,
+              "msg": "段落 6 句 / 149 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 420,
+              "msg": "段落 4 句 / 47 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 438,
+              "msg": "段落 7 句 / 130 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 440,
+              "msg": "段落 6 句 / 160 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 458,
+              "msg": "段落 8 句 / 167 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 460,
+              "msg": "段落 5 句 / 103 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 478,
+              "msg": "段落 4 句 / 94 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 498,
+              "msg": "段落 12 句 / 210 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 500,
+              "msg": "段落 8 句 / 88 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            }
+          ],
+          "shown_findings": []
+        },
+        "after": {
+          "path": "docs/implementation-checklist.md",
+          "lang": "zh",
+          "lines": 548,
+          "score": {
+            "total": 89.2,
+            "band": null,
+            "dims": {
+              "hook": {
+                "label": "首屏结论力",
+                "weight": 18,
+                "score": 100.0
+              },
+              "chunk": {
+                "label": "分块粒度",
+                "weight": 18,
+                "score": 40.0
+              },
+              "scan": {
+                "label": "扫读性",
+                "weight": 13,
+                "score": 100.0
+              },
+              "sentence": {
+                "label": "句子负荷",
+                "weight": 13,
+                "score": 100.0
+              },
+              "action": {
+                "label": "行动性",
+                "weight": 12,
+                "score": 100.0
+              },
+              "typo": {
+                "label": "排版一致性",
+                "weight": 13,
+                "score": 100.0
+              },
+              "human": {
+                "label": "活人感",
+                "weight": 13,
+                "score": 100.0
+              }
+            },
+            "x_deduct": 0,
+            "x_hits": {},
+            "unscored": [
+              "X3",
+              "X6",
+              "X7",
+              "X8"
+            ],
+            "det_only": true
+          },
+          "coverage": {
+            "applicable": 2,
+            "script_checked": 0,
+            "hint_only": 0,
+            "judge_only": 1,
+            "format_only": 0,
+            "hard_gate": 1,
+            "unimplemented": 0,
+            "rule_ids": {
+              "script_checked": [],
+              "hint_only": [],
+              "judge_only": [
+                "X3"
+              ],
+              "format_only": [],
+              "hard_gate": [
+                "X4"
+              ],
+              "unimplemented": []
+            },
+            "script_scored": 0,
+            "findings": 0,
+            "advisory_findings": 0,
+            "scope": "content",
+            "level": 1
+          },
+          "findings": [
+            {
+              "rule": "N3",
+              "line": 29,
+              "msg": "两个大节之间没有分割线，可按文档节奏添加",
+              "axis": "F",
+              "advisory": true
+            },
+            {
+              "rule": "N3",
+              "line": 87,
+              "msg": "两个大节之间没有分割线，可按文档节奏添加",
+              "axis": "F",
+              "advisory": true
+            },
+            {
+              "rule": "N3",
+              "line": 189,
+              "msg": "两个大节之间没有分割线，可按文档节奏添加",
+              "axis": "F",
+              "advisory": true
+            },
+            {
+              "rule": "N3",
+              "line": 285,
+              "msg": "两个大节之间没有分割线，可按文档节奏添加",
+              "axis": "F",
+              "advisory": true
+            },
+            {
+              "rule": "N3",
+              "line": 376,
+              "msg": "两个大节之间没有分割线，可按文档节奏添加",
+              "axis": "F",
+              "advisory": true
+            },
+            {
+              "rule": "N3",
+              "line": 442,
+              "msg": "两个大节之间没有分割线，可按文档节奏添加",
+              "axis": "F",
+              "advisory": true
+            },
+            {
+              "rule": "N3",
+              "line": 504,
+              "msg": "两个大节之间没有分割线，可按文档节奏添加",
+              "axis": "F",
+              "advisory": true
+            },
+            {
+              "rule": "N3",
+              "line": 531,
+              "msg": "两个大节之间没有分割线，可按文档节奏添加",
+              "axis": "F",
+              "advisory": true
+            },
+            {
+              "rule": "P1",
+              "line": 5,
+              "msg": "段落 4 句 / 51 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 49,
+              "msg": "段落 5 句 / 71 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 51,
+              "msg": "段落 4 句 / 91 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 57,
+              "msg": "段落 5 句 / 65 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 59,
+              "msg": "段落 5 句 / 85 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 63,
+              "msg": "段落 5 句 / 70 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 83,
+              "msg": "段落 5 句 / 105 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 103,
+              "msg": "段落 4 句 / 76 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 119,
+              "msg": "段落 6 句 / 121 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 121,
+              "msg": "段落 8 句 / 126 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 139,
+              "msg": "段落 5 句 / 123 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 157,
+              "msg": "段落 6 句 / 156 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 185,
+              "msg": "段落 5 句 / 138 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 204,
+              "msg": "段落 4 句 / 129 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 221,
+              "msg": "段落 8 句 / 143 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 249,
+              "msg": "段落 7 句 / 127 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 273,
+              "msg": "段落 17 句 / 337 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 281,
+              "msg": "段落 6 句 / 76 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 300,
+              "msg": "段落 7 句 / 192 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 315,
+              "msg": "段落 8 句 / 174 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 317,
+              "msg": "段落 5 句 / 90 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 339,
+              "msg": "段落 8 句 / 138 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 341,
+              "msg": "段落 5 句 / 64 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 358,
+              "msg": "段落 10 句 / 180 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 374,
+              "msg": "段落 12 句 / 213 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 392,
+              "msg": "段落 8 句 / 217 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 410,
+              "msg": "段落 6 句 / 149 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 420,
+              "msg": "段落 4 句 / 47 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 438,
+              "msg": "段落 7 句 / 130 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 440,
+              "msg": "段落 6 句 / 160 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 458,
+              "msg": "段落 8 句 / 167 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 460,
+              "msg": "段落 5 句 / 103 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 462,
+              "msg": "段落 5 句 / 115 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 480,
+              "msg": "段落 4 句 / 94 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 500,
+              "msg": "段落 12 句 / 210 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            },
+            {
+              "rule": "P1",
+              "line": 502,
+              "msg": "段落 8 句 / 88 单位，上限 3 句 / 160",
+              "axis": "F",
+              "advisory": false
+            }
+          ],
+          "shown_findings": []
+        },
+        "verify": {
+          "scope": "content",
+          "status": "pass",
+          "hard_failures": [],
+          "warnings": [],
+          "unknowns": [],
+          "ok": true
+        }
+      }
+    }
+  }
+}

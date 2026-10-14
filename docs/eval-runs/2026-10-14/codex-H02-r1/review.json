@@ -1,0 +1,13 @@
+{
+  "reviewer": "current coordinating language model using frozen answer key and source; not a human reviewer",
+  "human_review": "pending",
+  "independent_machine_checks": "verify/audit/report rerun by harness, not copied from evaluated model claims",
+  "constraint_key": "管理员权限、旧密钥至少剩 24 小时、HTTP `201`、两个 worker、确认 `token_version=new` 后再撤销、文件超过 50 MB 走分片",
+  "format_visible_sequence_equal": true,
+  "byte_identical": false,
+  "semantic_review": "Frozen constraints have supporting sequence-equality evidence; presentation and syntax still require review.",
+  "result": "reviewed supporting checks; not a human signoff",
+  "machine_status": "pass",
+  "verify_and_zero_x_gate": true,
+  "note": "This machine gate excludes semantic, scope, level and unjudged-rule checks; it is not overall acceptance."
+}

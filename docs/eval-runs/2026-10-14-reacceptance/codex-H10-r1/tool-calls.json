@@ -1,0 +1,74 @@
+[
+  {
+    "command": "/bin/zsh -lc 'cat .agents/skills/adhd-md/SKILL.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"pwd && rg --files -g 'AGENTS.md' -g 'input.md' -g 'SKILL.md' -g '*adhd*'\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'cat .agents/skills/adhd-md/references/rules.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'cat input.md && cat AGENTS.md && git status --porcelain -- input.md output.md'",
+    "exit_code": 128
+  },
+  {
+    "command": "/bin/zsh -lc 'cat .agents/skills/adhd-md/references/antipatterns.md && python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 2 --scope=content'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 2 --scope=content --json'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"cat .agents/skills/adhd-md/references/evidence.md && python3 .agents/skills/adhd-md/scripts/adhd_md.py report --help && rg -n 'numbers|numeric|number_unit|number.*unit|新增|judge_rules|antipattern' .agents/skills/adhd-md/scripts/adhd_md.py\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py audit output.md --level 2 --scope=content'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py report input.md output.md --scope=content --level 2 --json > validation-report.json && cat validation-report.json'",
+    "exit_code": 1
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py report input.md output.md --scope=content --level 2'",
+    "exit_code": 1
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=content && diff -u input.md output.md'",
+    "exit_code": 3
+  },
+  {
+    "command": "/bin/zsh -lc 'nl -ba input.md && nl -ba output.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"rg -n 'PERMISSION|permission|Scope' .agents/skills/adhd-md/scripts/adhd_md.py && cat validation-report.json\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py audit output.md --level 2 --scope=content'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py report input.md output.md --scope=content --level 2'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py report input.md output.md --scope=content --level 2 --json > validation-report.json'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=content'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"python3 - <<'PY'\nfrom pathlib import Path\nimport json, re\nold = Path('input.md').read_text()\nnew = Path('output.md').read_text()\ndef structure(text):\n    return [re.match(r'\"'^(#{1,6} |'\"\\\\d+\\\\. |- )', line).group(0) if re.match(r'\"'^(#{1,6} |'\"\\\\d+\\\\. |- )', line) else ('paragraph' if line else 'blank') for line in text.splitlines()]\nassert structure(old) == structure(new)\nr = json.loads(Path('validation-report.json').read_text())\nassert r['verify']['status'] == 'pass'\nassert not any(r['verify'][key] for key in ['hard_failures', 'warnings', 'unknowns'])\nassert r['after']['score']['x_deduct'] == 0\nassert old.startswith('# Search results are stale\\\\n')\nprint('Final structure matches input; report verify=pass; no hard failures, warnings, or unknowns; X deductions=0.')\nPY\n\ndiff -u input.md output.md\"",
+    "exit_code": 1
+  }
+]

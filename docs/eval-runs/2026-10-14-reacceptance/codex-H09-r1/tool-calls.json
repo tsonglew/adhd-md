@@ -1,0 +1,66 @@
+[
+  {
+    "command": "/bin/zsh -lc 'cat .agents/skills/adhd-md/SKILL.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"pwd && rg --files -g 'AGENTS.md' -g 'input.md' -g 'SKILL.md' -g '*audit*' -g '*verify*' -g '\"'!node_modules'\"' -g '\"'!vendor'\"' . .agents/skills/adhd-md .codex/skills/adhd-md\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'cat AGENTS.md && cat input.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'cat .agents/skills/adhd-md/references/rules.md && cat .agents/skills/adhd-md/references/antipatterns.md && cat .agents/skills/adhd-md/references/doc-types.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'git status --porcelain && python3 .agents/skills/adhd-md/scripts/adhd_md.py fmt input.md'",
+    "exit_code": 128
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 3 --scope=format'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'cat .agents/skills/adhd-md/references/evidence.md && cat .agents/skills/adhd-md/references/rubric.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py fmt input.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 3 --scope=format --json'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"python3 - <<'PY'\nfrom pathlib import Path\nimport hashlib\np = Path('input.md')\nsource = p.read_bytes()\ntext = source.decode('utf-8')\nreplacements = [\n    ('\"'`maxAttempts` counts the initial delivery. A value of `1` disables retries. Authentication errors (`401` and `403`) are never retried, even when `maxAttempts` is greater than one.'\"', '- \"'`maxAttempts` counts the initial delivery.'\"\\\\n- A value of \"'`1` disables retries.'\"\\\\n- Authentication errors (\"'`401` and `403`) are **never retried**, even when `maxAttempts` is greater than one.'\"'),\n    ('Configuration changes take effect after the worker restarts. \"'`visibilitySeconds` is measured in seconds; `backoffMs` is measured in milliseconds.'\"', '- Configuration changes take effect **after the worker restarts**.\\\\n- \"'`visibilitySeconds` is measured in seconds; `backoffMs` is measured in milliseconds.'\"')\n]\nfor old, new in replacements:\n    assert text.count(old) == 1\n    text = text.replace(old, new)\nreconstructed = text\nfor old, new in reversed(replacements):\n    assert reconstructed.count(new) == 1\n    reconstructed = reconstructed.replace(new, old)\nassert reconstructed.encode('utf-8') == source\nout = text.encode('utf-8')\nremaining = iter(out)\nassert all(any(candidate == byte for candidate in remaining) for byte in source)\nPath('output.md').write_bytes(out)\nassert p.read_bytes() == source\nprint('Wrote output.md using only formatting insertions.')\nprint('Exact reversal restores every original byte; all original bytes remain in order.')\nprint('Input SHA-256:', hashlib.sha256(source).hexdigest())\nPY\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'diff -u input.md output.md; nl -ba output.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py audit output.md --level 3 --scope=format'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py report input.md output.md --scope=format --level=3'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=format'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py report input.md output.md --scope=format --level=3 --json'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"python3 - <<'PY'\nfrom pathlib import Path\nfrom hashlib import sha256\nfrom difflib import SequenceMatcher\nsource = Path('input.md').read_bytes()\noutput = Path('output.md').read_bytes()\nreport = Path('output.report.md').read_text()\nassert sha256(source).hexdigest() == '6374a44faee4d2ec26c2305e45130548a8730bb7adefbb0a4e110372097ca71e'\nops = SequenceMatcher(None, source, output, autojunk=False).get_opcodes()\nassert all(tag in ('equal', 'insert') for tag, *_ in ops)\nrebuilt = b''.join(output[b0:b1] for tag, a0, a1, b0, b1 in ops if tag == 'equal')\nassert rebuilt == source\nrules = 'S4 S5 S6 S8 H3 H4 P2 P5 L2 L4 L7 W2 W3 W5 W7 W8 W9 A1 A2 A3 A5 A6 A7 A8 N4 N7 T3 C4 X3 X6 X7 X8'.split()\nassert all(f'| {rule} |' in report for rule in rules)\nprint('input.md unchanged; output.md contains every original byte in order with formatting insertions only.')\nprint('output.report.md exists and records all 32 script-unjudged rules.')\nprint('Files delivered: output.md, output.report.md')\nPY\"",
+    "exit_code": 0
+  }
+]

@@ -1,6 +1,6 @@
 {
   "name": "adhd-md",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "把 Markdown 改成 ADHD 友好版本，也能分段陪读和生成离线阅读页。一份 skill 通用于 Claude Code / Codex / Grok Build / Gemini CLI / Cursor / opencode。保留完整原文。",
   "keywords": [
     "markdown",

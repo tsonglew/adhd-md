@@ -1,0 +1,82 @@
+[
+  {
+    "command": "/bin/zsh -lc 'cat .agents/skills/adhd-md/SKILL.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"pwd; rg --files -g 'AGENTS.md' -g 'input.md' -g '*adhd*' -g '\"'!node_modules'\"' -g '\"'!vendor'\"' -g '\"'!'\"\\\\.git'\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'cat input.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'cat .agents/skills/adhd-md/references/rules.md .agents/skills/adhd-md/references/antipatterns.md .agents/skills/adhd-md/references/evidence.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'git status --short; cat AGENTS.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 3 --scope=format'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"cat .agents/skills/adhd-md/references/antipatterns.md; sed -n '220,330p' .agents/skills/adhd-md/references/rules.md\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"rg -n 'unknown|nested|unsupported|identical|read_bytes|def verify|def report|penalt' .agents/skills/adhd-md/scripts/adhd_md.py\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py fmt input.md'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 3 --scope=format --json'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"sed -n '1720,1805p' .agents/skills/adhd-md/scripts/adhd_md.py; sed -n '2000,2035p' .agents/skills/adhd-md/scripts/adhd_md.py; sed -n '2620,2690p' .agents/skills/adhd-md/scripts/adhd_md.py\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc 'nl -ba input.md; python3 .agents/skills/adhd-md/scripts/adhd_md.py verify --help; python3 .agents/skills/adhd-md/scripts/adhd_md.py report --help'",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"python3 - <<'PY'\nfrom pathlib import Path\nimport hashlib\np=Path('input.md')\nold=p.read_bytes()\nneedle=b'1. **Preview** the plan.\\\\n   - Confirm \"'`--check-only` is present.'\"\\\\n   - Confirm the target is \"'`staging`.'\"\\\\n2. Apply the plan only after approval.'\nreplacement=b'1. **Preview** the plan.\\\\n\\\\n   - Confirm \"'`--check-only` is present.'\"\\\\n   - Confirm the target is \"'`staging`.'\"\\\\n\\\\n2. Apply the plan only after approval.'\nassert old.count(needle)==1\nnew=old.replace(needle,replacement)\nassert old.replace(b'\\\\n',b'')==new.replace(b'\\\\n',b'')\nPath('checks').mkdir(exist_ok=True)\nPath('checks/candidate.md').write_bytes(new)\nPath('checks/input.sha256').write_text(hashlib.sha256(old).hexdigest()+'\\\\n')\nprint('Candidate adds two blank lines only; original non-newline bytes and their order are identical.')\nPY\npython3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md checks/candidate.md --scope=format --json\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"python3 - <<'PY'\nfrom pathlib import Path\nimport hashlib\nsource=Path('input.md').read_bytes()\nassert hashlib.sha256(source).hexdigest()==Path('checks/input.sha256').read_text().strip()\ncandidate=Path('checks/candidate.md')\nassert not Path('output.md').exists()\ncandidate.rename('output.md')\nprint('Wrote output.md; input.md hash is unchanged.')\nPY\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"python3 - <<'PY'\nimport json, subprocess\nfrom pathlib import Path\nargs=[\\\"audit\\\",\\\"input.md\\\",\\\"--level\\\",\\\"3\\\",\\\"--scope=format\\\"]\nlabel=\\\"audit-before\\\"\nbase=['python3','.agents/skills/adhd-md/scripts/adhd_md.py']+args\nstatuses={}\nfor suffix,extra in [('txt',[]),('json',['--json'])]:\n    result=subprocess.run(base+extra,capture_output=True,text=True)\n    Path('checks/'+label+'.'+suffix).write_text(result.stdout)\n    statuses[suffix]=result.returncode\n    if result.stderr:\n        print(result.stderr)\n    if suffix=='txt':\n        print(result.stdout)\nPath('checks/'+label+'-exit.json').write_text(json.dumps(statuses)+'\\\\n')\nprint(label+' exit statuses: '+json.dumps(statuses))\nPY\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"python3 - <<'PY'\nimport json, subprocess\nfrom pathlib import Path\nargs=[\\\"report\\\",\\\"input.md\\\",\\\"output.md\\\",\\\"--level\\\",\\\"3\\\",\\\"--scope=format\\\"]\nlabel=\\\"report\\\"\nbase=['python3','.agents/skills/adhd-md/scripts/adhd_md.py']+args\nstatuses={}\nfor suffix,extra in [('txt',[]),('json',['--json'])]:\n    result=subprocess.run(base+extra,capture_output=True,text=True)\n    Path('checks/'+label+'.'+suffix).write_text(result.stdout)\n    statuses[suffix]=result.returncode\n    if result.stderr:\n        print(result.stderr)\n    if suffix=='txt':\n        print(result.stdout)\nPath('checks/'+label+'-exit.json').write_text(json.dumps(statuses)+'\\\\n')\nprint(label+' exit statuses: '+json.dumps(statuses))\nPY\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"python3 - <<'PY'\nimport json, subprocess\nfrom pathlib import Path\nargs=[\\\"verify\\\",\\\"input.md\\\",\\\"output.md\\\",\\\"--scope=format\\\"]\nlabel=\\\"verify\\\"\nbase=['python3','.agents/skills/adhd-md/scripts/adhd_md.py']+args\nstatuses={}\nfor suffix,extra in [('txt',[]),('json',['--json'])]:\n    result=subprocess.run(base+extra,capture_output=True,text=True)\n    Path('checks/'+label+'.'+suffix).write_text(result.stdout)\n    statuses[suffix]=result.returncode\n    if result.stderr:\n        print(result.stderr)\n    if suffix=='txt':\n        print(result.stdout)\nPath('checks/'+label+'-exit.json').write_text(json.dumps(statuses)+'\\\\n')\nprint(label+' exit statuses: '+json.dumps(statuses))\nPY\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"python3 - <<'PY'\nimport json, subprocess\nfrom pathlib import Path\nargs=[\\\"audit\\\",\\\"output.md\\\",\\\"--level\\\",\\\"3\\\",\\\"--scope=format\\\"]\nlabel=\\\"audit-after\\\"\nbase=['python3','.agents/skills/adhd-md/scripts/adhd_md.py']+args\nstatuses={}\nfor suffix,extra in [('txt',[]),('json',['--json'])]:\n    result=subprocess.run(base+extra,capture_output=True,text=True)\n    Path('checks/'+label+'.'+suffix).write_text(result.stdout)\n    statuses[suffix]=result.returncode\n    if result.stderr:\n        print(result.stderr)\n    if suffix=='txt':\n        print(result.stdout)\nPath('checks/'+label+'-exit.json').write_text(json.dumps(statuses)+'\\\\n')\nprint(label+' exit statuses: '+json.dumps(statuses))\nPY\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"python3 - <<'PY'\nfrom pathlib import Path\nimport difflib, hashlib, json\nold=Path('input.md').read_bytes()\nnew=Path('output.md').read_bytes()\nassert hashlib.sha256(old).hexdigest()==Path('checks/input.sha256').read_text().strip()\na=old.splitlines(keepends=True)\nb=new.splitlines(keepends=True)\nchanges=[]\nfor tag,i,j,k,l in difflib.SequenceMatcher(None,a,b,autojunk=False).get_opcodes():\n    if tag=='equal':\n        continue\n    assert tag=='insert' and all(line==b'\\\\n' for line in b[k:l]), (tag,i,j,k,l)\n    changes.append({'kind':'insert_blank_line','before_input_line':i+1,'output_lines':[k+1,l],'count':l-k})\nassert sum(c['count'] for c in changes)==2\nPath('checks/changes.diff').write_text(''.join(difflib.unified_diff(old.decode().splitlines(True),new.decode().splitlines(True),fromfile='input.md',tofile='output.md')))\nresult={'status':'pass','input_unchanged':True,'original_bytes_preserved_in_order':True,'only_change':'Two inserted LF blank lines','insertions':changes,'input_sha256':hashlib.sha256(old).hexdigest(),'output_sha256':hashlib.sha256(new).hexdigest()}\nPath('checks/preservation.json').write_text(json.dumps(result,indent=2)+'\\\\n')\nprint(json.dumps(result,indent=2))\nPY\"",
+    "exit_code": 0
+  },
+  {
+    "command": "/bin/zsh -lc \"python3 - <<'PY'\nfrom pathlib import Path\nimport hashlib, json, re\nreport=Path('report.md').read_text()\naudit=json.loads(Path('checks/audit-after.json').read_text())\njudgments=report.split('**Complete anti-pattern review**')[0]\nrows=re.findall(r'\"'^'\"\\\\| ([A-Z]\\\\d+) \\\\|',judgments,re.M)\nassert len(rows)==32 and set(rows)==set(audit['score']['unscored'])\nassert json.loads(Path('checks/verify.json').read_text())['status']=='pass'\nassert hashlib.sha256(Path('input.md').read_bytes()).hexdigest()==Path('checks/input.sha256').read_text().strip()\nassert hashlib.sha256(Path('output.md').read_bytes()).hexdigest()==json.loads(Path('checks/preservation.json').read_text())['output_sha256']\nfor label in ['audit-before','audit-after','verify','report']:\n    assert all(code==0 for code in json.loads(Path('checks/'+label+'-exit.json').read_text()).values())\nprint(Path('checks/changes.diff').read_text())\nprint('Report covers all 32 script-unjudged rules; final file hashes and recorded exit statuses confirmed.')\nPY\"",
+    "exit_code": 0
+  }
+]

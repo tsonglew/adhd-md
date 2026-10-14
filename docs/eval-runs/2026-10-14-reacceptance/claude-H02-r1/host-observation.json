@@ -1,0 +1,65 @@
+{
+  "discovery": "Task context explicitly supplies local snapshot path; this is not an automatic-discovery-only test.",
+  "loading": "local SKILL.md reference observed in tool trace",
+  "local_skill_tool_indices": [
+    0
+  ],
+  "tool_execution": "local audit/report/verify command requests observed; raw logs retain results",
+  "checker_tool_indices": [
+    8,
+    9,
+    10,
+    11,
+    12,
+    14,
+    15,
+    17,
+    19,
+    20,
+    24,
+    25,
+    26
+  ],
+  "audit_report_levels": [
+    {
+      "command_index": 8,
+      "operation": "audit",
+      "level": "2"
+    },
+    {
+      "command_index": 9,
+      "operation": "audit",
+      "level": "2"
+    },
+    {
+      "command_index": 11,
+      "operation": "audit",
+      "level": "2"
+    },
+    {
+      "command_index": 19,
+      "operation": "audit",
+      "level": "2"
+    },
+    {
+      "command_index": 20,
+      "operation": "report",
+      "level": "2"
+    },
+    {
+      "command_index": 25,
+      "operation": "audit",
+      "level": "2"
+    },
+    {
+      "command_index": 26,
+      "operation": "report",
+      "level": "2"
+    }
+  ],
+  "expected_level": 2,
+  "runtime_exit": 0,
+  "output_exists": true,
+  "final_machine_checks": "independent harness ran against frozen source and output",
+  "note": "CLI exit, loading, tool requests and output validity are distinct. Missing trace evidence is not counted as success."
+}

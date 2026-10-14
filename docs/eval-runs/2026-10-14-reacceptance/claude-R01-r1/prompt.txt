@@ -1,0 +1,1 @@
+Use the local adhd-md skill to improve input.md, scope=content, level=deep. Preserve the original layout style and all information. Write output.md. Report checks and judge-rule decisions.

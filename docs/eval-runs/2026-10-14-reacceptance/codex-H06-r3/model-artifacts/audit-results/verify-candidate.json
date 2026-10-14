@@ -1,0 +1,38 @@
+{
+  "command": [
+    "python3",
+    ".agents/skills/adhd-md/scripts/adhd_md.py",
+    "verify",
+    "input.md",
+    "/var/folders/ps/vckz32h11ljbdhbvtm92mlp40000gp/T/adhd-h06-jlr8m5nn/candidate.md",
+    "--scope=format",
+    "--json"
+  ],
+  "exit_code": 4,
+  "result": {
+    "scope": "format",
+    "status": "unknown",
+    "hard_failures": [],
+    "warnings": [],
+    "unknowns": [
+      {
+        "side": "old",
+        "kind": "raw_html",
+        "line": 8,
+        "hint": "原始 HTML 的显示与结构不由 Markdown 校验器解析；保留原样并人工核对。"
+      },
+      {
+        "side": "new",
+        "kind": "raw_html",
+        "line": 8,
+        "hint": "原始 HTML 的显示与结构不由 Markdown 校验器解析；保留原样并人工核对。"
+      }
+    ],
+    "ok": false
+  },
+  "disposition": "discarded; candidate not delivered",
+  "changes": [
+    "只 → **只**",
+    "不要 → **不要**"
+  ]
+}

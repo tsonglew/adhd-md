@@ -1,0 +1,12 @@
+{
+  "reviewer": "coordinator inspected candidate.diff and preannotated constraints; independent harness supplies machine checks",
+  "human_review": "not performed",
+  "constraint_key": "管理员权限、旧密钥至少剩 24 小时、HTTP `201`、两个 worker、确认 `token_version=new` 后再撤销、文件超过 50 MB 走分片",
+  "information_preserved": true,
+  "strict_character_and_order_check": "equal after ignoring supported presentation markers and layout whitespace; code literals remain protected",
+  "diff_review": "Only paragraph/list spacing, permitted emphasis, separators or sentence-to-list presentation; no prose punctuation or condition changes. Original tables/code remain unchanged.",
+  "verify": "pass",
+  "x_deduct": 0,
+  "judge_rule_ids_missing": [],
+  "result": "pass"
+}

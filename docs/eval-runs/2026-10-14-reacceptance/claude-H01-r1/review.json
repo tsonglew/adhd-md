@@ -1,0 +1,16 @@
+{
+  "reviewer": "coordinator inspecting source/output against frozen constraints; not evaluated model self-report",
+  "human_review": "not performed",
+  "information_preserved": true,
+  "scope_preserved": true,
+  "unsupported_facts_found": false,
+  "evidence": [
+    "Lines 3–5 retain notification/sync exclusions, exact quiet hours, OS timezone, manual current-device scope and account-switch reset.",
+    "Steps retain settings path, enable/select sequence, test reminder and no-banner check.",
+    "Final list retains already-shown notifications, calendar/security exceptions, clock correction before resave, enterprise forced-off/readonly behavior.",
+    "Same heading levels/list forms; no new emphasis. Derived counts 3 and 4 are supported by source structure.",
+    "H4 present; N7 inapplicable to 3 steps; A7 source gap and A8 scope restriction explicitly recorded. S4 title wording changed without changing levels."
+  ],
+  "judge_review": "No acceptance-blocking misstatement identified; not a claim of every stylistic rule being satisfied.",
+  "result": "pass under declared constraint and reporting criteria"
+}

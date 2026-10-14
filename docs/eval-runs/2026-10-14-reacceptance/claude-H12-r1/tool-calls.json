@@ -1,0 +1,189 @@
+[
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H12-r1/workspace/.agents/skills/adhd-md/SKILL.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H12-r1/workspace/input.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "find /private/tmp/adhd-reacceptance-20261014/claude-H12-r1/workspace/.agents/skills/adhd-md -type f | sort",
+      "description": "List skill files"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "ls -la /private/tmp/adhd-reacceptance-20261014/claude-H12-r1/workspace/",
+      "description": "List workspace files"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H12-r1/workspace/prompt.txt"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H12-r1/workspace/.agents/skills/adhd-md/references/rules.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H12-r1/workspace/.agents/skills/adhd-md/references/antipatterns.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 3 --scope=format; echo \"EXIT=$?\"",
+      "description": "Run audit on input.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 3 --scope=format",
+      "description": "Run audit on input.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "wc -l .agents/skills/adhd-md/scripts/adhd_md.py && grep -n \"T2\" .agents/skills/adhd-md/scripts/adhd_md.py | head -40",
+      "description": "Find T2 rule implementation"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py fmt input.md > /tmp/fmt_preview.txt 2>&1; echo \"EXIT=$?\"; cat /tmp/fmt_preview.txt",
+      "description": "Preview fmt output on input.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py fmt input.md",
+      "description": "Preview fmt output on input.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "sed -n '930,960p' .agents/skills/adhd-md/scripts/adhd_md.py",
+      "description": "Read T2 rule code"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "od -c input.md | tail -5",
+      "description": "Inspect trailing bytes of input.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -n \"def bold_metrics\" -A 25 .agents/skills/adhd-md/scripts/adhd_md.py",
+      "description": "Read bold_metrics implementation"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H12-r1/workspace/.agents/skills/adhd-md/references/examples/README.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H12-r1/workspace/.agents/skills/adhd-md/references/examples/04-en-reference.before.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "cp input.md output.md && cmp input.md output.md && echo \"IDENTICAL\"",
+      "description": "Copy input to output and confirm byte identity"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit output.md --level 3 --scope=format --json",
+      "description": "Get audit JSON for output.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=format; echo \"VERIFY_EXIT=$?\"",
+      "description": "Run verify between input and output"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py verify input.md output.md --scope=format",
+      "description": "Run verify between input and output"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -c \"import subprocess; r=subprocess.run(['python3','.agents/skills/adhd-md/scripts/adhd_md.py','verify','input.md','output.md','--scope=format'],capture_output=True,text=True); print('exit:',r.returncode); print('stdout:',r.stdout.strip()); print('stderr:',r.stderr.strip())\"",
+      "description": "Capture verify exit code"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py report input.md output.md --scope=format --level=3",
+      "description": "Generate before/after report"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -c \"import subprocess; r=subprocess.run(['python3','.agents/skills/adhd-md/scripts/adhd_md.py','audit','output.md','--level','3','--scope=format'],capture_output=True,text=True); print('audit exit:',r.returncode)\"",
+      "description": "Capture audit exit code"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "shasum -a 256 input.md output.md",
+      "description": "Hash input and output files"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -c \"import hashlib;print([hashlib.sha256(open(f,'rb').read()).hexdigest() for f in ('input.md','output.md')])\"",
+      "description": "Compute sha256 digests of both files"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H12-r1/workspace/.agents/skills/adhd-md/references/rubric.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H12-r1/workspace/output.md"
+    }
+  }
+]

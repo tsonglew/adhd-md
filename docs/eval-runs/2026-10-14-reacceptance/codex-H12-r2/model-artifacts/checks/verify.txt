@@ -1,0 +1,1 @@
+scope=format → 通过

@@ -1,0 +1,16 @@
+{
+  "reviewer": "current coordinating language model using frozen answer key and source; not a human reviewer",
+  "human_review": "pending",
+  "independent_machine_checks": "verify/audit/report rerun by harness, not copied from evaluated model claims",
+  "constraint_key": "CSV、少于 100,000 行、等待 2 分钟、权限错误转流程、刷新一次、取消后只重提一次、维护窗口不重启 worker、取消不删除已下载 CSV",
+  "constraints": "Reviewed against source: scope and exclusions, all three prerequisites, permission branch, original five actions and their ordering, one refresh, cancel wait, same CSV fields/filters and single submission, 2-minute escalation and warnings retained.",
+  "scope": "preserved list kinds and heading levels; added reading estimate and prerequisite introduction",
+  "issues": [
+    "A8 is not completed: cancel/wait and select/submit remain compound actions.",
+    "S4 headings remain topic labels. Original input takes precedence over the inconsistent H04 answer key."
+  ],
+  "new_facts": "none identified beyond labelled reading-time estimate",
+  "result": "constraints reviewed; rule issues recorded; not a human signoff",
+  "verify_and_zero_x_gate": true,
+  "note": "This machine gate excludes semantic, scope, level and unjudged-rule checks; it is not overall acceptance."
+}

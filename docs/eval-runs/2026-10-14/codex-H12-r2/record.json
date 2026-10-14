@@ -1,0 +1,92 @@
+{
+  "id": "H12",
+  "file": "12-en-boundary.md",
+  "language": "en",
+  "document_type": "boundary Markdown",
+  "scope": "format",
+  "level": "deep",
+  "constraints": "frontmatter v2, `A->B`, `x ** 2`, quote order, nested list order, `--check-only`, `staging`, 15 s, 0 retries, code block, full link target, both repeated copies",
+  "run_id": "codex-H12-r2",
+  "host": "codex",
+  "repeat": 2,
+  "input_sha256": "ed563572dd10b7cff97f699ed209cd8b2d80c09fc4ad863a8cb81df56cc315a8",
+  "corpus_manifest_sha256": "3f14b6c757b911dfc4cbedffff4c31afdce99a9f00ae8f2c735f081176891d2d",
+  "skill_commit": "4fca39df4a2c79f08a62105f6496a44c1f7e4e9c",
+  "skill_tree": "0c8886a4bcd607a15efd5494edfc5c8323e038d2",
+  "command": [
+    "codex",
+    "exec",
+    "-s",
+    "workspace-write",
+    "--skip-git-repo-check",
+    "--json",
+    "--ephemeral",
+    "Use the adhd-md skill to reformat `input.md` with this case's `scope=format` and `level`. Write to `output.md` and do not overwrite the input. Preserve every original character, number, unit, condition, exception, link target, code block, and ordering of information. Do not add or remove content. Run `audit` and `verify --scope=format`; report exit status, script score, anti-pattern deductions, and unjudged rules. Never report `unknown` as a pass."
+  ],
+  "platform": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+  "started": "2026-10-14T07:25:06.537169+00:00",
+  "timeout_seconds": 600,
+  "discovery": "yes: explicitly requested/local path",
+  "loading": "yes: current snapshot read",
+  "tool_execution": "yes: shell command returned",
+  "independent_review": "pending",
+  "cli_version": "codex-cli 0.162.0",
+  "exit_code": 0,
+  "timed_out": false,
+  "duration_seconds": 98.51,
+  "finished": "2026-10-14T07:26:45.149525+00:00",
+  "input_unchanged": true,
+  "stdout.jsonl_sha256": "6faa10606c713b53ad11ebfb24336c86dc717b9f628061fe1074a21b21331d8d",
+  "stderr.log_sha256": "f1ad6efc1c9fc0a0313532196263177e41bca4a49d8aace5602a772b76871399",
+  "output_exists": true,
+  "output_sha256": "d7c13732d3fd164c7e5a5176079c44af8ffc2fc489e279409b037d57c8e13eee",
+  "audit-before_exit": 0,
+  "audit-after_exit": 0,
+  "verify_exit": 0,
+  "report_exit": 1,
+  "report_at_case_level_exit": 1,
+  "raw_logs": {
+    "stdout.jsonl": {
+      "path": "raw/codex-H12-r2-stdout.jsonl.gz",
+      "sha256": "6faa10606c713b53ad11ebfb24336c86dc717b9f628061fe1074a21b21331d8d",
+      "gzip_sha256": "b6e723f1865b277649f3a5187b3b3fbf81a9be9462ed0df20d8b116d84e38422"
+    },
+    "stderr.log": {
+      "path": "raw/codex-H12-r2-stderr.log.gz",
+      "sha256": "f1ad6efc1c9fc0a0313532196263177e41bca4a49d8aace5602a772b76871399",
+      "gzip_sha256": "9c6f824d896cc2ae9c57029fa0ef5b54ec1f42ca28e3e8178662f9ebaffc7925"
+    }
+  },
+  "model_evidence": {
+    "requested": "gpt-6-astra",
+    "reasoning_effort": "low",
+    "source": "selected config fields observed during this evaluation; JSONL has no response model ID",
+    "response": "unknown"
+  },
+  "tool_calls_count": 6,
+  "observed_level_flags": [
+    "2",
+    "3"
+  ],
+  "expected_level": 3,
+  "snapshot_commit_is_requested": true,
+  "skill_snapshot_unchanged": true,
+  "human_review": "pending",
+  "unjudged_rules_source": "Independent audit judge-only IDs; evaluated model may assess some in assistant-messages.md. No complete judge score is inferred.",
+  "verify_status": "pass",
+  "score_before": 91.4,
+  "score_after": 91.4,
+  "x_deduct": 6,
+  "unjudged_rules": [
+    "S5",
+    "S6",
+    "P2",
+    "P5",
+    "L2",
+    "N4",
+    "T3",
+    "X6",
+    "X7",
+    "X8"
+  ]
+}

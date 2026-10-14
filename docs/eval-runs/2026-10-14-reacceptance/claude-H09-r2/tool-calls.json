@@ -1,0 +1,233 @@
+[
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H09-r2/workspace/.agents/skills/adhd-md/SKILL.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "ls -la /private/tmp/adhd-reacceptance-20261014/claude-H09-r2/workspace/ && echo \"---SKILL DIR---\" && find /private/tmp/adhd-reacceptance-20261014/claude-H09-r2/workspace/.agents/skills/adhd-md -type f | head -50",
+      "description": "List workspace and skill directory"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H09-r2/workspace/input.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H09-r2/workspace/prompt.txt"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H09-r2/workspace/.agents/skills/adhd-md/references/rules.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H09-r2/workspace/.agents/skills/adhd-md/references/antipatterns.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H09-r2/workspace/.agents/skills/adhd-md/references/examples/04-en-reference.before.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H09-r2/workspace/.agents/skills/adhd-md/references/examples/04-en-reference.after.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py --help 2>&1 | head -60; echo \"=== EXIT: $? ===\"",
+      "description": "Show adhd_md.py CLI help"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "head -40 .agents/skills/adhd-md/scripts/adhd_md.py && echo \"=== IMPORTS ===\" && grep -n \"^import\\|^from\" .agents/skills/adhd-md/scripts/adhd_md.py",
+      "description": "Inspect script header and imports"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 /private/tmp/adhd-reacceptance-20261014/claude-H09-r2/workspace/.agents/skills/adhd-md/scripts/adhd_md.py --help",
+      "description": "Show adhd_md.py CLI help"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "cp /private/tmp/adhd-reacceptance-20261014/claude-H09-r2/workspace/input.md /tmp/adhd-orig-H09.md && python3 /private/tmp/adhd-reacceptance-20261014/claude-H09-r2/workspace/.agents/skills/adhd-md/scripts/adhd_md.py audit /private/tmp/adhd-reacceptance-20261014/claude-H09-r2/workspace/input.md --level 3 --scope=format",
+      "description": "Back up input and run baseline audit"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 .agents/skills/adhd-md/scripts/adhd_md.py audit input.md --level 3 --scope=format; echo \"EXIT=$?\"",
+      "description": "Run baseline audit with level 3, scope format"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 /private/tmp/adhd-reacceptance-20261014/claude-H09-r2/workspace/.agents/skills/adhd-md/scripts/adhd_md.py audit /private/tmp/adhd-reacceptance-20261014/claude-H09-r2/workspace/input.md --level 3 --scope=format",
+      "description": "Run baseline audit (level 3, scope format)"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 /private/tmp/adhd-reacceptance-20261014/claude-H09-r2/workspace/.agents/skills/adhd-md/scripts/adhd_md.py audit /private/tmp/adhd-reacceptance-20261014/claude-H09-r2/workspace/input.md --level 3 --scope=format --json",
+      "description": "Get audit JSON for baseline"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H09-r2/workspace/.agents/skills/adhd-md/references/doc-types.md"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -n \"def cmd_verify\" -A 60 /private/tmp/adhd-reacceptance-20261014/claude-H09-r2/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "description": "Inspect verify command implementation"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -n \"^def verify\\|^def _verify\\|def verify\" /private/tmp/adhd-reacceptance-20261014/claude-H09-r2/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "description": "Locate verify function"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -n \"def cmd_fmt\" -A 25 /private/tmp/adhd-reacceptance-20261014/claude-H09-r2/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "description": "Inspect fmt command"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H09-r2/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "limit": 210,
+      "offset": 2004
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -n \"def normalize_prose\\b\" -A 40 /private/tmp/adhd-reacceptance-20261014/claude-H09-r2/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "description": "Read normalize_prose implementation"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -n \"def verification_uncertainties\" -A 45 /private/tmp/adhd-reacceptance-20261014/claude-H09-r2/workspace/.agents/skills/adhd-md/scripts/adhd_md.py",
+      "description": "Read uncertainty checks"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 /private/tmp/adhd-reacceptance-20261014/claude-H09-r2/workspace/.agents/skills/adhd-md/scripts/adhd_md.py fmt /private/tmp/adhd-reacceptance-20261014/claude-H09-r2/workspace/input.md; echo \"EXIT=$?\"",
+      "description": "Preview deterministic format fixes"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 /private/tmp/adhd-reacceptance-20261014/claude-H09-r2/workspace/.agents/skills/adhd-md/scripts/adhd_md.py fmt /private/tmp/adhd-reacceptance-20261014/claude-H09-r2/workspace/input.md",
+      "description": "Preview deterministic format fixes"
+    }
+  },
+  {
+    "tool": "Write",
+    "input": {
+      "file_path": "/private/tmp/adhd-reacceptance-20261014/claude-H09-r2/workspace/output.md",
+      "content": "# Queue configuration\n\n| Setting | Default | Valid range | Behavior |\n|---|---:|---:|---|\n| `visibilitySeconds` | 45 | 5–600 | Time before an unacknowledged job is visible again |\n| `maxAttempts` | 3 | 1–8 | Includes the first delivery attempt |\n| `backoffMs` | 400 | 100–5000 | Base delay between retry attempts |\n| `deadLetterAfter` | 8 | 1–20 | Failed jobs moved to the dead-letter queue |\n\n`maxAttempts` counts the initial delivery.\n\n- A value of `1` disables retries.\n- Authentication errors (`401` and `403`) are never retried, even when `maxAttempts` is greater than one.\n\n```yaml\nqueue:\n  maxAttempts: 4\n  backoffMs: 800\n```\n\nConfiguration changes take effect after the worker restarts.\n\n`visibilitySeconds` is measured in seconds; `backoffMs` is measured in milliseconds.\n"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 /private/tmp/adhd-reacceptance-20261014/claude-H09-r2/workspace/.agents/skills/adhd-md/scripts/adhd_md.py verify /private/tmp/adhd-reacceptance-20261014/claude-H09-r2/workspace/input.md /private/tmp/adhd-reacceptance-20261014/claude-H09-r2/workspace/output.md --scope=format",
+      "description": "Verify candidate against original"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 /private/tmp/adhd-reacceptance-20261014/claude-H09-r2/workspace/.agents/skills/adhd-md/scripts/adhd_md.py audit /private/tmp/adhd-reacceptance-20261014/claude-H09-r2/workspace/output.md --level 3 --scope=format",
+      "description": "Audit the candidate output"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -c \"\nimport subprocess\nS='/private/tmp/adhd-reacceptance-20261014/claude-H09-r2/workspace/.agents/skills/adhd-md/scripts/adhd_md.py'\nW='/private/tmp/adhd-reacceptance-20261014/claude-H09-r2/workspace/'\nfor label,args in [\n  ('audit input (before)', ['audit', W+'input.md','--level','3','--scope=format']),\n  ('audit output (after)', ['audit', W+'output.md','--level','3','--scope=format']),\n  ('verify --scope=format', ['verify', W+'input.md', W+'output.md','--scope=format']),\n]:\n    p=subprocess.run(['python3',S]+args, capture_output=True, text=True)\n    print(f'--- {label}: exit={p.returncode}')\n    print(p.stdout.strip()[:600])\n    if p.stderr.strip(): print('STDERR:', p.stderr.strip()[:300])\n\"",
+      "description": "Capture exit codes for audit and verify"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 /private/tmp/adhd-reacceptance-20261014/claude-H09-r2/workspace/.agents/skills/adhd-md/scripts/adhd_md.py report /private/tmp/adhd-reacceptance-20261014/claude-H09-r2/workspace/input.md /private/tmp/adhd-reacceptance-20261014/claude-H09-r2/workspace/output.md --scope=format --level 3",
+      "description": "Run before/after report"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "diff -u /private/tmp/adhd-reacceptance-20261014/claude-H09-r2/workspace/input.md /private/tmp/adhd-reacceptance-20261014/claude-H09-r2/workspace/output.md",
+      "description": "Show diff between input and output"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 /private/tmp/adhd-reacceptance-20261014/claude-H09-r2/workspace/.agents/skills/adhd-md/scripts/adhd_md.py fmt /private/tmp/adhd-reacceptance-20261014/claude-H09-r2/workspace/output.md",
+      "description": "Check output for deterministic format issues"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -c \"\nimport re\nW='/private/tmp/adhd-reacceptance-20261014/claude-H09-r2/workspace/'\nold=open(W+'input.md',encoding='utf-8').read()\nnew=open(W+'output.md',encoding='utf-8').read()\n\ndef skeleton(t):\n    # strip list markers and whitespace/newlines; keep every other character verbatim\n    lines=[re.sub(r'^[-*+] ', '', l) for l in t.split('\\n')]\n    return re.sub(r'\\s+', '', ''.join(lines))\n\nprint('content-char stream identical:', skeleton(old)==skeleton(new))\nprint('input untouched (size %d), output size %d' % (len(old), len(new)))\nprint('output ends with single newline:', new.endswith('\\n') and not new.endswith('\\n\\n'))\nprint('trailing spaces on any line:', any(l!=l.rstrip() for l in new.split('\\n')))\nprint('emoji present:', bool(re.search('[\\U0001f000-\\U0001faff☀-➿]', new)))\nprint('bold markers:', new.count('**'), '| details/html:', '<' in new)\nprint('tables:', new.count('|---'), '| fenced blocks:', new.count('\\`\\`\\`'))\nprint('numbers/units preserved:', all(x in new for x in ['45','5–600','3','1–8','400','100–5000','8','1–20','401','403','maxAttempts: 4','backoffMs: 800']))\n\"",
+      "description": "Verify character-level preservation and invariants"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -c \"\nimport re\nW='/private/tmp/adhd-reacceptance-20261014/claude-H09-r2/workspace/'\nold=open(W+'input.md',encoding='utf-8').read()\nnew=open(W+'output.md',encoding='utf-8').read()\ndef skeleton(t):\n    lines=[re.sub(r'^[-*+] ', '', l) for l in t.split('\\n')]\n    return re.sub(r'\\s+', '', ''.join(lines))\nprint('content-char stream identical:', skeleton(old)==skeleton(new))\nprint('output ends with single newline:', new.endswith(chr(10)) and not new.endswith(chr(10)*2))\nprint('trailing spaces on any line:', any(l!=l.rstrip() for l in new.split(chr(10))))\nprint('emoji present:', bool(re.search('[\\U0001f000-\\U0001faff]', new)))\nprint('bold markers:', new.count('**'), 'html tags:', '<' in new)\nprint('numbers preserved:', all(x in new for x in ['45','5–600','1–8','400','100–5000','8','1–20','401','403','maxAttempts: 4','backoffMs: 800']))\nprint('input still 18 lines:', len(old.split(chr(10))))\n\"",
+      "description": "Verify character preservation and invariants"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "python3 -c \"\nimport subprocess,os\nS='/private/tmp/adhd-reacceptance-20261014/claude-H09-r2/workspace/.agents/skills/adhd-md/scripts/adhd_md.py'\nW='/private/tmp/adhd-reacceptance-20261014/claude-H09-r2/workspace/'\np=subprocess.run(['python3',S,'report',W+'input.md',W+'output.md','--scope=format','--level','3'],capture_output=True,text=True)\nprint('report exit:',p.returncode)\nq=subprocess.run(['python3',S,'audit',W+'output.md','--level','3','--scope=format','--json'],capture_output=True,text=True)\nimport json; d=json.loads(q.stdout)\nprint('x_deduct:',d['score']['x_deduct'],'x_hits:',d['score']['x_hits'],'findings:',len(d['findings']),'shown:',len(d['shown_findings']))\nprint('input.md bytes:',os.path.getsize(W+'input.md'),'output.md bytes:',os.path.getsize(W+'output.md'))\n\"",
+      "description": "Capture report exit code and anti-pattern data"
+    }
+  }
+]
