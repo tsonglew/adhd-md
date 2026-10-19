@@ -11,7 +11,8 @@ npm run build    # 构建到 dist/，Pages workflow 部署的就是它
 ```
 
 - 页面骨架 `src/pages/index.astro`，区块在 `src/components/`，全局样式 `src/styles/global.css`，交互 `src/scripts/app.js`
-- 位图产物（og.png、图标）在 `public/`，由仓库根的 `scripts/build-og.sh` 从 `og.html` / `icon-square.svg` / `public/favicon.svg` 渲染，不手改 PNG
+- 位图产物（og.png、图标）在 `public/`，由仓库根的 `scripts/build-og.sh` 从中英文模板 `og.html` / `og-en.html` 及 `icon-square.svg` / `public/favicon.svg` 渲染，不手改 PNG
 - `public/install.sh` 由 CI 从 `scripts/install.sh` 复制，不手改
 - 阅读示例文案在 `src/i18n/ui.ts`，首页预览和 `/reader-demo.html`、`/en/reader-demo.html` 共用同一份原文
-- 重建 OG 位图时需要 Chrome/Chromium；仓库根目录运行 `bash scripts/build-og.sh`，可用 `OG_CHROME=/path/to/chrome` 指定浏览器。模板通过 Google Fonts 请求指定字体；无法联网时回退到系统字体，渲染细节允许随字体环境变化。
+- OG 中英文文案在 `src/i18n/ui.ts` 的 `og` 字段维护，构建时填入模板，不直接在模板写文案
+- 重建 OG 位图时需要 Node 22.12 以上版本和 Chrome/Chromium；仓库根目录运行 `bash scripts/build-og.sh`，可用 `OG_CHROME=/path/to/chrome` 指定浏览器。模板通过 Google Fonts 请求指定字体；无法联网时回退到系统字体，渲染细节允许随字体环境变化。

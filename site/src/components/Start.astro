@@ -2,92 +2,142 @@
 import type { UI } from "../i18n/ui";
 interface Props { t: UI }
 const { t } = Astro.props;
+const s = t.start;
 ---
 
-<section class="band alt" id="start">
+<section class="band start-band" id="start" aria-labelledby="start-heading">
   <div class="wrap sec">
-    <span class="num">08</span>
+    <span class="num" aria-hidden="true">{t.site.sectionLabels.start}</span>
     <div class="sec-body">
-      <h2>{t.start.h2}</h2>
+      <h2 id="start-heading">{s.h2}</h2>
 
-      <ol class="steps">
-        <li>
-          <p>{t.start.s1}</p>
-          <p class="way">{t.start.wayNode}</p>
+      <div class="start-layout">
+        <div class="start-install">
+          <div class="start-step-label"><span aria-hidden="true">01</span><h3>{s.installH}</h3></div>
+          <p>{s.s1}</p>
+          <p class="way">{s.wayNode}</p>
           <div class="cmd sm">
-            <code id="c1">npx github:tsonglew/adhd-md</code>
-            <button type="button" class="copy" data-copy="#c1" aria-label={t.copy.label}>{t.copy.label}</button>
+            <code id="install-primary">{s.installCmd}</code>
+            <button type="button" class="copy" data-copy="#install-primary" aria-label={t.copy.installLabel}>{t.copy.label}</button>
           </div>
-          <p class="way">{t.start.wayNoNode}</p>
-          <div class="cmd sm">
-            <code id="c1b">curl -fsSL https://tsonglew.github.io/adhd-md/install.sh | bash</code>
-            <button type="button" class="copy" data-copy="#c1b" aria-label={t.copy.label}>{t.copy.label}</button>
-          </div>
-          <p class="way">{t.start.waySource}</p>
-          <div class="cmd sm">
-            <code id="c1c">git clone https://github.com/tsonglew/adhd-md &amp;&amp; cd adhd-md
-bash scripts/install.sh</code>
-            <button type="button" class="copy" data-copy="#c1c" aria-label={t.copy.label}>{t.copy.label}</button>
-          </div>
-          <p class="note-sm" set:html={t.start.noteSmHtml} />
-        </li>
-        <li>
-          <p>{t.start.s2}</p>
-          <div class="cmd sm">
-            <code id="c2">npx github:tsonglew/adhd-md audit your-doc.md</code>
-            <button type="button" class="copy" data-copy="#c2" aria-label={t.copy.label}>{t.copy.label}</button>
-          </div>
-        </li>
-        <li>
-          <p>{t.start.s3}</p>
-          <blockquote>{t.start.quote}</blockquote>
-        </li>
-      </ol>
-
-      <div class="reading-start">
-        <h3>{t.start.readingH}</h3>
-        <p>{t.start.readingIntro}</p>
-        <blockquote>{t.start.readingQuote}</blockquote>
-        <p>{t.start.readingPage}</p>
-        <div class="cmd sm">
-          <code id="read-command">{t.start.readingCmd}</code>
+          <details class="start-disclosure installation-options">
+            <summary>{s.otherWays}</summary>
+            <div class="disclosure-body">
+              <p class="way">{s.wayNoNode}</p>
+              <div class="cmd sm">
+                <code id="install-curl">{s.installCurlCmd}</code>
+                <button type="button" class="copy" data-copy="#install-curl" aria-label={t.copy.installLabel}>{t.copy.label}</button>
+              </div>
+              <p class="way">{s.waySource}</p>
+              <div class="cmd sm">
+                <code id="install-source">{s.installSourceCmd}</code>
+                <button type="button" class="copy" data-copy="#install-source" aria-label={t.copy.installLabel}>{t.copy.label}</button>
+              </div>
+              <p class="note-sm" set:html={s.noteSmHtml} />
+              <div class="start-no-shell">
+                <h4>{s.noShellH}</h4>
+                <p set:html={s.noShellHtml} />
+              </div>
+            </div>
+          </details>
         </div>
-        <p class="reading-note">{t.start.readingNote}</p>
-        <details class="extraction-setup">
-          <summary>{t.start.extractionH}</summary>
-          <p>{t.start.extractionNote}</p>
-          <p class="way">{t.start.extractionMac}</p>
-          <div class="cmd sm"><code>brew install poppler tesseract tesseract-lang</code></div>
-          <p class="way">{t.start.extractionLinux}</p>
-          <div class="cmd sm"><code>sudo apt install poppler-utils tesseract-ocr tesseract-ocr-chi-sim</code></div>
-          <p class="reading-note">{t.start.extractionLimit}</p>
-        </details>
-        <p class="reading-note">{t.start.extractionCmd}</p>
+
+        <div class="start-read">
+          <div class="start-step-label"><span aria-hidden="true">02</span><h3>{s.quickReadH}</h3></div>
+          <p>{s.readingPage}</p>
+          <div class="cmd sm">
+            <code id="read-command">{s.readingCmd}</code>
+            <button type="button" class="copy" data-copy="#read-command" aria-label={`${t.copy.label}: ${s.quickReadH}`}>{t.copy.label}</button>
+          </div>
+          <p class="note-sm">{s.readingNote}</p>
+          <div class="start-conversation">
+            <h4>{s.readingH}</h4>
+            <p>{s.readingIntro}</p>
+            <blockquote>{s.readingQuote}</blockquote>
+          </div>
+        </div>
       </div>
 
-      <div class="grid-2 tail">
-        <div>
-          <h3>{t.start.ciH}</h3>
-          <div class="cmd sm">
-            <code id="c3">{t.start.ciCmd}</code>
-            <button type="button" class="copy" data-copy="#c3" aria-label={t.copy.label}>{t.copy.label}</button>
+      <div class="start-more">
+        <details class="start-disclosure">
+          <summary>{s.editingH}</summary>
+          <div class="disclosure-body">
+            <p>{s.s2}</p>
+            <div class="cmd sm">
+              <code id="audit-command">{s.auditCmd}</code>
+              <button type="button" class="copy" data-copy="#audit-command" aria-label={`${t.copy.label}: ${s.editingH}`}>{t.copy.label}</button>
+            </div>
+            <p>{s.s3}</p>
+            <blockquote>{s.quote}</blockquote>
+            <h4>{s.ciH}</h4>
+            <div class="cmd sm">
+              <code id="ci-command">{s.ciCmd}</code>
+              <button type="button" class="copy" data-copy="#ci-command" aria-label={`${t.copy.label}: ${s.ciH}`}>{t.copy.label}</button>
+            </div>
           </div>
-        </div>
-        <div>
-          <h3>{t.start.noShellH}</h3>
-          <p set:html={t.start.noShellHtml} />
-        </div>
+        </details>
+
+        <details class="start-disclosure">
+          <summary>{s.extractionH}</summary>
+          <div class="disclosure-body">
+            <p>{s.extractionNote}</p>
+            <p class="way">{s.extractionMac}</p>
+            <div class="cmd sm">
+              <code id="pdf-mac-command">{s.extractionMacCmd}</code>
+              <button type="button" class="copy" data-copy="#pdf-mac-command" aria-label={`${t.copy.label}: ${s.extractionMac}`}>{t.copy.label}</button>
+            </div>
+            <p class="way">{s.extractionLinux}</p>
+            <div class="cmd sm">
+              <code id="pdf-linux-command">{s.extractionLinuxCmd}</code>
+              <button type="button" class="copy" data-copy="#pdf-linux-command" aria-label={`${t.copy.label}: ${s.extractionLinux}`}>{t.copy.label}</button>
+            </div>
+            <p class="note-sm">{s.extractionLimit}</p>
+            <p class="note-sm">{s.extractionCmd}</p>
+          </div>
+        </details>
       </div>
     </div>
   </div>
 </section>
 
 <style>
-  .reading-start { max-width: 44rem; border-top: 1px solid var(--rule); margin-top: 2rem; padding-top: 1.6rem; }
-  .reading-start p { color: var(--ink-2); font-size: .92rem; margin-block: .7rem; }
-  .reading-start blockquote { margin: 1rem 0 1.4rem; border-left: 2px solid var(--ok); padding: .65rem 1rem; background: var(--paper); }
-  .reading-start .reading-note { font-size: .84rem; max-width: 39rem; overflow-wrap: anywhere; }
-  .extraction-setup { margin: 1rem 0; border-block: 1px solid var(--rule); padding: .85rem 0; }
-  .extraction-setup summary { cursor: pointer; font-size: .9rem; }
-  .extraction-setup summary:focus-visible { outline: 2px solid var(--ok); outline-offset: 4px; }
+  .start-band h2 { margin-bottom: 2rem; }
+  .start-layout { display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); gap: clamp(1.5rem, 4vw, 3.5rem); align-items: start; }
+  .start-layout > * { min-width: 0; }
+  .start-layout p { color: var(--ink-2); font-size: .84rem; line-height: 1.85; margin: .8rem 0; }
+  .start-step-label { display: flex; align-items: center; gap: .7rem; }
+  .start-step-label > span { display: flex; align-items: center; justify-content: center; flex-shrink: 0; width: 1.8rem; height: 1.8rem; border: 1px solid var(--rule); border-radius: 50%; color: var(--mark); font: 500 .64rem/1 var(--mono); }
+  .start-step-label h3 { margin: 0; font-size: 1.05rem; letter-spacing: -.025em; }
+  .start-install { padding-top: 1.6rem; }
+  .start-read { padding: 1.6rem; border: 1px solid var(--rule); border-radius: 22px; background: var(--paper-2); }
+  .start-read .cmd { background: var(--paper); }
+  .cmd { max-width: none; }
+  .cmd.sm { margin-block: .7rem 1rem; }
+  .start-layout .way, .disclosure-body .way { font-size: .7rem; font-weight: 600; color: var(--ink-3); margin: 1.1rem 0 -.2rem; }
+  .start-layout .note-sm, .disclosure-body .note-sm { font-size: .75rem; color: var(--ink-2); line-height: 1.85; overflow-wrap: anywhere; }
+  .start-conversation { margin-top: 1.4rem; padding-top: 1.2rem; border-top: 1px solid var(--rule); }
+  .start-conversation h4, .disclosure-body h4 { margin: 0 0 .5rem; font-size: .85rem; font-weight: 600; }
+  .start-conversation p { margin: 0 0 .7rem; font-size: .79rem; }
+  blockquote { margin: .75rem 0 0; padding: .8rem 1rem; border: 1px solid color-mix(in srgb, var(--mark) 18%, var(--rule)); border-radius: 12px; background: var(--paper); color: var(--ink); font-size: .83rem; line-height: 1.85; }
+  .start-more { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 2rem; padding-top: 1.3rem; border-top: 1px solid var(--rule); align-items: start; }
+  .start-disclosure { min-width: 0; }
+  .start-disclosure summary { cursor: pointer; padding: .6rem 0; color: var(--ink-2); font-size: .83rem; font-weight: 600; }
+  .start-disclosure summary:hover { color: var(--mark); }
+  .installation-options { margin-top: 1.1rem; border-top: 1px solid var(--rule); }
+  .disclosure-body { padding-block: .4rem .8rem; }
+  .disclosure-body > p { margin: .6rem 0; font-size: .8rem; color: var(--ink-2); line-height: 1.85; }
+  .disclosure-body > h4 { margin-top: 1.4rem; }
+  .disclosure-body > blockquote { background: var(--paper-2); }
+  .start-no-shell { border-top: 1px solid var(--rule); padding-top: 1.2rem; margin-top: 1.2rem; }
+  .start-no-shell p { font-size: .78rem; }
+  @media (max-width: 800px) {
+    .start-layout { grid-template-columns: minmax(0, 1fr); gap: 1.6rem; }
+    .start-install { padding-top: 0; }
+    .start-read { padding: 1.3rem; }
+    .start-more { grid-template-columns: minmax(0, 1fr); gap: .5rem; }
+  }
+  @media print {
+    .start-layout, .start-more { display: block; }
+    .start-read { margin-top: 2rem; }
+  }
 </style>

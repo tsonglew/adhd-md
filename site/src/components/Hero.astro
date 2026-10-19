@@ -2,33 +2,61 @@
 import type { UI } from "../i18n/ui";
 interface Props { t: UI }
 const { t } = Astro.props;
+const preview = t.reading.sourceChunks[1];
 ---
 
-<section class="hero wrap">
-  <p class="eyebrow reveal" style="--d:0ms">{t.hero.eyebrow}</p>
-
-  <h1 class="reveal" style="--d:60ms">
-    {t.hero.h1a}<br>
-    <em>{t.hero.h1b}</em>{t.hero.h1c}
-  </h1>
-
-  <p class="lede reveal" style="--d:140ms">
-    {t.hero.lede}
-  </p>
-
-  <p class="creed reveal" style="--d:220ms">
-    <span class="mark-rule">{t.hero.creed1}</span>
-    {t.hero.creed2}
-  </p>
-
-  <div class="cmd reveal" style="--d:300ms">
-    <code id="install-cmd">npx github:tsonglew/adhd-md</code>
-    <button type="button" class="copy" data-copy="#install-cmd" aria-label={t.copy.installLabel}>{t.copy.label}</button>
+<section class="hero wrap" aria-labelledby="hero-title">
+  <div class="hero-copy">
+    <a class="release-pill reveal" href="https://github.com/tsonglew/adhd-md/releases/tag/v0.1.2">
+      <span>{t.hero.release}</span>{t.hero.releaseNote}<span aria-hidden="true">↗</span>
+    </a>
+    <p class="eyebrow reveal" style="--d:40ms">{t.hero.eyebrow}</p>
+    <h1 id="hero-title" class="reveal" style="--d:80ms">{t.hero.h1a}<br><em>{t.hero.h1b}</em>{t.hero.h1c}</h1>
+    <p class="lede reveal" style="--d:120ms">{t.hero.lede}</p>
+    <div class="hero-links reveal" style="--d:160ms">
+      <a class="btn" href="#start">{t.hero.installAction}<span aria-hidden="true">↗</span></a>
+      <a class="btn ghost" href="#reading">{t.hero.demoAction}<span aria-hidden="true">↓</span></a>
+    </div>
+    <div class="hero-install reveal" style="--d:200ms">
+      <div class="cmd">
+        <code id="install-cmd">{t.start.installCmd}</code>
+        <button type="button" class="copy" data-copy="#install-cmd" aria-label={t.copy.installLabel}>{t.copy.label}</button>
+      </div>
+      <p class="micro">{t.hero.installHint}</p>
+    </div>
   </div>
 
-  <p class="hero-links reveal" style="--d:360ms">
-    <a class="btn" href="https://github.com/tsonglew/adhd-md">{t.hero.buttons[0]}</a>
-    <a class="btn ghost" href="#compare">{t.hero.buttons[1]}</a>
-    <a class="btn ghost" href="#reading">{t.hero.readingLink}</a>
-  </p>
+  <div class="hero-stage reveal" style="--d:160ms">
+    <div class="stage-grid" aria-hidden="true"></div>
+    <div class="session-window">
+      <div class="session-window-bar">
+        <span class="window-symbol" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span>{t.hero.workspaceLabel}</span>
+        <span class="window-file">md-cache.md</span>
+      </div>
+      <div class="session-window-body">
+        <div class="session-rail" aria-hidden="true">
+          {t.reading.sourceChunks.map((_, index) => <span class:list={[{ active: index === 1, bookmarked: index === 2 }]}>{String(index + 1).padStart(2, "0")}</span>)}
+          <span class="rail-line"></span>
+        </div>
+        <div class="session-page">
+          <p class="session-context">{t.hero.currentLabel}<b>02 <span>/ 04</span></b></p>
+          <h2>{preview.title}</h2>
+          <p class="session-source">{preview.text}</p>
+          <div class="session-continue">
+            <svg viewBox="0 0 20 24" width="18" height="22" fill="none" aria-hidden="true"><path d="M4 2h12a1 1 0 0 1 1 1v18l-7-4-7 4V3a1 1 0 0 1 1-1Z" stroke="currentColor" stroke-width="1.7"/></svg>
+            <div><span>{t.hero.resumeLabel}</span><strong>{t.reading.sourceChunks[2].title}</strong></div>
+            <span class="resume-number">03</span>
+          </div>
+        </div>
+      </div>
+      <div class="session-window-foot"><span class="status-dot" aria-hidden="true"></span>{t.hero.sessionNote}</div>
+    </div>
+    <a class="session-caption" href="#sessions"><span>{t.hero.workspaceTitle}</span>{t.hero.sessionAction}<span aria-hidden="true">→</span></a>
+  </div>
+
+  <div class="hero-bottom">
+    <p>{t.hero.creed1}</p>
+    <ul>{t.hero.features.map((feature) => <li><span aria-hidden="true">✓</span>{feature}</li>)}</ul>
+  </div>
 </section>

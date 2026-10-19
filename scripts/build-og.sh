@@ -16,7 +16,8 @@ Render site/og.html, site/og-en.html, and the SVG icons into site/public/.
 Set OG_CHROME=/path/to/chrome or pass --chrome PATH to choose a browser.
 Without an explicit path, the script searches PATH and standard Chrome/Chromium
 application locations. Google Fonts are used when reachable; system fonts are
-used as fallbacks when offline.
+used as fallbacks when offline. Node 22.12+ reads the shared bilingual copy from
+site/src/i18n/ui.ts before rendering the temporary HTML templates.
 EOF
 }
 
@@ -94,9 +95,31 @@ TEMP_ROOT="$(mktemp -d "${TMPDIR:-/tmp}/adhd-md-og.XXXXXX")"
 trap 'rm -rf "$TEMP_ROOT"' EXIT
 mkdir -p "$SITE/public"
 
+node --experimental-strip-types --input-type=module - "$SITE" "$TEMP_ROOT" <<'JS'
+import { readFileSync, writeFileSync } from "node:fs";
+import { resolve } from "node:path";
+import { pathToFileURL } from "node:url";
+
+const [site, output] = process.argv.slice(2);
+const { ui } = await import(pathToFileURL(resolve(site, "src/i18n/ui.ts")).href);
+const escape = (value) => value.replace(/[&<>"']/g, (char) => ({
+  "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;",
+})[char]);
+for (const [language, filename] of [["zh", "og.html"], ["en", "og-en.html"]]) {
+  const copy = ui[language].og;
+  const values = { ...copy, tag1: copy.tags[0], tag2: copy.tags[1], tag3: copy.tags[2] };
+  const source = readFileSync(resolve(site, filename), "utf8");
+  const rendered = source.replace(/\{\{(\w+)\}\}/g, (_, key) => {
+    if (typeof values[key] !== "string") throw new Error(`Missing ${language} OG text: ${key}`);
+    return escape(values[key]);
+  });
+  writeFileSync(resolve(output, filename), rendered);
+}
+JS
+
 echo "浏览器：$CHROME_VERSION"
 echo "运行时：$(uname -s) / Bash $BASH_VERSION / Python $(python3 --version 2>&1)"
-echo "字体：模板请求 Instrument Serif、Noto Sans SC 与 IBM Plex Mono；离线时回退到系统字体。"
+echo "字体：模板请求 Manrope、Noto Sans SC 与 IBM Plex Mono；离线时回退到系统字体。"
 echo "渲染："
 
 render_count=0
@@ -180,8 +203,8 @@ print(f"  {path.name}  {actual[0]}x{actual[1]}")
 PY
 }
 
-render 1200 630 "$SITE/public/og.png" "$SITE/og.html"
-render 1200 630 "$SITE/public/og-en.png" "$SITE/og-en.html"
+render 1200 630 "$SITE/public/og.png" "$TEMP_ROOT/og.html"
+render 1200 630 "$SITE/public/og-en.png" "$TEMP_ROOT/og-en.html"
 render 180 180 "$SITE/public/apple-touch-icon.png" "$SITE/icon-square.svg"
 render 32 32 "$SITE/public/favicon-32.png" "$SITE/public/favicon.svg"
 echo "完成。产物在 site/public/。"

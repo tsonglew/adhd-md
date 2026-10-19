@@ -4,21 +4,19 @@ interface Props { t: UI }
 const { t } = Astro.props;
 ---
 
-<section class="band" id="eval">
-  <div class="wrap sec">
-    <span class="num">07</span>
-    <div class="sec-body">
-      <h2>{t.eval.h2}</h2>
+<details class="reference-panel" id="eval">
+  <summary>{t.eval.h2}</summary>
+  <div class="reference-content">
       <p class="sub" set:html={t.eval.subHtml} />
 
-      <table class="tax">
+      <div class="table-scroll" tabindex="0" role="region" aria-label={t.eval.h2}><table class="tax">
         <thead><tr>{t.eval.head.map((h) => <th>{h}</th>)}</tr></thead>
         <tbody>
           {t.eval.rows.map((row) => (
             <tr><td>{row.doc}</td><td>{row.level}</td><td>{row.score}</td><td>{row.h4}</td></tr>
           ))}
         </tbody>
-      </table>
+      </table></div>
 
       <div class="grid-2">
         {t.eval.findings.map((f) => (
@@ -32,6 +30,5 @@ const { t } = Astro.props;
       <p class="small">
         <a href={t.eval.linkHref}>{t.eval.link}</a>
       </p>
-    </div>
   </div>
-</section>
+</details>

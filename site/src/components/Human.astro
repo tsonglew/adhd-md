@@ -4,23 +4,21 @@ interface Props { t: UI }
 const { t } = Astro.props;
 ---
 
-<section class="band" id="human">
-  <div class="wrap sec">
-    <span class="num">04</span>
-    <div class="sec-body">
-      <h2>{t.human.h2}</h2>
+<details class="reference-panel" id="human">
+  <summary>{t.human.h2}</summary>
+  <div class="reference-content">
       <p class="sub">
         {t.human.sub}
       </p>
 
-      <table class="tax">
+      <div class="table-scroll" tabindex="0" role="region" aria-label={t.human.h2}><table class="tax">
         <thead><tr><th>{t.human.taxHead[0]}</th><th>{t.human.taxHead[1]}</th></tr></thead>
         <tbody>
           {t.human.tax.map((row) => (
             <tr><td>{row.a}</td><td>{row.b}</td></tr>
           ))}
         </tbody>
-      </table>
+      </table></div>
 
       <div class="grid-2">
         <div>
@@ -32,6 +30,5 @@ const { t } = Astro.props;
           <p set:html={t.human.grid2.html} />
         </div>
       </div>
-    </div>
   </div>
-</section>
+</details>

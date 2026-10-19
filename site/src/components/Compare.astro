@@ -6,7 +6,7 @@ const { t } = Astro.props;
 
 <section class="band alt" id="compare">
   <div class="wrap sec">
-    <span class="num">02</span>
+    <span class="num" aria-hidden="true">{t.site.sectionLabels.compare}</span>
     <div class="sec-body">
       <h2>{t.compare.h2}</h2>
       <p class="sub" set:html={t.compare.subHtml} />
