@@ -4,12 +4,9 @@ interface Props { t: UI }
 const { t } = Astro.props;
 ---
 
-<section class="band" id="problem">
-  <div class="wrap sec">
-    <span class="num">01</span>
-    <div class="sec-body">
-      <h2>{t.problem.h2}</h2>
-
+<details class="reference-panel" id="problem">
+  <summary>{t.problem.h2}</summary>
+  <div class="reference-content">
       <p class="sub">
         {t.problem.sub}
       </p>
@@ -29,6 +26,5 @@ const { t } = Astro.props;
           <li><span class="k">{item.k}</span>{item.t}</li>
         ))}
       </ul>
-    </div>
   </div>
-</section>
+</details>

@@ -6,10 +6,11 @@ const { t } = Astro.props;
 
 <section class="band alt" id="lossless">
   <div class="wrap sec">
-    <span class="num">05</span>
+    <span class="num" aria-hidden="true">{t.site.sectionLabels.lossless}</span>
     <div class="sec-body">
       <h2>{t.lossless.h2}</h2>
       <p class="sub" set:html={t.lossless.subHtml} />
+      <p class="lossless-principle">{t.hero.creed2}</p>
 
       <div class="term" role="img" aria-label={t.lossless.termAria}>
         <div class="term-bar"><span></span><span></span><span></span></div>

@@ -26,8 +26,8 @@ const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");
   <link rel="icon" href={`${base}favicon.svg`} type="image/svg+xml">
   <link rel="icon" href={`${base}favicon-32.png`} sizes="32x32" type="image/png">
   <link rel="apple-touch-icon" href={`${base}apple-touch-icon.png`}>
-  <meta name="theme-color" content="#f2efe7" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#15140f" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#f7f9fc" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#101720" media="(prefers-color-scheme: dark)">
 
   <meta property="og:site_name" content="adhd-md">
   <meta property="og:locale" content={t.lang === "en" ? "en_US" : "zh_CN"}>
@@ -49,7 +49,7 @@ const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Noto+Sans+SC:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;650;700;750&family=Noto+Sans+SC:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 
   <script is:inline>
     // 明暗主题初始化：必须在 CSS 之前跑，避免首帧闪烁。
@@ -67,41 +67,53 @@ const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");
 
   <header class="masthead">
     <div class="wrap masthead-in">
-      <span class="wordmark">adhd-md</span>
-      <nav aria-label={t.lang === "en" ? "Site navigation" : "站内导航"}>
-        <a href="#compare">{t.nav[0]}</a>
+      <a class="wordmark" href="#main" aria-label={t.site.homeLabel}><img class="brand-icon" src={`${base}favicon.svg`} width="31" height="31" alt="">adhd-md</a>
+      <nav class="desktop-nav" aria-label={t.site.navLabel}>
         <a href="#reading">{t.reading.nav}</a>
-        <a href="#scope">{t.nav[1]}</a>
-        <a href="#human">{t.nav[2]}</a>
-        <a href="#lossless">{t.nav[3]}</a>
-        <a href="#eval">{t.nav[4]}</a>
-        <a href="#hosts">{t.nav[5]}</a>
-        <a class="ext" href="https://github.com/tsonglew/adhd-md">GitHub</a>
+        <a href="#sessions">{t.site.sectionLabels.sessions}</a>
+        <a href="#compare">{t.nav[0]}</a>
+        <a href="https://github.com/tsonglew/adhd-md">GitHub <span aria-hidden="true">↗</span></a>
+      </nav>
+      <div class="header-tools">
         <a class="lang-switch" href={t.langSwitch.href} hreflang={t.lang === "en" ? "zh-CN" : "en"}>{t.langSwitch.label}</a>
         <button type="button" class="theme-toggle" id="theme-toggle"
           aria-label={t.themeToggle.ariaToDark}
           data-aria-to-dark={t.themeToggle.ariaToDark}
           data-aria-to-light={t.themeToggle.ariaToLight}>
-          <svg class="icon-sun" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><circle cx="8" cy="8" r="3.2" fill="currentColor"/><g stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M8 1v2M8 13v2M1 8h2M13 8h2M2.6 2.6l1.4 1.4M12 12l1.4 1.4M13.4 2.6L12 4M4 12l-1.4 1.4"/></g></svg>
-          <svg class="icon-moon" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M13.5 9.6A5.8 5.8 0 0 1 6.4 2.5a5.8 5.8 0 1 0 7.1 7.1z" fill="currentColor"/></svg>
+          <svg class="icon-sun" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><circle cx="8" cy="8" r="3" fill="none" stroke="currentColor" stroke-width="1.3"/><g stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M8 1v1M8 14v1M1 8h1M14 8h1M3 3l.8.8M12.2 12.2l.8.8M13 3l-.8.8M3.8 12.2l-.8.8"/></g></svg>
+          <svg class="icon-moon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M13.5 9.6A5.8 5.8 0 0 1 6.4 2.5a5.8 5.8 0 1 0 7.1 7.1z" fill="none" stroke="currentColor" stroke-width="1.3"/></svg>
         </button>
-      </nav>
+        <a class="btn header-install" href="#start">{t.site.installLabel}<span aria-hidden="true">↗</span></a>
+        <details class="mobile-menu" id="mobile-menu">
+          <summary class="menu-toggle" aria-label={t.site.menuLabel} data-open-label={t.site.menuLabel} data-close-label={t.site.closeMenuLabel}><svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M4 6h12M4 10h12M4 14h12"/></svg></summary>
+          <nav class="mobile-nav" aria-label={t.site.navLabel}>
+            <a href="#reading">{t.reading.nav}</a>
+            <a href="#sessions">{t.site.sectionLabels.sessions}</a>
+            <a href="#compare">{t.nav[0]}</a>
+            <a href="#scope">{t.nav[1]}</a>
+            <a href="#lossless">{t.nav[3]}</a>
+            <a href="#hosts">{t.nav[5]}</a>
+            <a href="#start">{t.site.installLabel}</a>
+            <a href="https://github.com/tsonglew/adhd-md">GitHub ↗</a>
+          </nav>
+        </details>
+      </div>
     </div>
   </header>
 
-  <main id="main">
+  <main id="main" tabindex="-1">
     <slot />
   </main>
 
-  <p id="copy-status" class="visually-hidden" role="status" aria-live="polite" aria-atomic="true"></p>
+  <p id="copy-status" class="copy-status" role="status" aria-live="polite" aria-atomic="true"></p>
 
   <footer class="foot">
     <div class="wrap foot-in">
       <div>
-        <span class="wordmark sm">adhd-md</span>
+        <a class="wordmark sm" href="#main"><img class="brand-icon" src={`${base}favicon.svg`} width="31" height="31" alt="">adhd-md</a>
         <p class="small">{t.footer.tagline}</p>
       </div>
-      <nav aria-label={t.lang === "en" ? "Related links" : "相关链接"}>
+      <nav aria-label={t.site.footerNavLabel}>
         {t.footer.links.map((link) => (
           <a href={link.href}>{link.label}</a>
         ))}

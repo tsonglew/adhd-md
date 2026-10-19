@@ -1,26 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="adhd-md">
   <title>adhd-md</title>
-  <style>
-    .bg   { fill: #f2efe7 }
-    .edge { stroke: #d6d0c2 }
-    .ink  { fill: #1b1a17 }
-    .mark { fill: #bf3b26 }
-    @media (prefers-color-scheme: dark) {
-      .bg   { fill: #15140f }
-      .edge { stroke: #34302a }
-      .ink  { fill: #ece7db }
-      .mark { fill: #e0715c }
-    }
-  </style>
-
-  <!-- 纸 -->
-  <rect class="bg edge" x=".5" y=".5" width="31" height="31" rx="4" stroke-width="1"/>
-
-  <!-- 结论前置：红色那条在最上面 -->
-  <rect class="mark" x="6.5" y="7"    width="13" height="3.4" rx="1.2"/>
-
-  <!-- 切碎的正文块 -->
-  <rect class="ink"  x="6.5" y="14"   width="19" height="2.1" rx=".9" opacity=".85"/>
-  <rect class="ink"  x="6.5" y="18.4" width="19" height="2.1" rx=".9" opacity=".85"/>
-  <rect class="ink"  x="6.5" y="22.8" width="11" height="2.1" rx=".9" opacity=".85"/>
+  <rect width="32" height="32" rx="8" fill="#365cf5"/>
+  <g fill="#fff">
+    <rect x="7" y="8" width="11" height="2.6" rx="1.3"/>
+    <rect x="7" y="14.7" width="9" height="2.6" rx="1.3"/>
+    <rect x="7" y="21.4" width="18" height="2.6" rx="1.3"/>
+    <path d="M21 6.5h5v11l-2.5-2-2.5 2z"/>
+  </g>
 </svg>

@@ -1,0 +1,106 @@
+---
+import type { UI } from "../i18n/ui";
+interface Props { t: UI }
+const { t } = Astro.props;
+const s = t.sessions;
+---
+
+<section class="band sessions-band" id="sessions" aria-labelledby="sessions-heading">
+  <div class="wrap sec">
+    <span class="num" aria-hidden="true">{t.site.sectionLabels.sessions}</span>
+    <div class="sec-body">
+      <p class="session-release">{s.eyebrow}</p>
+      <h2 id="sessions-heading">{s.h2}</h2>
+      <p class="sub">{s.sub}</p>
+
+      <div class="session-layout">
+        <dl class="session-states">
+          {s.states.map((state, index) => (
+            <div class="session-state">
+              <dt><span class="state-mark" data-state={index} aria-hidden="true"></span>{state.label}</dt>
+              <dd>{state.text}</dd>
+            </div>
+          ))}
+        </dl>
+
+        <div class="session-handoff">
+          <h3>{s.handoffTitle}</h3>
+          <p class="handoff-intro">{s.handoffText}</p>
+          <ol class="handoff-steps">
+            {s.steps.map((step, index) => (
+              <li>
+                <span class="handoff-number" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
+                <div><h4>{step.title}</h4><p>{step.text}</p></div>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </div>
+
+      <div class="session-commands">
+        {s.commands.map((command, index) => (
+          <div class="session-command">
+            <h3>{command.label}</h3>
+            <div class="cmd sm">
+              <code id={`session-command-${index}`}>{command.code}</code>
+              <button type="button" class="copy" data-copy={`#session-command-${index}`} aria-label={`${t.copy.label}: ${command.label}`}>{t.copy.label}</button>
+            </div>
+            <p>{command.note}</p>
+          </div>
+        ))}
+      </div>
+
+      <div class="session-footer">
+        <details class="session-boundaries">
+          <summary>{s.boundaryTitle}</summary>
+          <ul>{s.boundaries.map((boundary) => <li>{boundary}</li>)}</ul>
+        </details>
+        <a class="session-docs" href={s.docsHref}>{s.docsLabel}<span aria-hidden="true">↗</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .sessions-band { background: var(--paper-2); }
+  .session-release { display: inline-flex; margin: 0 0 1rem; padding: .3rem .7rem; border: 1px solid color-mix(in srgb, var(--mark) 24%, var(--rule)); border-radius: 99px; background: var(--paper); color: var(--mark); font: 600 .68rem/1.5 var(--mono); letter-spacing: .02em; }
+  .session-layout { display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); gap: clamp(1.5rem, 4vw, 4rem); align-items: start; }
+  .session-states { margin: 0; padding: .3rem 1.5rem; border: 1px solid var(--rule); border-radius: 22px; background: var(--paper); box-shadow: 0 12px 30px -26px color-mix(in srgb, var(--ink) 25%, transparent); }
+  .session-state { padding: 1.35rem 0; }
+  .session-state + .session-state { border-top: 1px solid var(--rule); }
+  .session-state dt { display: flex; align-items: center; gap: .65rem; margin: 0 0 .45rem; color: var(--ink); font-size: .92rem; font-weight: 600; }
+  .session-state dd { margin: 0 0 0 1.45rem; color: var(--ink-2); font-size: .82rem; line-height: 1.85; }
+  .state-mark { display: block; width: .75rem; height: .75rem; border: 2px solid var(--mark); border-radius: 50%; flex-shrink: 0; }
+  .state-mark[data-state="1"] { border-radius: 3px; background: var(--mark-2); }
+  .state-mark[data-state="2"] { border-color: var(--ok); border-style: dashed; }
+  .session-handoff { padding-top: .2rem; }
+  .session-handoff > h3 { font-size: 1.2rem; line-height: 1.5; letter-spacing: -.025em; }
+  .handoff-intro { margin: .5rem 0 1.3rem; color: var(--ink-2); font-size: .87rem; line-height: 1.85; }
+  .handoff-steps { list-style: none; margin: 0; padding: 0; }
+  .handoff-steps li { display: grid; grid-template-columns: 2rem minmax(0, 1fr); gap: 1rem; position: relative; padding-bottom: 1.3rem; }
+  .handoff-steps li:last-child { padding-bottom: 0; }
+  .handoff-steps li:not(:last-child)::after { content: ""; position: absolute; left: 1rem; top: 2.3rem; bottom: .35rem; border-left: 1px solid var(--rule); }
+  .handoff-number { display: flex; align-items: center; justify-content: center; width: 2rem; height: 2rem; border: 1px solid var(--rule); border-radius: 50%; background: var(--paper); color: var(--mark); font: 500 .64rem/1 var(--mono); }
+  .handoff-steps h4 { margin: .1rem 0 .3rem; font-size: .9rem; font-weight: 600; }
+  .handoff-steps p { margin: 0; color: var(--ink-2); font-size: .8rem; line-height: 1.85; }
+  .session-commands { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 2.7rem; }
+  .session-command { min-width: 0; }
+  .session-command h3 { font-size: .82rem; font-weight: 600; }
+  .session-command .cmd { max-width: none; margin: .7rem 0 .6rem; background: var(--paper); }
+  .session-command > p { margin: 0; color: var(--ink-2); font-size: .76rem; line-height: 1.85; }
+  .session-footer { display: flex; align-items: start; justify-content: space-between; gap: 2rem; margin-top: 1.7rem; padding-top: 1.2rem; border-top: 1px solid var(--rule); }
+  .session-boundaries { max-width: 46rem; min-width: 0; }
+  .session-boundaries summary { cursor: pointer; font-size: .8rem; font-weight: 500; color: var(--ink-2); padding-block: .25rem; }
+  .session-boundaries ul { margin: .75rem 0 0; padding-left: 1.3rem; color: var(--ink-2); font-size: .78rem; line-height: 1.85; }
+  .session-boundaries li + li { margin-top: .55rem; }
+  .session-docs { display: flex; gap: .6rem; flex-shrink: 0; font-size: .8rem; font-weight: 600; text-decoration: none; color: var(--mark); padding-block: .25rem; }
+  .session-docs:hover { text-decoration: underline; }
+  @media (max-width: 800px) {
+    .session-layout { grid-template-columns: minmax(0, 1fr); gap: 2rem; }
+    .session-states { padding-inline: 1.25rem; }
+    .session-commands { grid-template-columns: minmax(0, 1fr); gap: 1.5rem; margin-top: 2rem; }
+  }
+  @media (max-width: 580px) {
+    .session-footer { flex-direction: column; gap: 1rem; }
+  }
+</style>

@@ -2,6 +2,7 @@
 import Layout from "../layouts/Layout.astro";
 import Hero from "../components/Hero.astro";
 import Problem from "../components/Problem.astro";
+import Sessions from "../components/Sessions.astro";
 import Reading from "../components/Reading.astro";
 import Compare from "../components/Compare.astro";
 import Scope from "../components/Scope.astro";
@@ -17,13 +18,16 @@ const t = ui.zh;
 
 <Layout t={t}>
   <Hero t={t} />
-  <Problem t={t} />
-  <Compare t={t} />
   <Reading t={t} />
+  <Sessions t={t} />
+  <Compare t={t} />
   <Scope t={t} />
-  <Human t={t} />
   <Lossless t={t} />
-  <Eval t={t} />
+  <div class="wrap detail-band">
+    <Problem t={t} />
+    <Human t={t} />
+    <Eval t={t} />
+  </div>
   <Hosts t={t} />
   <Start t={t} />
 </Layout>

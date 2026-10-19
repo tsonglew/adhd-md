@@ -6,7 +6,7 @@ const { t } = Astro.props;
 
 <section class="band" id="hosts">
   <div class="wrap sec">
-    <span class="num">06</span>
+    <span class="num" aria-hidden="true">{t.site.sectionLabels.hosts}</span>
     <div class="sec-body">
       <h2>{t.hosts.h2}</h2>
       <p class="sub" set:html={t.hosts.subHtml} />

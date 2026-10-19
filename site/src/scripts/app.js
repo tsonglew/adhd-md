@@ -4,7 +4,7 @@
 
   var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  /* ── 维度条：每维两根，前 = 灰，后 = 红 ───────────── */
+  /* ── 维度条：每维两根，前 = 灰，后 = 蓝 ───────────── */
   var dims = [].slice.call(document.querySelectorAll(".dim"));
 
   function paintDims() {
@@ -32,8 +32,9 @@
   var themeBtn = document.getElementById("theme-toggle");
 
   function themeColor(dark) {
-    var meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.setAttribute("content", dark ? "#15140f" : "#f2efe7");
+    document.querySelectorAll('meta[name="theme-color"]').forEach(function (meta) {
+      meta.setAttribute("content", dark ? "#101720" : "#f7f9fc");
+    });
   }
 
   function updateThemeButton() {
@@ -56,10 +57,50 @@
     });
   }
 
+  window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", function (event) {
+    var saved = null;
+    try { saved = localStorage.getItem("adhd-md-theme"); } catch (e) {}
+    if (!saved) {
+      document.documentElement.dataset.theme = event.matches ? "dark" : "light";
+      updateThemeButton();
+    }
+  });
+
+  var menu = document.getElementById("mobile-menu");
+  if (menu) {
+    var summary = menu.querySelector("summary");
+    menu.addEventListener("toggle", function () {
+      summary.setAttribute("aria-label", menu.open ? summary.dataset.closeLabel : summary.dataset.openLabel);
+    });
+    menu.querySelectorAll("a").forEach(function (link) {
+      link.addEventListener("click", function () {
+        menu.open = false;
+        if (link.hash) {
+          var target = document.getElementById(link.hash.slice(1));
+          if (target) {
+            target.setAttribute("tabindex", "-1");
+            target.focus({ preventScroll: true });
+          }
+        }
+      });
+    });
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Escape" && menu.open) { menu.open = false; summary.focus(); }
+    });
+  }
+
   /* ── 复制按钮 ───────────────────────────── */
   var copyStatus = document.getElementById("copy-status");
   var copySuccess = document.body.dataset.copySuccess || "Copied.";
   var copyFailure = document.body.dataset.copyFailure || "Copy failed. Select and copy the text manually.";
+
+  var statusTimer;
+  function announceCopy(message) {
+    if (!copyStatus) return;
+    clearTimeout(statusTimer);
+    copyStatus.textContent = message;
+    statusTimer = setTimeout(function () { copyStatus.textContent = ""; }, 5000);
+  }
 
   document.querySelectorAll(".copy").forEach(function (btn) {
     btn.addEventListener("click", function () {
@@ -68,14 +109,14 @@
       var text = src.textContent;
       var done = function () {
         btn.classList.add("done");
-        if (copyStatus) copyStatus.textContent = copySuccess;
+        announceCopy(copySuccess);
         setTimeout(function () {
           btn.classList.remove("done");
         }, 1600);
       };
       var failed = function () {
         btn.classList.remove("done");
-        if (copyStatus) copyStatus.textContent = copyFailure;
+        announceCopy(copyFailure);
       };
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(text).then(done, fallback);
@@ -97,6 +138,7 @@
           failed();
         } finally {
           if (ta && ta.parentNode) ta.parentNode.removeChild(ta);
+          btn.focus({ preventScroll: true });
         }
       }
     });
