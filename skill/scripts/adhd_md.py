@@ -29,7 +29,7 @@ from collections import Counter
 from dataclasses import dataclass, field
 from pathlib import Path
 
-VERSION = "0.1.0"
+VERSION = "0.1.2"
 
 # ---------------------------------------------------------------- 字符与阈值
 
