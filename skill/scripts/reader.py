@@ -15,6 +15,20 @@ from dataclasses import dataclass
 from pathlib import Path
 from urllib.parse import urlsplit
 
+try:
+    from reading_session import create_session
+except ModuleNotFoundError as exc:
+    if exc.name != "reading_session":
+        raise
+    # Some hosts/tests load this file directly without adding scripts/ to
+    # sys.path. Resolve only our sibling, without changing global import paths.
+    import importlib.util
+    _session_spec = importlib.util.spec_from_file_location(
+        "_adhd_md_reading_session", Path(__file__).with_name("reading_session.py"))
+    _session_module = importlib.util.module_from_spec(_session_spec)
+    _session_spec.loader.exec_module(_session_module)
+    create_session = _session_module.create_session
+
 
 _FENCE = re.compile(r"^ {0,3}(`{3,}|~{3,})(.*)$")
 _HEADING = re.compile(r"^ {0,3}(#{1,6})(?:[ \t]+|$)(.*)$")
@@ -400,6 +414,7 @@ def build_reading_data(text: str, source_name: str, chunk_size: int = 900) -> di
     for line in text.splitlines(keepends=True):
         line_starts.append(line_starts[-1] + len(line))
     chunks = []
+    source_utf16_cursor = 0
     current = []
     current_length = 0
     has_body = False
@@ -407,19 +422,24 @@ def build_reading_data(text: str, source_name: str, chunk_size: int = 900) -> di
     chunk_title = title
 
     def flush():
-        nonlocal current_length, has_body
+        nonlocal current_length, has_body, source_utf16_cursor
         if not current:
             return
         source = "".join(piece.source for piece in current)
         offset = current[0].start
+        end_offset = source_utf16_cursor + len(source.encode("utf-16-le")) // 2
         chunks.append({
             "index": len(chunks),
             "title": chunk_title,
             "start_line": bisect.bisect_right(line_starts, offset),
             "end_line": bisect.bisect_right(line_starts, offset + len(source) - 1),
+            "start_offset": source_utf16_cursor,
+            "end_offset": end_offset,
+            "position": {"offset": source_utf16_cursor, "anchor": text[offset:offset + 64]},
             "source": source,
             "html": ('<p class="reader-plain">' + html.escape(source) + '</p>') if is_plain else _render_markdown(source),
         })
+        source_utf16_cursor = end_offset
         current.clear()
         current_length = 0
         has_body = False
@@ -440,13 +460,15 @@ def build_reading_data(text: str, source_name: str, chunk_size: int = 900) -> di
             current_length += len(piece.source)
             has_body = has_body or piece.kind not in ("blank", "heading")
     flush()
-    return {
+    data = {
         "title": title,
         "source_name": source_name,
         "source_hash": hashlib.sha256(text.encode("utf-8")).hexdigest(),
         "source_text": text,
         "chunks": chunks,
     }
+    data["session"] = create_session(data)
+    return data
 
 
 def render_reader(data: dict) -> str:
@@ -457,7 +479,11 @@ def render_reader(data: dict) -> str:
     marker = "__ADHD_READER_DATA__"
     if page.count(marker) != 1:
         raise ValueError("reader.html must contain exactly one reading-data marker")
+    session_marker = "__ADHD_SESSION_SCRIPT__"
+    if page.count(session_marker) != 1:
+        raise ValueError("reader.html must contain exactly one session-script marker")
+    session_script = template.with_name("reader-session.js").read_text(encoding="utf-8")
     serialized = json.dumps(data, ensure_ascii=False, separators=(",", ":"))
     for character, escaped in (("<", "\\u003c"), (">", "\\u003e"), ("&", "\\u0026"), ("\u2028", "\\u2028"), ("\u2029", "\\u2029")):
         serialized = serialized.replace(character, escaped)
-    return page.replace(marker, serialized)
+    return page.replace(session_marker, session_script).replace(marker, serialized)

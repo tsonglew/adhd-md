@@ -35,6 +35,7 @@
 
 - **对话陪读**：一次读一小段，解释重点与术语，可以回看、跳过、暂停和用书签续读
 - **离线阅读页**：把已有 Markdown、文本、网页或 PDF 生成 HTML，逐段阅读、调字号行距、保存进度，原文件保持不变
+- **书签互通**：阅读页和有命令执行能力的 agent 共用 JSON 书签，带走待读位置、跳过范围和待澄清问题
 - **自动提取**：网页链接、本地 HTML 和 PDF 可直接读取；扫描页可用本机 OCR，并保留来源与页码
 
 ## 装 + 跑（约 2 分钟）
@@ -90,6 +91,42 @@ python3 skill/scripts/adhd_md.py read 文档.md
 ```
 
 命令生成 `文档.reader.html`，用浏览器打开即可。页面支持逐段切换、回看全文、调整字号与行距，并在浏览器允许时保存本地进度。
+
+加上 `--open`，生成成功后尝试直接打开阅读页：
+
+```bash
+python3 skill/scripts/adhd_md.py read 文档.md --open
+```
+
+打开失败会提示手动打开，已生成的文件仍保留。生成失败时不会打开浏览器。
+
+### 在阅读页和对话之间继续
+
+阅读页分别记住「当前查看」和「下次继续」的位置。回看前文后可回到待读处；跳过的内容单独保留，展示过也不代表已经读懂。
+
+从阅读页转到对话时，优先点击「下载续读正文」，再复制或下载 JSON 书签，把两者交给 agent。续读正文与书签对应的文本逐字一致；未改动的本地原文也可以直接使用。
+
+网页和 PDF 请一并保留原阅读页，方便核对来源、页码和提取缺口。「下载提取文本」会附加来源说明，不能直接替代续读正文；重新抓取网页也可能取得不同内容。
+
+agent 用分段数据核对书签，把示例中的 `文档.md` 换成下载的续读正文文件：
+
+```bash
+python3 skill/scripts/adhd_md.py read 文档.md --session bookmark.json --json
+```
+
+对话结束后，把更新的 JSON 书签粘贴或导入阅读页。也可以生成带书签的新阅读页：
+
+```bash
+python3 skill/scripts/adhd_md.py read 文档.md --session bookmark.json --open -o /tmp/继续阅读.reader.html
+```
+
+书签含短原文锚点和用户记录的问题，不含完整原文；继续阅读仍需取得原文。
+
+这是手动导入导出，不会自动跨设备同步。浏览器无法保存进度时会提示，可导出书签留存。
+
+原文内容不同、书签格式不合法或锚点不匹配时，导入会被拒绝，原书签保留。同一份原文换片段大小仍可恢复；原文变了需按锚点人工核对后创建新会话，旧覆盖范围不能直接继承。
+
+没有命令执行能力的 agent 仍可使用纯文本书签。旧文本书签交给 agent 核对位置，阅读页不能直接导入。
 
 ### 直接读取网页和 PDF
 
@@ -269,6 +306,10 @@ adhd_md.py extract SOURCE [-o OUTPUT] [--json]
 
 `read --json` 只输出分段和来源定位数据，供 agent 使用，不生成 HTML。`extract --json` 输出提取文本与来源元数据。
 
+`read --json` 还提供初始阅读会话、各片段的 UTF-16 偏移和位置锚点；agent 必须使用返回值维护书签，不能猜哈希或偏移。传入 `--session bookmark.json` 时，先核对书签并输出规范化后的会话。
+
+`read` 支持 `--session bookmark.json` 恢复 JSON 书签，以及 `--open` 在生成成功后尝试打开阅读页。`--open` 不能与 `--json` 同用。
+
 `read` 的 `FILE` 和 `extract` 的 `SOURCE` 均支持 UTF-8 Markdown / 文本、本地 HTML、PDF 和 HTTP(S) 网页或 PDF 链接。两个命令都支持 `--timeout 20`、`--ocr auto|never|always` 和 `--ocr-lang chi_sim+eng`。
 
 `--timeout` 限制网页请求整体时间，以及每次 PDF / OCR 外部工具调用时间；本地 HTML、Markdown 分段和阅读页渲染不受它控制。网页下载最多 20 MiB；本地文件、PDF 和标准输入最多 50 MiB，PDF 另限 500 页。超限会报错，不会截短输入。
@@ -293,6 +334,9 @@ python3 skill/scripts/adhd_md.py audit --min-score 70 docs/*.md
 | agent 没自动触发 | Codex 用 `/adhd-md`，其他宿主明确说「用 adhd-md skill」 |
 | PDF 提示缺少工具 | 安装 Poppler；扫描件还需 Tesseract 和对应语言包。只读取文字层时可用 `--ocr never`，未识别页仍会标出 |
 | 网页只读到登录或加载提示 | 自动提取不执行网页 JavaScript，也不读取浏览器登录态；用宿主浏览器取得正文，或导出 HTML / 文本 |
+| JSON 书签导入失败 | 核对原文版本与书签格式；内容或锚点不匹配时保留旧书签，人工核对后创建新会话 |
+| 阅读页提示无法保存进度 | 浏览器本地存储不可用；导出 JSON 书签，稍后手动导入 |
+| `read --open` 没有打开浏览器 | 若文件已生成，按命令输出路径手动打开；打开失败不会删除文件 |
 | 想卸载 | `npx github:tsonglew/adhd-md install --uninstall`，或 `bash scripts/install.sh --uninstall` |
 
 ## 开发官网

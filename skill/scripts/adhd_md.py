@@ -24,6 +24,7 @@ import re
 import stat
 import sys
 import tempfile
+import webbrowser
 from collections import Counter
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -2700,6 +2701,9 @@ def _source_command(a, *, extracted=False):
     if a.json and a.output:
         print(f"{command}: --json 输出到标准输出，不能同时指定 --output。", file=sys.stderr)
         return 2
+    if a.json and getattr(a, "open_browser", False):
+        print("read: --json 不生成阅读页，不能同时指定 --open。", file=sys.stderr)
+        return 2
     try:
         original = None
         if a.file == "-":
@@ -2718,6 +2722,11 @@ def _source_command(a, *, extracted=False):
                 data["title"] = result["title"]
             if result.get("origin"):
                 data["origin"] = result["origin"]
+            if getattr(a, "session", None):
+                from reading_session import read_session
+
+                data["session"] = read_session(a.session, data)
+                data["session_imported"] = True
             content = None
         if a.json:
             print(json.dumps(data, ensure_ascii=False, indent=2))
@@ -2735,6 +2744,14 @@ def _source_command(a, *, extracted=False):
             print("用浏览器打开即可阅读；原文保持不变。")
         for warning in result.get("origin", {}).get("warnings", []):
             print(f"{command}: {warning}", file=sys.stderr)
+        if not extracted and getattr(a, "open_browser", False):
+            try:
+                opened = webbrowser.open(output.resolve().as_uri())
+            except (OSError, webbrowser.Error):
+                opened = False
+            if not opened:
+                print(f"read: 警告：无法自动打开浏览器；阅读页已生成，请手动打开：{output.resolve()}",
+                      file=sys.stderr)
         return 0
     except FileExistsError:
         print(f"{command}: 输出文件已存在；请用 -o 指定新文件名。", file=sys.stderr)
@@ -2758,7 +2775,8 @@ def cmd_selftest(a):
     sys.argv = sys.argv[:1]
     loader = unittest.TestLoader()
     suite = loader.loadTestsFromTestCase(SelfTest)
-    suite.addTests(loader.discover(str(Path(__file__).parent / "tests"), pattern="test_reader*.py"))
+    suite.addTests(loader.discover(str(Path(__file__).parent / "tests"), pattern="test_read*.py"))
+    suite.addTests(loader.discover(str(Path(__file__).parent / "tests"), pattern="test_session*.py"))
     suite.addTests(loader.discover(str(Path(__file__).parent / "tests"), pattern="test_extract*.py"))
     res = unittest.TextTestRunner(verbosity=2).run(suite)
     return 0 if res.wasSuccessful() else 1
@@ -3935,7 +3953,9 @@ def main(argv=None):
     p = sub.add_parser("read", help="自动提取并生成离线阅读页，或输出陪读分段 JSON")
     source_arguments(p, "HTML 输出路径（默认 <原名>.reader.html，不覆盖已有文件）")
     p.add_argument("--chunk-size", type=int, default=900, help="每段目标字符数，完整代码块等可以超出（默认 900）")
+    p.add_argument("--session", help="导入 JSON 阅读书签，核对原文后恢复会话")
     p.add_argument("--json", action="store_true", help="只输出原文、分段和源位置，供 AI 陪读使用")
+    p.add_argument("--open", dest="open_browser", action="store_true", help="成功生成阅读页后用默认浏览器打开")
     p.set_defaults(fn=cmd_read)
 
     p = sub.add_parser("extract", help="自动提取网页 / PDF 正文，保存 Markdown 或输出 JSON")
