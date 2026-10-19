@@ -103,6 +103,18 @@
     .check-label { display: flex; align-items: center; gap: 10px; line-height: 1.6; }
     .check-label input { width: 18px; height: 18px; margin: 0; accent-color: var(--green); }
     .settings-note { margin: 18px 0 0; color: var(--muted); font-size: 11px; line-height: 1.7; }
+    .session-panel { margin: 0 0 22px; padding: 14px 18px; border: 1px solid var(--line); border-radius: 7px; background: var(--page); font-size: 13px; line-height: 1.7; }
+    .session-panel summary { width: fit-content; }
+    .session-panel p { color: var(--muted); }
+    .session-panel textarea { display: block; width: 100%; margin: 8px 0; padding: 10px; resize: vertical; border: 1px solid var(--line); border-radius: 5px; font: inherit; color: var(--ink); background: var(--page); }
+    .session-actions { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; align-items: center; }
+    .session-panel input[type="file"] { max-width: 100%; font-size: 12px; }
+    .session-message { overflow-wrap: anywhere; }
+    .session-message[data-error="true"] { color: #8a3826; }
+    .resume-bar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 16px; font-size: 12px; color: var(--muted); }
+    .coverage-note { font-size: 12px; color: var(--muted); line-height: 1.7; }
+    .pending-list { padding-left: 1.3em; max-height: 180px; overflow: auto; }
+    .pending-list button { margin: 3px; }
 
     .reading-page { background: var(--page); border: 1px solid var(--line); border-radius: 7px; padding: 38px clamp(24px, 4.6vw, 64px) 44px; min-height: 480px; box-shadow: 0 4px 18px #28352e03; }
     .page-heading { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding-bottom: 26px; margin-bottom: 30px; border-bottom: 1px solid var(--line); }
@@ -203,7 +215,7 @@
     @media print {
       :root { --reading-size: 11pt !important; --reading-leading: 1.7 !important; --paragraph-gap: 1em !important; color: #111; background: white; }
       body { background: white; }
-      .masthead, .sidebar, .toolbar, .page-heading, .navigation, .keyboard-note, .footer-note, .skip-link, #focus-view, #original-view, #pause-view, #complete-view, .full-chunk-label { display: none !important; }
+      .masthead, .sidebar, .toolbar, .session-panel, .resume-bar, .page-heading, .navigation, .keyboard-note, .footer-note, .skip-link, #focus-view, #original-view, #pause-view, #complete-view, .full-chunk-label { display: none !important; }
       .workspace { display: block; max-width: none; padding: 0; margin: 0; }
       .reading-page { padding: 0; margin: 0; border: 0; border-radius: 0; box-shadow: none; min-height: 0; }
       #full-view { display: block !important; }
@@ -258,10 +270,38 @@
             <label class="settings-label" for="font-size">文字大小 <output id="font-size-value" for="font-size">19 px</output></label>
             <input id="font-size" type="range" min="16" max="28" step="1" value="19">
             <label class="check-label"><input id="spacious" type="checkbox" checked>宽松行距与段间距</label>
-            <p class="settings-note">位置与设置仅尝试保存在当前浏览器。不会把文档正文写入浏览器存储。</p>
+            <p class="settings-note">会话与设置尝试保存在当前浏览器。会话含短原文锚点和你记录的问题；可导出书签带走。</p>
           </div>
         </details>
       </div>
+
+      <div id="resume-bar" class="resume-bar" hidden>
+        <span id="resume-note"></span><button id="return-resume" type="button" class="quiet-button">回到待读位置</button>
+      </div>
+      <details id="session-panel" class="session-panel">
+        <summary>阅读书签与待补读</summary>
+        <p id="coverage-note" class="coverage-note"></p>
+        <ul id="pending-list" class="pending-list" aria-label="待补读段落"></ul>
+        <label for="question-input">留下一个待澄清的问题</label>
+        <textarea id="question-input" rows="2" placeholder="例如：这一步的前提是什么？"></textarea>
+        <button id="add-question" class="quiet-button" type="button">保存问题</button>
+        <ul id="question-list" class="pending-list" aria-label="待澄清问题"></ul>
+        <p>书签包含来源、短原文锚点、阅读范围和问题。把书签与原文一起交给 Agent，可在对话里继续；带回更新后的 JSON 即可恢复。</p>
+        <div class="session-actions">
+          <button id="copy-session" class="quiet-button" type="button">复制书签到对话</button>
+          <button id="download-session" class="quiet-button" type="button">下载书签</button>
+          <a id="download-session-source" class="download-link" download>下载续读正文</a>
+        </div>
+        <p>续读正文与书签逐字匹配。网页与 PDF 的来源、页码和提取缺口仍可在本阅读页核对，请一并保留阅读页。</p>
+        <label for="session-json">粘贴 JSON 书签</label>
+        <textarea id="session-json" rows="5" spellcheck="false"></textarea>
+        <div class="session-actions">
+          <button id="import-session" class="quiet-button" type="button">导入并恢复</button>
+          <label for="session-file">或选择书签文件</label>
+          <input id="session-file" type="file" accept=".json,application/json">
+        </div>
+        <p id="session-message" class="session-message" role="status" aria-live="polite"></p>
+      </details>
 
       <section id="extraction-info" class="extraction-info" aria-label="提取来源与核对提示" hidden>
         <p id="extraction-method"></p>
@@ -317,9 +357,10 @@
 
       <div id="navigation" class="navigation">
         <button id="previous-button" type="button" class="nav-button"><span aria-hidden="true">←</span>上一段</button>
-        <span id="navigation-note" class="navigation-note"></span>
+        <button id="skip-button" type="button" class="quiet-button">稍后再读</button>
         <button id="next-button" type="button" class="nav-button primary-button"><span id="next-label">下一段</span><span id="next-arrow" aria-hidden="true">→</span></button>
       </div>
+      <p id="navigation-note" class="navigation-note"></p>
       <p id="keyboard-note" class="keyboard-note"><kbd>←</kbd> <kbd>→</kbd> 切换段落 · 最后一段可点击「结束本次阅读」</p>
       <p id="storage-note" class="footer-note">原文完整保留 · 阅读器不会自动翻页 · 打印会包含全文</p>
     </main>
@@ -327,6 +368,7 @@
   <div id="status" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
 
   <script id="reader-data" type="application/json">__ADHD_READER_DATA__</script>
+  <script>__ADHD_SESSION_SCRIPT__</script>
   <script>
     "use strict";
 
@@ -349,7 +391,11 @@
       const chunks = data.chunks;
       const origin = data.origin && typeof data.origin === "object" && !Array.isArray(data.origin) ? data.origin : null;
       const sourcePreservation = origin ? "提取文本已保留，需结合来源核对" : "原文完整保留";
-      const storageKey = "adhd-md.reader.v1:" + data.source_hash;
+      const protocol = window.AdhdReadingSession;
+      // Explicitly imported pages represent separate handoffs. Give each page
+      // its own slot so reopening an older handoff cannot reset another one.
+      const storageKey = "adhd-md.reader.v2:" + data.source_hash + (data.session_imported ? ":" + location.pathname : "");
+      const legacyKey = "adhd-md.reader.v1:" + data.source_hash;
       const allowedViews = ["focus", "full", "original"];
       const clamp = (value, minimum, maximum, fallback) => (
         typeof value === "number" && Number.isFinite(value)
@@ -373,23 +419,40 @@
         return index;
       }
       let storageAvailable = true;
-      let saved = {};
+      let saved = {}, legacy = {}, sessionWarning = "";
       try {
         const parsed = JSON.parse(localStorage.getItem(storageKey) || "{}");
         if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) saved = parsed;
+        if (!saved.session) legacy = JSON.parse(localStorage.getItem(legacyKey) || "{}");
       } catch (_) {
-        // A malformed record must not prevent reading. A later write can repair it.
+        sessionWarning = "本地进度无法读取；可导入之前下载的书签。";
       }
-      const legacyIndex = clamp(saved.index, 0, chunks.length - 1, 0);
-      const sourceOffset = clamp(saved.sourceOffset, 0, Math.max(0, sourceCursor - 1), chunkOffsets[legacyIndex]);
+      const seed = data.session_imported ? JSON.stringify(data.session) : (saved.seed || null);
+      let session = protocol.create(data);
+      try {
+        if (data.session_imported && saved.seed !== seed) session = protocol.validate(data.session, data);
+        else if (saved.session) session = protocol.validate(saved.session, data);
+        else if (data.session_imported) session = protocol.validate(data.session, data);
+        else if (legacy && typeof legacy === "object") {
+          const index = clamp(legacy.index, 0, chunks.length - 1, 0);
+          const offset = clamp(legacy.sourceOffset, 0, Math.max(0, sourceCursor - 1), chunkOffsets[index]);
+          // Legacy progress never establishes coverage of preceding text.
+          session.current = protocol.position(data.source_text, chunkOffsets[indexAtOffset(offset)]);
+          session.resume = { ...session.current };
+          session.paused = legacy.paused === true;
+          session.ended = legacy.completed === true;
+        }
+      } catch (error) {
+        sessionWarning = error.message + " 已保留原文，请导入可用书签。";
+      }
+      const preferences = saved.session ? saved : legacy || {};
       const state = {
-        index: indexAtOffset(sourceOffset),
-        sourceOffset,
-        completed: saved.completed === true,
-        paused: saved.paused === true,
-        view: allowedViews.includes(saved.view) ? saved.view : "focus",
-        fontSize: clamp(saved.fontSize, 16, 28, 19),
-        spacious: saved.spacious !== false,
+        index: indexAtOffset(session.current.offset),
+        completed: session.ended,
+        paused: session.paused,
+        view: data.session_imported && saved.seed !== seed ? "focus" : allowedViews.includes(preferences.view) ? preferences.view : "focus",
+        fontSize: clamp(preferences.fontSize, 16, 28, 19),
+        spacious: preferences.spacious !== false,
       };
       let showCompletion = state.completed && state.view === "focus";
 
@@ -441,13 +504,66 @@
       }
 
       function save() {
+        session.paused = state.paused;
+        session.ended = state.completed;
         try {
-          // Only progress and display preferences are persisted, never source text or HTML.
-          localStorage.setItem(storageKey, JSON.stringify(state));
+          localStorage.setItem(storageKey, JSON.stringify({ session, seed,
+            view: state.view, fontSize: state.fontSize, spacious: state.spacious }));
         } catch (_) {
           storageAvailable = false;
-          byId("storage-note").textContent = "当前浏览器无法保存位置；关闭后可能需要重新定位。" + sourcePreservation + "，打印会包含全文。";
+          byId("storage-note").textContent = "当前浏览器无法保存会话；关闭前可下载阅读书签。" + sourcePreservation + "，打印会包含全文。";
         }
+      }
+
+      function sessionMessage(message, error = false) {
+        byId("session-message").textContent = message;
+        byId("session-message").dataset.error = String(error);
+      }
+
+      function chunkRange(index) {
+        return [chunkOffsets[index], index + 1 < chunks.length ? chunkOffsets[index + 1] : sourceCursor];
+      }
+
+      function recordPresented(clearSkipped = false) {
+        const [start, end] = chunkRange(state.index);
+        if (clearSkipped) session.skipped = protocol.remove(session.skipped, start, end);
+        let parts = [[start, end]];
+        for (const range of session.skipped) parts = protocol.remove(parts, range[0], range[1]);
+        for (const range of parts) session.presented = protocol.add(session.presented, range[0], range[1]);
+      }
+
+      function renderSession() {
+        let skipped = 0, unseen = 0;
+        byId("pending-list").replaceChildren();
+        chunks.forEach((chunk, index) => {
+          const [start, end] = chunkRange(index);
+          const isSkipped = protocol.overlap(session.skipped, start, end);
+          const covered = session.presented.some(([a, b]) => a <= start && b >= end);
+          if (isSkipped) skipped++;
+          else if (!covered) unseen++;
+          if (!isSkipped && covered) return;
+          const item = document.createElement("li");
+          const button = document.createElement("button");
+          button.type = "button"; button.className = "quiet-button";
+          button.textContent = (isSkipped ? "待补读" : "未完整展示") + " · 第 " + (index + 1) + " 段 · " + chunkTitle(chunk, index);
+          button.addEventListener("click", () => { byId("session-panel").open = false; goTo(index, true); });
+          item.append(button); byId("pending-list").append(item);
+        });
+        byId("coverage-note").textContent = "待补读 " + skipped + " 段，未完整展示 " + unseen + " 段。已展示不代表已理解；补读后点击下一段可清除该段的跳过标记。";
+        byId("question-list").replaceChildren();
+        session.questions.forEach((question, index) => {
+          const item = document.createElement("li");
+          item.append(document.createTextNode(question + " "));
+          const button = document.createElement("button");
+          button.type = "button"; button.className = "quiet-button";
+          button.textContent = "已解决";
+          button.setAttribute("aria-label", "移除问题：" + question);
+          button.addEventListener("click", () => { session.questions.splice(index, 1); save(); renderSession(); });
+          item.append(button); byId("question-list").append(item);
+        });
+        const resumeIndex = indexAtOffset(session.resume.offset);
+        byId("resume-bar").hidden = state.index === resumeIndex || session.resume.offset === sourceCursor;
+        byId("resume-note").textContent = "待读位置保留在第 " + (resumeIndex + 1) + " 段。";
       }
 
       function chunkTitle(chunk, index) {
@@ -505,8 +621,11 @@
 
       // Plain text downloads preserve the exact input. Extraction exports attach
       // provenance to the untouched extracted Markdown, as the CLI does.
-      let sourceUrl;
+      let sourceUrl, sessionSourceUrl;
       try {
+        sessionSourceUrl = URL.createObjectURL(new Blob([data.source_text], { type: "text/plain;charset=utf-8" }));
+        byId("download-session-source").href = sessionSourceUrl;
+        byId("download-session-source").download = /\.(txt|text)$/i.test(sourceName) ? "reading-source.txt" : "reading-source.md";
         let downloadText = data.source_text;
         if (origin) {
           const oneLine = (value) => typeof value === "string" ? value.split(/[\r\n\v\f\x85\u2028\u2029]/).join(" ") : "";
@@ -522,9 +641,11 @@
         byId("download-source").download = origin ? basename.replace(/(?:\.extracted)?\.[^.]+$/, "") + ".extracted.md" : basename;
       } catch (_) {
         byId("download-source").hidden = true;
+        if (!sessionSourceUrl) byId("download-session-source").hidden = true;
       }
       window.addEventListener("pagehide", (event) => {
         if (!event.persisted && sourceUrl) URL.revokeObjectURL(sourceUrl);
+        if (!event.persisted && sessionSourceUrl) URL.revokeObjectURL(sessionSourceUrl);
       });
 
       function applyPreferences() {
@@ -540,6 +661,8 @@
         const chunk = chunks[state.index];
         const isLast = state.index === chunks.length - 1;
         const finishedPanel = showCompletion && state.view === "focus";
+        if (!state.paused && state.view === "focus" && !finishedPanel) recordPresented();
+        renderSession();
         byId("location-label").textContent = "当前位置 " + (state.index + 1) + " / " + chunks.length;
         byId("completion-label").textContent = state.completed ? "本次已结束" : "";
         byId("reading-progress").max = chunks.length;
@@ -561,7 +684,7 @@
         byId("navigation").hidden = state.paused || state.view !== "focus" || finishedPanel;
         byId("keyboard-note").hidden = byId("navigation").hidden;
         byId("pause-button").hidden = state.paused || finishedPanel;
-        byId("pause-copy").textContent = "逐段阅读的位置保留在第 " + (state.index + 1) + " / " + chunks.length + " 段。准备好时，再继续。";
+        byId("pause-copy").textContent = "待读位置保留在第 " + (indexAtOffset(session.resume.offset) + 1) + " / " + chunks.length + " 段。准备好时，再继续。";
 
         byId("section-label").textContent = state.paused ? "已暂停"
           : finishedPanel ? "本次阅读已结束"
@@ -594,9 +717,11 @@
         byId("main").scrollIntoView({ block: "start", behavior: "instant" });
       }
 
-      function goTo(index, focus) {
+      function goTo(index, focus, advance = false) {
+        const previousIndex = state.index;
         state.index = clamp(index, 0, chunks.length - 1, state.index);
-        state.sourceOffset = chunkOffsets[state.index];
+        session.current = protocol.position(data.source_text, chunkOffsets[state.index]);
+        if (advance && previousIndex === indexAtOffset(session.resume.offset)) session.resume = { ...session.current };
         state.view = "focus";
         state.paused = false;
         state.completed = false;
@@ -608,37 +733,115 @@
         if (focus) focusReading();
       }
 
-      byId("previous-button").addEventListener("click", () => goTo(state.index - 1, true));
-      byId("next-button").addEventListener("click", () => {
+      function next(skip = false) {
+        const [start, end] = chunkRange(state.index);
+        if (skip) {
+          session.presented = protocol.remove(session.presented, start, end);
+          session.skipped = protocol.add(session.skipped, start, end);
+        } else recordPresented(true);
         if (state.index < chunks.length - 1) {
-          goTo(state.index + 1, true);
+          goTo(state.index + 1, true, true);
           return;
         }
+        if (state.index === indexAtOffset(session.resume.offset)) session.resume = protocol.position(data.source_text, sourceCursor);
         state.completed = true;
         showCompletion = true;
         render();
         save();
-        announce("已结束本次阅读。");
+        announce("已结束本次阅读；跳过的内容仍保留在待补读中。");
         focusReading();
-      });
+      }
+
+      byId("previous-button").addEventListener("click", () => goTo(state.index - 1, true));
+      byId("next-button").addEventListener("click", () => next());
+      byId("skip-button").addEventListener("click", () => next(true));
+      byId("return-resume").addEventListener("click", () => goTo(indexAtOffset(session.resume.offset), true));
       byId("pause-button").addEventListener("click", () => {
         state.paused = true;
         render();
         save();
-        announce("阅读已暂停。");
+        announce("阅读已暂停，可在阅读书签中下载会话。");
         focusReading();
       });
-      byId("resume-button").addEventListener("click", () => {
-        state.paused = false;
-        render();
-        save();
-        announce("已继续阅读。");
-        focusReading();
-      });
+      byId("resume-button").addEventListener("click", () => goTo(indexAtOffset(session.resume.offset), true));
       byId("review-button").addEventListener("click", () => goTo(chunks.length - 1, true));
       byId("restart-button").addEventListener("click", () => {
-        state.completed = false;
+        session.resume = protocol.position(data.source_text, 0);
         goTo(0, true);
+      });
+
+      function exportSession() {
+        save();
+        const validated = protocol.validate(session, data);
+        let text = JSON.stringify(validated, null, 2);
+        if (new TextEncoder().encode(text).length > protocol.MAX_BYTES) text = JSON.stringify(validated);
+        if (new TextEncoder().encode(text).length > protocol.MAX_BYTES) throw new Error("书签超过 1 MiB，请先减少待澄清问题。");
+        return text;
+      }
+
+      function importSession(text) {
+        // Validate the whole bookmark before changing any current session state.
+        const imported = protocol.parse(text, data);
+        session = imported;
+        state.index = indexAtOffset(session.current.offset);
+        state.paused = session.paused;
+        state.completed = session.ended;
+        state.view = "focus";
+        showCompletion = state.completed;
+        render();
+        save();
+        sessionMessage("书签已导入。待读位置、待补读范围和疑问已恢复。");
+      }
+
+      byId("copy-session").addEventListener("click", async () => {
+        try {
+          const text = exportSession();
+          byId("session-json").value = text;
+          try {
+            await navigator.clipboard.writeText(text);
+            sessionMessage("书签已复制。与原文一起交给 Agent，即可继续陪读。");
+          } catch (_) {
+            byId("session-json").focus(); byId("session-json").select();
+            sessionMessage("浏览器未允许复制，书签已选中；请手动复制或下载。");
+          }
+        } catch (error) { sessionMessage(error.message, true); }
+      });
+      byId("download-session").addEventListener("click", () => {
+        try {
+          const text = exportSession();
+          const url = URL.createObjectURL(new Blob([text], { type: "application/json;charset=utf-8" }));
+          const link = document.createElement("a");
+          link.href = url; link.download = "reading-session.json";
+          document.body.append(link); link.click(); link.remove();
+          setTimeout(() => URL.revokeObjectURL(url), 1000);
+          sessionMessage("已下载阅读书签；原文需要另行保留。");
+        } catch (error) { sessionMessage("无法下载书签：" + error.message + " 可尝试复制。", true); }
+      });
+      byId("import-session").addEventListener("click", () => {
+        try { importSession(byId("session-json").value); }
+        catch (error) { sessionMessage(error.message + " 当前会话未改变。", true); }
+      });
+      let fileImport = 0;
+      byId("session-file").addEventListener("change", async (event) => {
+        const revision = ++fileImport, file = event.target.files[0];
+        if (!file) return;
+        try {
+          if (file.size > protocol.MAX_BYTES) throw new Error("书签文件超过 1 MiB。");
+          const bytes = await file.arrayBuffer();
+          let text;
+          try { text = new TextDecoder("utf-8", { fatal: true, ignoreBOM: true }).decode(bytes); }
+          catch (_) { throw new Error("书签不是有效的 UTF-8 文本，请使用原始 JSON 文件。"); }
+          if (revision === fileImport) importSession(text);
+        } catch (error) { sessionMessage(error.message + " 当前会话未改变。", true); }
+        finally { event.target.value = ""; }
+      });
+      byId("add-question").addEventListener("click", () => {
+        try {
+          const candidate = { ...session, questions: session.questions.concat([byId("question-input").value]) };
+          session = protocol.validate(candidate, data);
+          byId("question-input").value = "";
+          save(); renderSession(); sessionMessage("问题已保存在会话中。");
+        } catch (error) { sessionMessage(error.message, true); }
       });
       document.querySelectorAll("[data-view]").forEach((button) => {
         button.addEventListener("click", () => {
@@ -676,7 +879,7 @@
           goTo(state.index - 1, true);
         } else if (event.key === "ArrowRight" && state.index < chunks.length - 1) {
           event.preventDefault();
-          goTo(state.index + 1, true);
+          next();
         }
       });
 
@@ -685,6 +888,10 @@
       render();
       byId("app").hidden = false;
       save();
+      if (sessionWarning) {
+        byId("session-panel").open = true;
+        sessionMessage(sessionWarning, true);
+      }
       if (!storageAvailable) announce("当前浏览器无法保存阅读位置。");
     })();
   </script>

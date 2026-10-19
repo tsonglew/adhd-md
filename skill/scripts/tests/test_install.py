@@ -756,17 +756,16 @@ class InstallScopeTest(unittest.TestCase):
     def test_remote_install_uses_local_tarball_and_stays_in_temp_root(self):
         tarball = self.root / "source.tar.gz"
         git = shutil.which("git")
-        tracked = subprocess.run(
-            [git, "ls-files", "-z", "--", "skill", "adapters/codex"],
+        distributable = subprocess.run(
+            [git, "ls-files", "-z", "--cached", "--others", "--exclude-standard",
+             "--", "skill", "adapters/codex"],
             cwd=REPO,
             check=True,
             capture_output=True,
         ).stdout.split(b"\0")
-        # Include newly introduced source files in the simulated committed tarball.
-        # `git ls-files` omits them until the user stages a commit, but the hosted
-        # tarball after merge will contain every versioned skill file.
-        archive_paths = {Path(os.fsdecode(raw)) for raw in tracked if raw}
-        archive_paths.add(Path("skill/references/rule-definitions.json"))
+        # Model the source tree after these changes are committed, including new
+        # runtime modules and assets while excluding ignored caches/artifacts.
+        archive_paths = {Path(os.fsdecode(raw)) for raw in distributable if raw}
         with tarfile.open(tarball, "w:gz") as archive:
             for rel in sorted(archive_paths):
                 archive.add(REPO / rel, arcname=Path("adhd-md-main") / rel, recursive=False)

@@ -66,6 +66,7 @@ required_files=(
   scripts/install.sh
   skill/SKILL.md
   skill/assets/reader.html
+  skill/assets/reader-session.js
   skill/references/reading.md
   skill/references/rules.md
   skill/references/rule-definitions.json
@@ -75,6 +76,7 @@ required_files=(
   skill/scripts/adhd_md.py
   skill/scripts/extract_web.py
   skill/scripts/reader.py
+  skill/scripts/reading_session.py
   skill/scripts/sources.py
   skill/scripts/tests/test_reader.py
   skill/scripts/tests/test_install.py
